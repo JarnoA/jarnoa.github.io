@@ -142,17 +142,43 @@
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
                 context.font = "20px Garamond";
-                const lines = poemText.split(" ");
-                const maxWidth = Math.max(...lines.map(line => context.measureText(line).width));
-                canvas.width = maxWidth + 40;
-                canvas.height = lines.length * 40 + 20;
+                const margin = 50;
+                const maxWidth = 400;
+                const words = poemText.split(" ");
+                let line = "";
+                const lines = [];
+                
+                words.forEach(word => {
+                    const testLine = line + word + " ";
+                    const metrics = context.measureText(testLine);
+                    const testWidth = metrics.width;
+                    if (testWidth > maxWidth && line.length > 0) {
+                        lines.push(line.trim());
+                        line = word + " ";
+                    } else {
+                        line = testLine;
+                    }
+                });
+                lines.push(line.trim());
+
+                const lineHeight = 40;
+                const height = lines.length * lineHeight + margin * 2 + 30; // additional 30 for the footer text
+                canvas.width = maxWidth + margin * 2;
+                canvas.height = height;
+                
                 context.fillStyle = "#444";
                 context.fillRect(0, 0, canvas.width, canvas.height);
                 context.fillStyle = "#fff";
                 context.textAlign = "center";
+
                 lines.forEach((line, index) => {
-                    context.fillText(line, canvas.width / 2, 40 * (index + 1));
+                    context.fillText(line, canvas.width / 2, margin + (index + 1) * lineHeight);
                 });
+
+                // Add footer text
+                context.font = "16px Garamond";
+                context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20);
+
                 const img = canvas.toDataURL("image/png");
                 const link = document.createElement("a");
                 link.href = img;
@@ -167,6 +193,5 @@
 
         generateWords();
     </script>
-    Made by alastalo.art
 </body>
 </html>
