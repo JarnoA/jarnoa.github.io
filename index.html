@@ -49,6 +49,7 @@
             background-color: #444;
             text-align: center;
             margin-bottom: 20px;
+            white-space: pre-wrap; /* Preserve line breaks in the poem text */
         }
         #downloadBtn, #regenerateBtn {
             margin-top: 10px;
@@ -127,6 +128,18 @@
             ];
 
             wordContainer.innerHTML = '';
+
+            // Add the special "↵" line break word box
+            const lineBreakElement = document.createElement("div");
+            lineBreakElement.textContent = "↵";
+            lineBreakElement.classList.add("word");
+            lineBreakElement.addEventListener("click", () => {
+                const span = document.createElement("span");
+                span.textContent = "\n";
+                poemContainer.appendChild(span);
+            });
+            wordContainer.appendChild(lineBreakElement);
+
             words.forEach(word => {
                 const wordElement = document.createElement("div");
                 wordElement.textContent = word;
@@ -154,28 +167,13 @@
                 context.font = `${20 * scale}px 'Garamond', serif`;
                 const margin = 50 * scale;
                 const maxWidth = 400 * scale;
-                const words = poemText.split(" ");
-                let line = "";
-                const lines = [];
-                
-                words.forEach(word => {
-                    const testLine = line + word + " ";
-                    const metrics = context.measureText(testLine);
-                    const testWidth = metrics.width;
-                    if (testWidth > maxWidth && line.length > 0) {
-                        lines.push(line.trim());
-                        line = word + " ";
-                    } else {
-                        line = testLine;
-                    }
-                });
-                lines.push(line.trim());
+                const lines = poemText.split("\n");
+                let lineHeight = 40 * scale;
+                let height = lines.length * lineHeight + margin * 2 + 30 * scale;
 
-                const lineHeight = 40 * scale;
-                const height = lines.length * lineHeight + margin * 2 + 30 * scale; // additional 30 for the footer text
                 canvas.width = maxWidth + margin * 2;
                 canvas.height = height;
-                
+
                 context.fillStyle = "#444";
                 context.fillRect(0, 0, canvas.width, canvas.height);
                 context.fillStyle = "#fff";
@@ -183,7 +181,7 @@
                 context.font = `${20 * scale}px 'Garamond', serif`;
 
                 lines.forEach((line, index) => {
-                    context.fillText(line, canvas.width / 2, margin + (index + 1) * lineHeight);
+                    context.fillText(line.trim(), canvas.width / 2, margin + (index + 1) * lineHeight);
                 });
 
                 // Add footer text
@@ -205,6 +203,6 @@
 
         generateWords();
     </script>
-    12
+    13
 </body>
 </html>
