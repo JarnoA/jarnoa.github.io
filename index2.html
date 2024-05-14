@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill-in-the-Blank Poetry</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .poem {
+            margin-bottom: 20px;
+        }
+        .blank {
+            border: 1px solid #ccc;
+            padding: 5px;
+            width: 100px;
+            text-align: center;
+        }
+        .word-list {
+            margin-bottom: 20px;
+        }
+        .word {
+            margin: 5px;
+            cursor: pointer;
+        }
+        #submitBtn {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="poem">
+        <span>Roses are</span> <input type="text" class="blank" id="blank1" /> <span>,</span><br>
+        <span>Violets are</span> <input type="text" class="blank" id="blank2" /> <span>.</span><br>
+        <span>Sugar is</span> <input type="text" class="blank" id="blank3" /> <span>,</span><br>
+        <span>And so are</span> <input type="text" class="blank" id="blank4" /> <span>.</span>
+    </div>
+    <div class="word-list">
+        <span class="word" data-word="blue">blue</span>
+        <span class="word" data-word="sweet">sweet</span>
+        <span class="word" data-word="red">red</span>
+        <span class="word" data-word="you">you</span>
+    </div>
+    <button id="submitBtn">Submit</button>
+    <div id="result"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const blanks = document.querySelectorAll(".blank");
+            const words = document.querySelectorAll(".word");
+            const result = document.getElementById("result");
+            const submitBtn = document.getElementById("submitBtn");
+
+            words.forEach(word => {
+                word.addEventListener("click", () => {
+                    const blank = document.activeElement;
+                    if (blank && blank.classList.contains("blank")) {
+                        blank.value = word.dataset.word;
+                    }
+                });
+            });
+
+            submitBtn.addEventListener("click", () => {
+                const correctAnswers = ["red", "blue", "sweet", "you"];
+                let isCorrect = true;
+
+                blanks.forEach((blank, index) => {
+                    if (blank.value !== correctAnswers[index]) {
+                        isCorrect = false;
+                    }
+                });
+
+                result.textContent = isCorrect ? "Correct! Well done!" : "Try again!";
+            });
+        });
+    </script>
+</body>
+</html>
