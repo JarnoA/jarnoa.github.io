@@ -98,10 +98,10 @@
         }
 
         async function generateWords() {
-            const nouns = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
-            const verbs = await fetchWords('https://api.datamuse.com/words?rel_trg=action&max=5');
-            const adjectives = await fetchWords('https://api.datamuse.com/words?rel_jjb=descriptive&max=5');
-            const adverbs = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&max=5');
+            const nouns = await fetchWords('https://api.datamuse.com/words?rel_jja=animal&max=10');
+            const verbs = await fetchWords('https://api.datamuse.com/words?rel_trg=action&max=10');
+            const adjectives = await fetchWords('https://api.datamuse.com/words?rel_jjb=descriptive&max=10');
+            const adverbs = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&max=10');
             
             const prepositions = getRandomWords(["in", "on", "at", "by", "with", "under", "over"], 5);
             const conjunctions = getRandomWords(["and", "or", "but", "so", "because"], 5);
@@ -112,19 +112,20 @@
                 "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
                 "laugh", "cry", "heart", "soul", "mind", "life", "death", "birth", "nature", "flower",
                 "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
-                "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel", "sauna"
+                "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
             ];
 
             const words = [
-                ...nouns,
-                ...verbs,
-                ...adjectives,
-                ...adverbs,
+                ...getRandomWords(nouns, 5),
+                ...getRandomWords(verbs, 5),
+                ...getRandomWords(adjectives, 5),
+                ...getRandomWords(adverbs, 5),
                 ...prepositions,
                 ...conjunctions,
                 ...pronouns,
                 ...getRandomWords(commonWords, 10)
             ];
+
             wordContainer.innerHTML = '';
             words.forEach(word => {
                 const wordElement = document.createElement("div");
@@ -204,6 +205,6 @@
 
         generateWords();
     </script>
-    10
+    11
 </body>
 </html>
