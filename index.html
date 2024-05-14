@@ -236,12 +236,22 @@
             }
         }
 
-        document.getElementById("downloadBtn").addEventListener("click", downloadPoem);
-        document.getElementById("regenerateBtn").addEventListener("click", generateWords);
+        document.getElementById("downloadBtn").addEventListener("click", () => {
+            downloadPoem();
+            document.getElementById("shareBtn").disabled = false;
+        });
+
+        document.getElementById("regenerateBtn").addEventListener("click", () => {
+            generateWords();
+            poemImageBlob = null;
+            document.getElementById("shareBtn").disabled = true;
+        });
+
         document.getElementById("shareBtn").addEventListener("click", sharePoem);
+        document.getElementById("shareBtn").disabled = true;
 
         generateWords();
     </script>
-    17
+    18
 </body>
 </html>
