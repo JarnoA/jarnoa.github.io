@@ -98,28 +98,28 @@
         }
 
         async function generateWords() {
-            const nounWords = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
-            const verbWords = await fetchWords('https://api.datamuse.com/words?rel_trg=verb&max=5');
-            const adjectiveWords = await fetchWords('https://api.datamuse.com/words?rel_jjb=adjective&max=5');
-            const adverbWords = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&max=5');
+            const nouns = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
+            const verbs = await fetchWords('https://api.datamuse.com/words?rel_trg=action&max=5');
+            const adjectives = await fetchWords('https://api.datamuse.com/words?rel_jjb=descriptive&max=5');
+            const adverbs = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&max=5');
             
-            const prepositions = ["in", "on", "at", "by", "with", "under", "over"];
-            const conjunctions = ["and", "or", "but", "so", "because"];
-            const pronouns = ["he", "she", "it", "we", "they", "you", "I"];
+            const prepositions = getRandomWords(["in", "on", "at", "by", "with", "under", "over"], 5);
+            const conjunctions = getRandomWords(["and", "or", "but", "so", "because"], 5);
+            const pronouns = getRandomWords(["he", "she", "it", "we", "they", "you", "I"], 5);
 
             const commonWords = [
                 "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
                 "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
                 "laugh", "cry", "heart", "soul", "mind", "life", "death", "birth", "nature", "flower",
                 "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
-                "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
+                "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel", "sauna"
             ];
 
             const words = [
-                ...nounWords,
-                ...verbWords,
-                ...adjectiveWords,
-                ...adverbWords,
+                ...nouns,
+                ...verbs,
+                ...adjectives,
+                ...adverbs,
                 ...prepositions,
                 ...conjunctions,
                 ...pronouns,
@@ -204,6 +204,6 @@
 
         generateWords();
     </script>
-    9
+    10
 </body>
 </html>
