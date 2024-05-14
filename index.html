@@ -98,9 +98,14 @@
         }
 
         async function generateWords() {
-            const nounWords = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
-            const verbWords = await fetchWords('https://api.datamuse.com/words?rel_jjb=animal&max=5');
-            const adjectiveWords = await fetchWords('https://api.datamuse.com/words?rel_jja=animal&max=5');
+            const nouns = await fetchWords('https://api.datamuse.com/words?rel_jja=noun&max=5');
+            const verbs = await fetchWords('https://api.datamuse.com/words?rel_trg=verb&max=5');
+            const adjectives = await fetchWords('https://api.datamuse.com/words?rel_jjb=adjective&max=5');
+            const adverbs = await fetchWords('https://api.datamuse.com/words?rel_adv=adverb&max=5');
+            const prepositions = await fetchWords('https://api.datamuse.com/words?sp=*ion&max=5');
+            const conjunctions = await fetchWords('https://api.datamuse.com/words?sp=and,or,but&max=5');
+            const pronouns = await fetchWords('https://api.datamuse.com/words?sp=he,she,it,we,they&max=5');
+            
             const commonWords = [
                 "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
                 "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
@@ -108,10 +113,15 @@
                 "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
                 "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
             ];
+
             const words = [
-                ...nounWords,
-                ...verbWords,
-                ...adjectiveWords,
+                ...nouns,
+                ...verbs,
+                ...adjectives,
+                ...adverbs,
+                ...prepositions,
+                ...conjunctions,
+                ...pronouns,
                 ...getRandomWords(commonWords, 10)
             ];
             wordContainer.innerHTML = '';
@@ -193,6 +203,6 @@
 
         generateWords();
     </script>
-    <p>V.0.06</p>
+    <p>V.0.07
 </body>
 </html>
