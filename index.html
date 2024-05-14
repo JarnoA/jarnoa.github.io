@@ -10,65 +10,79 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #2c2c2c;
             font-family: 'Garamond', serif;
             color: #fff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
         }
         h1 {
             font-size: 2.5em;
             margin-bottom: 20px;
+            text-align: center;
         }
         .word-container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
-            max-width: 1000px; /* Adjust max-width as needed */
+            width: 100%;
+            max-width: 1000px;
         }
         .word {
             background-color: #fff;
-            margin: 5px;
             padding: 10px;
             border-radius: 20px;
             cursor: pointer;
             color: #2c2c2c;
-            flex: 1 1 100px; /* Ensure the words wrap and take up space appropriately */
             text-align: center;
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+        }
+        @media (max-width: 768px) {
+            .word {
+                flex: 1 1 calc(50% - 20px);
+                max-width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .word {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
         }
         .poem-container {
             border: 1px solid #ccc;
             padding: 10px;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
             min-height: 100px;
             background-color: #444;
             text-align: center;
             margin-bottom: 20px;
         }
-        #downloadBtn {
+        #downloadBtn, #regenerateBtn {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 1em;
             cursor: pointer;
-            background-color: #f5a623;
-            color: #fff;
             border: none;
             border-radius: 20px;
             margin: 5px;
+        }
+        #downloadBtn {
+            background-color: #f5a623;
+            color: #fff;
         }
         #downloadBtn:hover {
             background-color: #ffa941;
         }
         #regenerateBtn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
             background-color: #000;
             color: #fff;
-            border: none;
-            border-radius: 20px;
-            margin: 5px;
         }
         #regenerateBtn:hover {
             background-color: #333;
@@ -199,6 +213,6 @@
 
         generateWords();
     </script>
-    <p>v.0.03</p>
+    <p>v.0.04</p>
 </body>
 </html>
