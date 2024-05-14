@@ -11,8 +11,9 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #2c2c2c;
             font-family: Arial, sans-serif;
+            color: #fff;
         }
         .word-container {
             display: flex;
@@ -32,7 +33,7 @@
             padding: 10px;
             width: 300px;
             min-height: 100px;
-            background-color: #fff;
+            background-color: #444;
             text-align: center;
         }
         #downloadBtn {
@@ -40,6 +41,13 @@
             padding: 10px 20px;
             font-size: 1em;
             cursor: pointer;
+            background-color: #f5a623;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+        }
+        #downloadBtn:hover {
+            background-color: #ffa941;
         }
     </style>
 </head>
@@ -49,7 +57,13 @@
     <button id="downloadBtn">Download Poem as PNG</button>
 
     <script>
-        const words = ["love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright"];
+        const words = [
+            "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
+            "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
+            "laugh", "cry", "heart", "soul", "mind", "life", "death", "birth", "nature", "flower",
+            "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
+            "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
+        ];
         const wordContainer = document.getElementById("wordContainer");
         const poemContainer = document.getElementById("poemContainer");
 
@@ -74,9 +88,9 @@
                 const textWidth = context.measureText(poemText).width;
                 canvas.width = textWidth + 20;
                 canvas.height = 60;
-                context.fillStyle = "#fff";
+                context.fillStyle = "#444";
                 context.fillRect(0, 0, canvas.width, canvas.height);
-                context.fillStyle = "#000";
+                context.fillStyle = "#fff";
                 context.fillText(poemText, 10, 40);
                 const img = canvas.toDataURL("image/png");
                 const link = document.createElement("a");
