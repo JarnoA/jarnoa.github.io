@@ -3,45 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic-Tac-Toe</title>
+    <title>Fill-in-the-Blank Poetry</title>
     <style>
         body {
-            background-color: #282c34;
-            color: #61dafb;
-            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
+        .poem {
+            margin-bottom: 20px;
         }
-        .cell {
+        .blank {
+            border: 1px solid #ccc;
+            padding: 5px;
             width: 100px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2.5em;
-            background-color: #fff;
-            border-radius: 5px;
+            text-align: center;
+        }
+        .word-list {
+            margin-bottom: 20px;
+        }
+        .word {
+            margin: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-        .cell:hover {
-            background-color: #61dafb;
-        }
-        .winner, .scoreboard, #restartButton {
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
-        #restartButton {
+        #submitBtn {
             padding: 10px 20px;
             font-size: 1em;
             cursor: pointer;
@@ -49,26 +38,50 @@
     </style>
 </head>
 <body>
-    <div>
-        <div class="game-board" id="gameBoard">
-            <div class="cell" data-index="0"></div>
-            <div class="cell" data-index="1"></div>
-            <div class="cell" data-index="2"></div>
-            <div class="cell" data-index="3"></div>
-            <div class="cell" data-index="4"></div>
-            <div class="cell" data-index="5"></div>
-            <div class="cell" data-index="6"></div>
-            <div class="cell" data-index="7"></div>
-            <div class="cell" data-index="8"></div>
-        </div>
-        <div class="winner" id="winner"></div>
-        <div class="scoreboard">
-            <div>Player X: <span id="scoreX">0</span></div>
-            <div>Player O: <span id="scoreO">0</span></div>
-        </div>
-        <button id="restartButton">Restart</button>
+    <div class="poem">
+        <span>Roses are</span> <input type="text" class="blank" id="blank1" /> <span>,</span><br>
+        <span>Violets are</span> <input type="text" class="blank" id="blank2" /> <span>.</span><br>
+        <span>Sugar is</span> <input type="text" class="blank" id="blank3" /> <span>,</span><br>
+        <span>And so are</span> <input type="text" class="blank" id="blank4" /> <span>.</span>
     </div>
+    <div class="word-list">
+        <span class="word" data-word="blue">blue</span>
+        <span class="word" data-word="sweet">sweet</span>
+        <span class="word" data-word="red">red</span>
+        <span class="word" data-word="you">you</span>
+    </div>
+    <button id="submitBtn">Submit</button>
+    <div id="result"></div>
 
-    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const blanks = document.querySelectorAll(".blank");
+            const words = document.querySelectorAll(".word");
+            const result = document.getElementById("result");
+            const submitBtn = document.getElementById("submitBtn");
+
+            words.forEach(word => {
+                word.addEventListener("click", () => {
+                    const blank = document.activeElement;
+                    if (blank && blank.classList.contains("blank")) {
+                        blank.value = word.dataset.word;
+                    }
+                });
+            });
+
+            submitBtn.addEventListener("click", () => {
+                const correctAnswers = ["red", "blue", "sweet", "you"];
+                let isCorrect = true;
+
+                blanks.forEach((blank, index) => {
+                    if (blank.value !== correctAnswers[index]) {
+                        isCorrect = false;
+                    }
+                });
+
+                result.textContent = isCorrect ? "Correct! Well done!" : "Try again!";
+            });
+        });
+    </script>
 </body>
 </html>
