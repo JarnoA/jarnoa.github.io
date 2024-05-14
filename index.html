@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fill-in-the-Blank Poetry</title>
+    <title>Create Your Poem</title>
     <style>
         body {
             display: flex;
@@ -14,23 +14,29 @@
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
-        .poem {
-            margin-bottom: 20px;
-        }
-        .blank {
-            border: 1px solid #ccc;
-            padding: 5px;
-            width: 100px;
-            text-align: center;
-        }
-        .word-list {
+        .word-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             margin-bottom: 20px;
         }
         .word {
+            background-color: #61dafb;
             margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
         }
-        #submitBtn {
+        .poem-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+            min-height: 100px;
+            background-color: #fff;
+            text-align: center;
+        }
+        #downloadBtn {
+            margin-top: 20px;
             padding: 10px 20px;
             font-size: 1em;
             cursor: pointer;
@@ -38,49 +44,46 @@
     </style>
 </head>
 <body>
-    <div class="poem">
-        <span>Roses are</span> <input type="text" class="blank" id="blank1" /> <span>,</span><br>
-        <span>Violets are</span> <input type="text" class="blank" id="blank2" /> <span>.</span><br>
-        <span>Sugar is</span> <input type="text" class="blank" id="blank3" /> <span>,</span><br>
-        <span>And so are</span> <input type="text" class="blank" id="blank4" /> <span>.</span>
-    </div>
-    <div class="word-list">
-        <span class="word" data-word="blue">blue</span>
-        <span class="word" data-word="sweet">sweet</span>
-        <span class="word" data-word="red">red</span>
-        <span class="word" data-word="you">you</span>
-    </div>
-    <button id="submitBtn">Submit</button>
-    <div id="result"></div>
+    <div class="word-container" id="wordContainer"></div>
+    <div class="poem-container" id="poemContainer"></div>
+    <button id="downloadBtn">Download Poem as PNG</button>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const blanks = document.querySelectorAll(".blank");
-            const words = document.querySelectorAll(".word");
-            const result = document.getElementById("result");
-            const submitBtn = document.getElementById("submitBtn");
+        const words = ["love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright"];
+        const wordContainer = document.getElementById("wordContainer");
+        const poemContainer = document.getElementById("poemContainer");
 
-            words.forEach(word => {
-                word.addEventListener("click", () => {
-                    const blank = document.activeElement;
-                    if (blank && blank.classList.contains("blank")) {
-                        blank.value = word.dataset.word;
-                    }
-                });
+        words.forEach(word => {
+            const wordElement = document.createElement("div");
+            wordElement.textContent = word;
+            wordElement.classList.add("word");
+            wordElement.addEventListener("click", () => {
+                const span = document.createElement("span");
+                span.textContent = word + " ";
+                poemContainer.appendChild(span);
             });
+            wordContainer.appendChild(wordElement);
+        });
 
-            submitBtn.addEventListener("click", () => {
-                const correctAnswers = ["red", "blue", "sweet", "you"];
-                let isCorrect = true;
-
-                blanks.forEach((blank, index) => {
-                    if (blank.value !== correctAnswers[index]) {
-                        isCorrect = false;
-                    }
-                });
-
-                result.textContent = isCorrect ? "Correct! Well done!" : "Try again!";
-            });
+        document.getElementById("downloadBtn").addEventListener("click", () => {
+            const poemText = poemContainer.textContent.trim();
+            if (poemText) {
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                context.font = "20px Arial";
+                const textWidth = context.measureText(poemText).width;
+                canvas.width = textWidth + 20;
+                canvas.height = 60;
+                context.fillStyle = "#fff";
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.fillStyle = "#000";
+                context.fillText(poemText, 10, 40);
+                const img = canvas.toDataURL("image/png");
+                const link = document.createElement("a");
+                link.href = img;
+                link.download = "poem.png";
+                link.click();
+            }
         });
     </script>
 </body>
