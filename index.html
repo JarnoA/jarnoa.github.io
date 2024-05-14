@@ -95,7 +95,6 @@
     <script>
         const wordContainer = document.getElementById("wordContainer");
         const poemContainer = document.getElementById("poemContainer");
-        let poemImageBlob = null;
 
         async function fetchWords(url) {
             try {
@@ -168,6 +167,31 @@
             return shuffled.slice(0, num);
         }
 
+        function wrapText(context, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            let lines = [];
+            
+            words.forEach((word, index) => {
+                const testLine = line + word + ' ';
+                const metrics = context.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && index > 0) {
+                    lines.push(line);
+                    line = word + ' ';
+                } else {
+                    line = testLine;
+                }
+            });
+            lines.push(line);
+
+            lines.forEach((line, index) => {
+                context.fillText(line.trim(), x, y + (index * lineHeight));
+            });
+
+            return lines.length;
+        }
+
         function downloadPoem() {
             const poemText = poemContainer.textContent.trim();
             if (poemText) {
@@ -177,10 +201,15 @@
                 context.font = `${20 * scale}px 'Garamond', serif`;
                 const margin = 50 * scale;
                 const maxWidth = 400 * scale;
-                const lines = poemText.split("\n");
-                let lineHeight = 40 * scale;
-                let height = lines.length * lineHeight + margin * 2 + 30 * scale;
+                const lineHeight = 40 * scale;
 
+                const lines = poemText.split("\n");
+                let totalHeight = lines.reduce((acc, line) => {
+                    const lineCount = wrapText(context, line, 0, 0, maxWidth, lineHeight);
+                    return acc + (lineHeight * lineCount);
+                }, 0);
+
+                const height = totalHeight + margin * 2 + 30 * scale; // additional 30 for the footer text
                 canvas.width = maxWidth + margin * 2;
                 canvas.height = height;
 
@@ -190,8 +219,10 @@
                 context.textAlign = "center";
                 context.font = `${20 * scale}px 'Garamond', serif`;
 
-                lines.forEach((line, index) => {
-                    context.fillText(line.trim(), canvas.width / 2, margin + (index + 1) * lineHeight);
+                let y = margin;
+                lines.forEach(line => {
+                    const lineCount = wrapText(context, line, canvas.width / 2, y, maxWidth, lineHeight);
+                    y += lineHeight * lineCount;
                 });
 
                 // Add footer text
@@ -200,7 +231,6 @@
                 context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20 * scale);
 
                 canvas.toBlob(blob => {
-                    poemImageBlob = blob;
                     const link = document.createElement("a");
                     link.href = URL.createObjectURL(blob);
                     link.download = "poem.png";
@@ -214,6 +244,6 @@
 
         generateWords();
     </script>
-    <p>V.0.019</p>
+    <p>V.0.020</p>
 </body>
 </html>
