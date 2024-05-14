@@ -40,6 +40,15 @@
             text-align: center;
             flex: none;
         }
+        .line-break {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+            flex: none;
+        }
         .poem-container {
             border: 1px solid #ccc;
             padding: 10px;
@@ -129,17 +138,6 @@
 
             wordContainer.innerHTML = '';
 
-            // Add the special "↵" line break word box
-            const lineBreakElement = document.createElement("div");
-            lineBreakElement.textContent = "↵";
-            lineBreakElement.classList.add("word");
-            lineBreakElement.addEventListener("click", () => {
-                const span = document.createElement("span");
-                span.textContent = "\n";
-                poemContainer.appendChild(span);
-            });
-            wordContainer.appendChild(lineBreakElement);
-
             words.forEach(word => {
                 const wordElement = document.createElement("div");
                 wordElement.textContent = word;
@@ -151,6 +149,17 @@
                 });
                 wordContainer.appendChild(wordElement);
             });
+
+            // Add the special "↵" line break word box at the end
+            const lineBreakElement = document.createElement("div");
+            lineBreakElement.textContent = "↵";
+            lineBreakElement.classList.add("word", "line-break");
+            lineBreakElement.addEventListener("click", () => {
+                const span = document.createElement("span");
+                span.textContent = "\n";
+                poemContainer.appendChild(span);
+            });
+            wordContainer.appendChild(lineBreakElement);
         }
 
         function getRandomWords(words, num) {
@@ -203,6 +212,6 @@
 
         generateWords();
     </script>
-    13
+    <p>V.0.012</p>
 </body>
 </html>
