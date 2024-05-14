@@ -103,7 +103,7 @@
     <script>
         const wordContainer = document.getElementById("wordContainer");
         const poemContainer = document.getElementById("poemContainer");
-        let poemImageURL = "";
+        let poemImageBlob = null;
 
         async function fetchWords(url) {
             try {
@@ -207,25 +207,32 @@
                 context.fillStyle = "#b0b0b0"; // Light grey color for the footer text
                 context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20 * scale);
 
-                poemImageURL = canvas.toDataURL("image/png");
-                const link = document.createElement("a");
-                link.href = poemImageURL;
-                link.download = "poem.png";
-                link.click();
+                canvas.toBlob(blob => {
+                    poemImageBlob = blob;
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "poem.png";
+                    link.click();
+                });
             }
         }
 
         function sharePoem() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'My Poem',
-                    text: 'Check out this poem I created!',
-                    url: poemImageURL,
-                })
-                .then(() => console.log('Share successful'))
-                .catch(error => console.log('Error sharing:', error));
+            if (poemImageBlob) {
+                const filesArray = [new File([poemImageBlob], "poem.png", { type: "image/png" })];
+                if (navigator.canShare && navigator.canShare({ files: filesArray })) {
+                    navigator.share({
+                        title: 'My Poem',
+                        text: 'Check out this poem I created!',
+                        files: filesArray,
+                    })
+                    .then(() => console.log('Share successful'))
+                    .catch(error => console.log('Error sharing:', error));
+                } else {
+                    alert('Sharing not supported, or file size too large.');
+                }
             } else {
-                alert('Web Share API not supported in your browser.');
+                alert('Please generate and download the poem first.');
             }
         }
 
@@ -235,6 +242,6 @@
 
         generateWords();
     </script>
-    14
+    17
 </body>
 </html>
