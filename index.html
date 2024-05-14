@@ -139,11 +139,12 @@
         document.getElementById("downloadBtn").addEventListener("click", () => {
             const poemText = poemContainer.textContent.trim();
             if (poemText) {
+                const scale = 2; // Scale factor for high DPI
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
-                context.font = "20px 'Garamond', serif";
-                const margin = 50;
-                const maxWidth = 400;
+                context.font = `${20 * scale}px 'Garamond', serif`;
+                const margin = 50 * scale;
+                const maxWidth = 400 * scale;
                 const words = poemText.split(" ");
                 let line = "";
                 const lines = [];
@@ -161,8 +162,8 @@
                 });
                 lines.push(line.trim());
 
-                const lineHeight = 40;
-                const height = lines.length * lineHeight + margin * 2 + 30; // additional 30 for the footer text
+                const lineHeight = 40 * scale;
+                const height = lines.length * lineHeight + margin * 2 + 30 * scale; // additional 30 for the footer text
                 canvas.width = maxWidth + margin * 2;
                 canvas.height = height;
                 
@@ -170,15 +171,15 @@
                 context.fillRect(0, 0, canvas.width, canvas.height);
                 context.fillStyle = "#fff";
                 context.textAlign = "center";
-                context.font = "20px 'Garamond', serif";
+                context.font = `${20 * scale}px 'Garamond', serif`;
 
                 lines.forEach((line, index) => {
                     context.fillText(line, canvas.width / 2, margin + (index + 1) * lineHeight);
                 });
 
                 // Add footer text
-                context.font = "12px 'Garamond', serif";
-                context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20);
+                context.font = `${12 * scale}px 'Garamond', serif`;
+                context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20 * scale);
 
                 const img = canvas.toDataURL("image/png");
                 const link = document.createElement("a");
@@ -194,6 +195,6 @@
 
         generateWords();
     </script>
-    <p>v.0.1</p>
+    <p>v.0.02</p>
 </body>
 </html>
