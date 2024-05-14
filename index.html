@@ -60,7 +60,7 @@
             margin-bottom: 20px;
             white-space: pre-wrap; /* Preserve line breaks in the poem text */
         }
-        #downloadBtn, #regenerateBtn, #shareBtn {
+        #downloadBtn, #regenerateBtn {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 1em;
@@ -83,13 +83,6 @@
         #regenerateBtn:hover {
             background-color: #333;
         }
-        #shareBtn {
-            background-color: #007bff;
-            color: #fff;
-        }
-        #shareBtn:hover {
-            background-color: #0056b3;
-        }
     </style>
 </head>
 <body>
@@ -98,7 +91,6 @@
     <div class="poem-container" id="poemContainer"></div>
     <button id="downloadBtn">Download Poem as PNG</button>
     <button id="regenerateBtn">Regenerate Words</button>
-    <button id="shareBtn">Share Poem</button>
 
     <script>
         const wordContainer = document.getElementById("wordContainer");
@@ -217,41 +209,11 @@
             }
         }
 
-        function sharePoem() {
-            if (poemImageBlob) {
-                const filesArray = [new File([poemImageBlob], "poem.png", { type: "image/png" })];
-                if (navigator.canShare && navigator.canShare({ files: filesArray })) {
-                    navigator.share({
-                        title: 'My Poem',
-                        text: 'Check out this poem I created!',
-                        files: filesArray,
-                    })
-                    .then(() => console.log('Share successful'))
-                    .catch(error => console.log('Error sharing:', error));
-                } else {
-                    alert('Sharing not supported, or file size too large.');
-                }
-            } else {
-                alert('Please generate and download the poem first.');
-            }
-        }
-
-        document.getElementById("downloadBtn").addEventListener("click", () => {
-            downloadPoem();
-            document.getElementById("shareBtn").disabled = false;
-        });
-
-        document.getElementById("regenerateBtn").addEventListener("click", () => {
-            generateWords();
-            poemImageBlob = null;
-            document.getElementById("shareBtn").disabled = true;
-        });
-
-        document.getElementById("shareBtn").addEventListener("click", sharePoem);
-        document.getElementById("shareBtn").disabled = true;
+        document.getElementById("downloadBtn").addEventListener("click", downloadPoem);
+        document.getElementById("regenerateBtn").addEventListener("click", generateWords);
 
         generateWords();
     </script>
-    18
+    <p>V.0.019</p>
 </body>
 </html>
