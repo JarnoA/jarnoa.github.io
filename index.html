@@ -86,40 +86,34 @@
         const wordContainer = document.getElementById("wordContainer");
         const poemContainer = document.getElementById("poemContainer");
 
-        const commonWords = [
-            "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
-            "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
-            "laugh", "cry", "heart", "soul", "mind", "life", "death", "birth", "nature", "flower",
-            "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
-            "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
-        ];
-
-        async function fetchRandomWords() {
+        async function fetchWords(url) {
             try {
-                const response = await fetch('https://random-word-api.herokuapp.com/word?number=5');
-                const words = await response.json();
-                return words;
-            } catch (error) {
-                console.error('Error fetching random words:', error);
-                return [];
-            }
-        }
-
-        async function fetchDatamuseWords() {
-            try {
-                const response = await fetch('https://api.datamuse.com/words?ml=sun&max=5');
+                const response = await fetch(url);
                 const data = await response.json();
                 return data.map(item => item.word);
             } catch (error) {
-                console.error('Error fetching Datamuse words:', error);
+                console.error(`Error fetching words from ${url}:`, error);
                 return [];
             }
         }
 
         async function generateWords() {
-            const randomWords = await fetchRandomWords();
-            const datamuseWords = await fetchDatamuseWords();
-            const words = [...randomWords, ...datamuseWords, ...getRandomWords(commonWords, 10)];
+            const nounWords = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
+            const verbWords = await fetchWords('https://api.datamuse.com/words?rel_jjb=animal&max=5');
+            const adjectiveWords = await fetchWords('https://api.datamuse.com/words?rel_jja=animal&max=5');
+            const commonWords = [
+                "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
+                "light", "dark", "moon", "sun", "hope", "peace", "joy", "sorrow", "tear", "smile",
+                "laugh", "cry", "heart", "soul", "mind", "life", "death", "birth", "nature", "flower",
+                "tree", "river", "mountain", "ocean", "whisper", "shout", "silence", "noise", "wind",
+                "rain", "storm", "fire", "ice", "warm", "cold", "embrace", "kiss", "touch", "feel"
+            ];
+            const words = [
+                ...nounWords,
+                ...verbWords,
+                ...adjectiveWords,
+                ...getRandomWords(commonWords, 10)
+            ];
             wordContainer.innerHTML = '';
             words.forEach(word => {
                 const wordElement = document.createElement("div");
@@ -199,6 +193,6 @@
 
         generateWords();
     </script>
+    <p>V.0.06</p>
 </body>
-<p>v.0.05</p>
 </html>
