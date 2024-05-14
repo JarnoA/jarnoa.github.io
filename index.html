@@ -98,13 +98,14 @@
         }
 
         async function generateWords() {
-            const nouns = await fetchWords('https://api.datamuse.com/words?ml=animal&topics=nouns&max=5');
-            const verbs = await fetchWords('https://api.datamuse.com/words?rel_jja=action&topics=verbs&max=5');
-            const adjectives = await fetchWords('https://api.datamuse.com/words?rel_jjb=descriptive&topics=adjectives&max=5');
-            const adverbs = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&topics=adverbs&max=5');
-            const prepositions = ["in", "on", "at", "by", "with"]; // Prepositions are less suited for API fetching
-            const conjunctions = ["and", "or", "but", "so", "because"]; // Conjunctions are less suited for API fetching
-            const pronouns = ["he", "she", "it", "we", "they"];
+            const nounWords = await fetchWords('https://api.datamuse.com/words?ml=animal&max=5');
+            const verbWords = await fetchWords('https://api.datamuse.com/words?rel_trg=verb&max=5');
+            const adjectiveWords = await fetchWords('https://api.datamuse.com/words?rel_jjb=adjective&max=5');
+            const adverbWords = await fetchWords('https://api.datamuse.com/words?rel_adv=quickly&max=5');
+            
+            const prepositions = ["in", "on", "at", "by", "with", "under", "over"];
+            const conjunctions = ["and", "or", "but", "so", "because"];
+            const pronouns = ["he", "she", "it", "we", "they", "you", "I"];
 
             const commonWords = [
                 "love", "dream", "happy", "night", "sky", "blue", "beautiful", "stars", "shine", "bright",
@@ -115,10 +116,10 @@
             ];
 
             const words = [
-                ...nouns,
-                ...verbs,
-                ...adjectives,
-                ...adverbs,
+                ...nounWords,
+                ...verbWords,
+                ...adjectiveWords,
+                ...adverbWords,
                 ...prepositions,
                 ...conjunctions,
                 ...pronouns,
@@ -203,6 +204,6 @@
 
         generateWords();
     </script>
-    <p>V.0.08</p>
+    9
 </body>
 </html>
