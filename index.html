@@ -141,7 +141,7 @@
             if (poemText) {
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
-                context.font = "20px Garamond";
+                context.font = "20px 'Garamond', serif";
                 const margin = 50;
                 const maxWidth = 400;
                 const words = poemText.split(" ");
@@ -170,13 +170,14 @@
                 context.fillRect(0, 0, canvas.width, canvas.height);
                 context.fillStyle = "#fff";
                 context.textAlign = "center";
+                context.font = "20px 'Garamond', serif";
 
                 lines.forEach((line, index) => {
                     context.fillText(line, canvas.width / 2, margin + (index + 1) * lineHeight);
                 });
 
                 // Add footer text
-                context.font = "16px Garamond";
+                context.font = "12px 'Garamond', serif";
                 context.fillText("made with jarnoa.github.io", canvas.width / 2, height - 20);
 
                 const img = canvas.toDataURL("image/png");
