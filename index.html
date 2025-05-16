@@ -1,25 +1,362 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Computer Says Yes</title>
-  <style>
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background: #ffffff;
-    }
-    img {
-      max-width: 90%;
-      height: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Says Yes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Space+Grotesk:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #121212;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-left: 10%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 60%;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .ml14 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 4.5em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ml14 .text-wrapper {
+            position: relative;
+            display: inline-block;
+            padding-top: 0.1em;
+            padding-right: 0.05em;
+            padding-bottom: 0.15em;
+            line-height: 1;
+        }
+
+        .ml14 .line {
+            opacity: 0;
+            position: absolute;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background-color: #fff;
+            transform-origin: 100% 100%;
+            bottom: 0;
+        }
+
+        .ml14 .letter {
+            display: inline-block;
+            line-height: 1em;
+        }
+
+        .ml14 .word {
+            display: block;
+            margin-bottom: 0.25em;
+        }
+
+        .ml14 .word.yes {
+            color: #FF4B4B;
+        }
+
+        p {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            font-weight: 400;
+        }
+
+        .visualization {
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            width: 500px;
+            height: 500px;
+        }
+
+        .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+
+        .circle-bg {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(40, 40, 40, 0.4);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .ticks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .tick {
+            position: absolute;
+            width: 1px;
+            height: 6px;
+            background-color: rgba(255, 75, 75, 0.5);
+            transform-origin: center bottom;
+        }
+        
+        .circle-stroke {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: visible;
+        }
+        
+        /* Flat design blob */
+        .blob-container {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        
+        .blob {
+            width: 200px;
+            height: 200px;
+            background-color: #50E3C2;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            box-shadow: 0 0 30px rgba(80, 227, 194, 0.3);
+            position: relative;
+            transform-origin: center;
+        }
+    </style>
 </head>
 <body>
-  <img src="images/csy_1.png" alt="Computer Says Yes -logo">
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="ml14">
+                <span class="text-wrapper">
+                    <span class="word">Computer</span>
+                    <span class="word">Says</span>
+                    <span class="word yes">YES</span>
+                    <span class="line"></span>
+                </span>
+            </h1>
+            <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä, elämässä teknologian kanssa, jota emme täysin ymmärrä, mutta joka tietää meistä kaiken.</p>
+        </div>
+
+        <div class="visualization">
+            <div class="circle circle-bg"></div>
+            <div class="ticks" id="ticks"></div>
+            <svg class="circle-stroke" id="circle-stroke" width="500" height="500" viewBox="0 0 500 500">
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#50E3C2" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="0" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-1"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#F3F9A7" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="240" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-2"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="480" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-3"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF4B4B" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="720" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-4"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#43C6AC" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="960" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-5"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#835DF1" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
+            </svg>
+            
+            <!-- Blob -->
+            <div class="blob-container">
+                <div class="blob" id="blob"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create ticks
+            const ticks = document.getElementById('ticks');
+            const numTicks = 60;
+            for (let i = 0; i < numTicks; i++) {
+                const tick = document.createElement('div');
+                tick.classList.add('tick');
+                tick.style.transform = `rotate(${i * (360 / numTicks)}deg) translateX(250px)`;
+                ticks.appendChild(tick);
+            }
+            
+            // Animate blob
+            const blob = document.getElementById('blob');
+            let currentColor = 0;
+            const colors = [
+                '#50E3C2',  // Teal
+                '#FF4B4B',  // Red
+                '#F3F9A7',  // Yellow
+                '#835DF1'   // Purple
+            ];
+            
+            // Function to animate blob
+            function animateBlob() {
+                // Change color
+                currentColor = (currentColor + 1) % colors.length;
+                
+                // Animate blob shape and color
+                anime({
+                    targets: '.blob',
+                    backgroundColor: colors[currentColor],
+                    borderRadius: function() {
+                        return anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '% / ' + 
+                               anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '% ' + 
+                               anime.random(20, 70) + '%';
+                    },
+                    boxShadow: [
+                        '0 0 30px ' + colors[currentColor] + '33',
+                        '0 0 60px ' + colors[currentColor] + '55',
+                        '0 0 30px ' + colors[currentColor] + '33'
+                    ],
+                    scale: [1, 1.1, 1],
+                    duration: 3000,
+                    easing: 'easeInOutQuad',
+                    complete: animateBlob
+                });
+            }
+            
+            // Start blob animation
+            setTimeout(animateBlob, 1000);
+            
+            // Continuous subtle movement
+            anime({
+                targets: '.blob',
+                translateX: function() { return anime.random(-10, 10); },
+                translateY: function() { return anime.random(-10, 10); },
+                duration: function() { return anime.random(1500, 3000); },
+                easing: 'easeInOutQuad',
+                loop: true,
+                direction: 'alternate'
+            });
+            
+            // Wrap each letter in a span
+            const textElements = document.querySelectorAll('.ml14 .word');
+            
+            textElements.forEach(function(wordEl) {
+                wordEl.innerHTML = wordEl.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            });
+            
+            // Animate the text
+            anime.timeline({loop: false})
+                .add({
+                    targets: '.ml14 .line',
+                    scaleX: [0,1],
+                    opacity: [0.5,1],
+                    easing: "easeInOutExpo",
+                    duration: 900
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(1) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(2) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(3) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                });
+            
+            // Animate ticks
+            anime({
+                targets: '.tick',
+                opacity: [0, 0.5],
+                delay: anime.stagger(10),
+                duration: 1000,
+                easing: 'easeOutExpo'
+            });
+
+            // Animate circle segments
+            anime({
+                targets: '.circle-segment',
+                strokeDashoffset: function(el) {
+                    return parseInt(el.getAttribute('stroke-dashoffset')) - 240;
+                },
+                delay: anime.stagger(150),
+                duration: 1500,
+                easing: 'easeOutExpo'
+            });
+            
+            // Rotate the circle stroke
+            anime({
+                targets: '#circle-stroke',
+                rotate: 360,
+                duration: 60000,
+                loop: true,
+                easing: 'linear'
+            });
+            
+            // Breathing effect for the circle segments
+            anime({
+                targets: '.circle-segment',
+                strokeWidth: [8, 10, 8],
+                opacity: [0.7, 1, 0.7],
+                delay: anime.stagger(100),
+                duration: 3000,
+                direction: 'alternate',
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+        });
+    </script>
 </body>
 </html>
