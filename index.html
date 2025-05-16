@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Computer Says Yes</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Space+Grotesk:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700;900&display=swap');
         
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Gothic A1', sans-serif;
             background-color: #121212;
             color: white;
             height: 100vh;
@@ -37,17 +37,18 @@
 
         h1 {
             font-size: 5rem;
-            font-weight: 800;
+            font-weight: 900;
             line-height: 1;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
         }
 
         .ml14 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 800;
+            font-family: 'Gothic A1', sans-serif;
+            font-weight: 900;
             font-size: 4.5em;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: -0.02em;
         }
 
         .ml14 .text-wrapper {
@@ -81,17 +82,108 @@
         }
 
         .ml14 .word.yes {
-            color: #FF4B4B;
+            color: #FFD166;
         }
 
         p {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Gothic A1', sans-serif;
             font-size: 1.25rem;
             line-height: 1.6;
             margin-top: 2rem;
             margin-bottom: 2rem;
             max-width: 600px;
             font-weight: 400;
+        }
+        
+        /* Media queries for responsive text */
+        @media (max-width: 1200px) {
+            .ml14 {
+                font-size: 3.8em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ml14 {
+                font-size: 3em;
+            }
+            
+            .hero-content {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ml14 {
+                font-size: 2.5em;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+
+        .visualization {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            .ml14 {
+                font-size: 3.5em;
+            }
+            
+            .visualization {
+                width: 400px;
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding-left: 5%;
+                padding-right: 5%;
+                flex-direction: column;
+                justify-content: center;
+            }
+            
+            .hero-content {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .ml14 {
+                font-size: 3em;
+            }
+            
+            p {
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+            
+            .visualization {
+                width: 300px;
+                height: 300px;
+                position: relative;
+                transform: none;
+                top: auto;
+                right: auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ml14 {
+                font-size: 2.5em;
+            }
+            
+            .visualization {
+                width: 250px;
+                height: 250px;
+            }
         }
 
         .visualization {
@@ -141,7 +233,7 @@
             overflow: visible;
         }
         
-        /* Flat design blob */
+        /* Computer icon */
         .blob-container {
             position: absolute;
             width: 60%;
@@ -154,14 +246,43 @@
             pointer-events: none;
         }
         
-        .blob {
-            width: 200px;
-            height: 200px;
-            background-color: #50E3C2;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            box-shadow: 0 0 30px rgba(80, 227, 194, 0.3);
-            position: relative;
-            transform-origin: center;
+        .computer-icon {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(80, 227, 194, 0.4));
+        }
+        
+        /* Responsive adjustments for visualization */
+        @media (max-width: 1200px) {
+            .visualization {
+                transform: translateY(-50%) scale(0.8);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                position: relative;
+                top: 0;
+                right: 0;
+                transform: none;
+                width: 100%;
+                margin-top: 3rem;
+                max-width: 400px;
+            }
+            
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-bottom: 2rem;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -183,17 +304,34 @@
             <div class="circle circle-bg"></div>
             <div class="ticks" id="ticks"></div>
             <svg class="circle-stroke" id="circle-stroke" width="500" height="500" viewBox="0 0 500 500">
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#50E3C2" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="0" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-1"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#F3F9A7" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="240" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-2"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="480" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-3"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF4B4B" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="720" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-4"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#43C6AC" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="960" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-5"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#835DF1" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="0" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-1"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="240" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-2"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF4B4B" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="480" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-3"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF3333" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="720" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-4"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="960" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-5"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
             </svg>
             
-            <!-- Blob -->
+            <!-- Retro Computer Icon -->
             <div class="blob-container">
-                <div class="blob" id="blob"></div>
+                <svg class="computer-icon" viewBox="0 0 300 300" width="200" height="200">
+                    <!-- Monitor -->
+                    <rect x="70" y="50" width="160" height="140" fill="none" stroke="#50E3C2" stroke-width="8" rx="8" />
+                    <!-- Screen -->
+                    <rect x="85" y="65" width="130" height="95" fill="none" stroke="#50E3C2" stroke-width="5" rx="4" />
+                    <!-- Eyes -->
+                    <rect x="105" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
+                    <rect x="185" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
+                    <!-- Mouth -->
+                    <rect id="computer-mouth" x="120" y="125" width="60" height="8" fill="#50E3C2" rx="4" />
+                    <!-- Computer base -->
+                    <rect x="110" y="190" width="80" height="15" fill="none" stroke="#50E3C2" stroke-width="6" rx="2" />
+                    <!-- Keyboard -->
+                    <rect x="80" y="205" width="140" height="25" fill="none" stroke="#50E3C2" stroke-width="8" rx="4" />
+                    <!-- Keyboard detail -->
+                    <rect x="95" y="215" width="80" height="5" fill="#50E3C2" rx="2" />
+                    <rect x="190" y="215" width="10" height="5" fill="#50E3C2" rx="2" />
+                </svg>
             </div>
         </div>
     </div>
@@ -211,59 +349,67 @@
                 ticks.appendChild(tick);
             }
             
-            // Animate blob
-            const blob = document.getElementById('blob');
-            let currentColor = 0;
-            const colors = [
-                '#50E3C2',  // Teal
-                '#FF4B4B',  // Red
-                '#F3F9A7',  // Yellow
-                '#835DF1'   // Purple
-            ];
+            // Animate computer icon
+            const computerMouth = document.getElementById('computer-mouth');
             
-            // Function to animate blob
-            function animateBlob() {
-                // Change color
-                currentColor = (currentColor + 1) % colors.length;
-                
-                // Animate blob shape and color
+            // Function to animate computer mouth
+            function animateComputerMouth() {
+                // Animate smile or neutral face
                 anime({
-                    targets: '.blob',
-                    backgroundColor: colors[currentColor],
-                    borderRadius: function() {
-                        return anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '% / ' + 
-                               anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '% ' + 
-                               anime.random(20, 70) + '%';
-                    },
-                    boxShadow: [
-                        '0 0 30px ' + colors[currentColor] + '33',
-                        '0 0 60px ' + colors[currentColor] + '55',
-                        '0 0 30px ' + colors[currentColor] + '33'
-                    ],
-                    scale: [1, 1.1, 1],
+                    targets: '#computer-mouth',
+                    y: [125, 122, 125],
+                    height: [8, 10, 8],
+                    rx: [4, 6, 4],
+                    fill: ['#50E3C2', '#6AEFD2', '#50E3C2'],
                     duration: 3000,
                     easing: 'easeInOutQuad',
-                    complete: animateBlob
+                    direction: 'alternate',
+                    loop: true
                 });
+                
+                // Blink eyes occasionally
+                const blinkEyes = () => {
+                    anime({
+                        targets: 'rect[y="85"]',
+                        height: [15, 2, 15],
+                        duration: 300,
+                        easing: 'easeInOutQuad',
+                        complete: function() {
+                            // Random time until next blink
+                            setTimeout(blinkEyes, anime.random(3000, 8000));
+                        }
+                    });
+                };
+                
+                // Start blinking
+                setTimeout(blinkEyes, anime.random(1000, 3000));
             }
             
-            // Start blob animation
-            setTimeout(animateBlob, 1000);
+            // Start computer animation
+            animateComputerMouth();
             
-            // Continuous subtle movement
+            // Subtle hovering animation for the computer
             anime({
-                targets: '.blob',
-                translateX: function() { return anime.random(-10, 10); },
-                translateY: function() { return anime.random(-10, 10); },
-                duration: function() { return anime.random(1500, 3000); },
+                targets: '.computer-icon',
+                translateY: [0, -5, 0],
+                duration: 4000,
                 easing: 'easeInOutQuad',
-                loop: true,
-                direction: 'alternate'
+                direction: 'alternate',
+                loop: true
+            });
+            
+            // Glow effect animation
+            anime({
+                targets: '.computer-icon',
+                filter: [
+                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))',
+                    'drop-shadow(0 0 30px rgba(80, 227, 194, 0.6))',
+                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))'
+                ],
+                duration: 3000,
+                easing: 'easeInOutSine',
+                direction: 'alternate',
+                loop: true
             });
             
             // Wrap each letter in a span
