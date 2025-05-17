@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Computer Says Yes | Teknologis-filosofinen tutkimusmatka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&family=Noto+Emoji:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Space+Grotesk:wght@300;400;500;700&display=swap');
-        
         :root {
             --bg-primary: #FF8142;
             --text-light: #FFFAEB;
@@ -15,7 +16,9 @@
             --accent-green: #00A07D;
             --accent-orange: #FF5C35;
             --accent-yellow: #FFBE3C;
+            --accent-purple: #9966CC;
         }
+        
         
         * {
             margin: 0;
@@ -78,10 +81,12 @@
         }
         
         .subtitle {
+            font-family: 'Righteous', sans-serif;
             font-size: clamp(1.2rem, 2vw, 1.8rem);
             margin-bottom: 2rem;
             color: var(--text-light);
         }
+        
         
         /* Hero Section */
         .hero {
@@ -372,46 +377,19 @@
                     <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä. Teknologia ei enää mukaudu meihin - me mukaudumme siihen.</p>
                 </div>
                 <div class="col-content">
-                    <div class="visual-grid">
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center"></div>
-                            </div>
+                    <div id="evolution-animation" style="height: 400px; background-color: rgba(0,0,0,0.1); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                        <!-- DNA double helix animaatio -->
+                        <div class="dna-container" style="width: 100%; height: 100%; position: relative; perspective: 800px;">
+                            <!-- DNA kierteet -->
+                            <div id="dna-animation"></div>
                         </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center orange"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center green"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center blue"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center blue"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center green"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center"></div>
-                            </div>
-                        </div>
-                        <div class="visual-item">
-                            <div class="record">
-                                <div class="record-center orange"></div>
-                            </div>
+                    </div>
+                    <div class="slider-label">HOVER TO SEE EVOLUTION IN ACTION!</div>
+                </div>
+                        <!-- DNA double helix animaatio -->
+                        <div class="dna-container" style="width: 100%; height: 100%; position: relative; perspective: 800px;">
+                            <!-- DNA kierteet -->
+                            <div id="dna-animation"></div>
                         </div>
                     </div>
                     <div class="slider-label">HOVER TO SEE EVOLUTION IN ACTION!</div>
@@ -470,14 +448,64 @@
                 </div>
                 <div class="col-content">
                     <div id="human-visualization" style="height: 400px; background-color: rgba(0,0,0,0.1); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;">
-                        <div style="width: 80%; height: 80%; border-radius: 50%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-size: 2rem; text-align: center; padding: 2rem;">
-                            Ihminen vai algoritmi?
+                        <div class="decision-container">
+                            <div class="decision-text">Ihminen</div>
+                            <div class="decision-or">vai</div>
+                            <div class="decision-text">algoritmi?</div>
+                            <div class="decision-cursor">|</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    
+    <style>
+        .decision-container {
+            position: relative;
+            font-family: 'Righteous', sans-serif;
+            text-align: center;
+            color: var(--text-light);
+        }
+        
+        .decision-text {
+            font-size: 3rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .decision-or {
+            font-size: 2rem;
+            margin: 0.5rem 0;
+            opacity: 0.7;
+        }
+        
+        .decision-cursor {
+            position: absolute;
+            right: -20px;
+            bottom: 0;
+            font-size: 3rem;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Animaatio efekti */
+        .scramble-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+    </style>
 
     <!-- Info Section -->
     <section class="info-section">
@@ -500,6 +528,7 @@
         </div>
     </section>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Algorithm slider and visualization
@@ -547,19 +576,266 @@
                 }
             }
             
-            // Record interaction
-            const records = document.querySelectorAll('.record');
-            
-            records.forEach(record => {
-                record.addEventListener('mouseenter', function() {
-                    this.style.transform = 'rotate(180deg)';
-                    this.style.transition = 'transform 1s ease';
+            // Ihminen vai algoritmi? -animaatio
+            const humanVisualization = document.getElementById('human-visualization');
+            const decisionContainer = document.querySelector('.decision-container');
+
+            if (humanVisualization && decisionContainer) {
+                // Sanaparit ihmisestä ja algoritmista
+                const humanWords = ['Ihminen', 'Tunne', 'Tietoisuus', 'Intuitio', 'Luovuus'];
+                const algoWords = ['algoritmi', 'logiikka', 'laskenta', 'data', 'koodi'];
+                
+                // Tila
+                let currentIndex = 0;
+                let isHovering = false;
+                
+                // Teksti scramble animaatio
+                function scrambleText(element, oldText, newText, duration = 1000) {
+                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÖÅäöå0123456789!@#$%^&*()_-+={}[]|;:,.<>?/';
+                    let steps = 10;
+                    let stepDuration = duration / steps;
+                    
+                    for (let i = 0; i < steps; i++) {
+                        setTimeout(() => {
+                            // Scramble ratio laskee jokaisen askeleen myötä
+                            let scrambleRatio = 1 - (i / steps);
+                            let resultText = '';
+                            
+                            // Tavoitetekstin pituus kasvaa jokaisella askeleella
+                            let targetLength = Math.floor(oldText.length * (1 - i/steps) + newText.length * (i/steps));
+                            
+                            for (let j = 0; j < targetLength; j++) {
+                                // Päätä, käytetäänkö tavoitetekstiä vai satunnaisia merkkejä
+                                if (Math.random() > scrambleRatio && j < newText.length) {
+                                    resultText += newText[j];
+                                } else {
+                                    resultText += chars[Math.floor(Math.random() * chars.length)];
+                                }
+                            }
+                            
+                            element.textContent = resultText;
+                            
+                            // Viimeinen askel näyttää oikean tekstin
+                            if (i === steps - 1) {
+                                element.textContent = newText;
+                            }
+                        }, stepDuration * i);
+                    }
+                }
+                
+                // Päivitä tekstit
+                function updateWords() {
+                    if (!isHovering) return;
+                    
+                    const humanTextEl = decisionContainer.querySelector('.decision-text:first-child');
+                    const algoTextEl = decisionContainer.querySelector('.decision-text:last-of-type');
+                    
+                    let nextIndex = (currentIndex + 1) % humanWords.length;
+                    
+                    // Vaihdetaan teksti scramble-efektillä
+                    scrambleText(humanTextEl, humanWords[currentIndex], humanWords[nextIndex], 800);
+                    scrambleText(algoTextEl, algoWords[currentIndex], algoWords[nextIndex], 800);
+                    
+                    currentIndex = nextIndex;
+                    
+                    // Jatka päivitystä, jos hiiri on edelleen päällä
+                    if (isHovering) {
+                        setTimeout(updateWords, 2000);
+                    }
+                }
+                
+                // Lisää hover-tapahtumakäsittelijät
+                humanVisualization.addEventListener('mouseenter', function() {
+                    isHovering = true;
+                    updateWords();
                 });
                 
-                record.addEventListener('mouseleave', function() {
-                    this.style.transform = 'rotate(0deg)';
+                humanVisualization.addEventListener('mouseleave', function() {
+                    isHovering = false;
+                    
+                    // Palautetaan alkuperäiset sanat, kun hiiri poistuu
+                    const humanTextEl = decisionContainer.querySelector('.decision-text:first-child');
+                    const algoTextEl = decisionContainer.querySelector('.decision-text:last-of-type');
+                    
+                    scrambleText(humanTextEl, humanTextEl.textContent, 'Ihminen', 800);
+                    scrambleText(algoTextEl, algoTextEl.textContent, 'algoritmi', 800);
+                    
+                    currentIndex = 0;
                 });
-            });
+            }
+            
+            // Evolution animation
+            const dnaContainer = document.getElementById('dna-animation');
+            const evolutionAnimation = document.getElementById('evolution-animation');
+            
+            function createDNAAnimation() {
+                if (!dnaContainer) return;
+                
+                // DNA rakenne
+                const strandsCount = 30; // Säikeiden määrä
+                const strandHeight = 350; // Säikeen korkeus
+                const strandGap = 8; // Väliaika säikeiden välillä
+                
+                // Tyhjennä container
+                dnaContainer.innerHTML = '';
+                
+                // Värit alkuvaiheeseen (biologinen DNA)
+                let startColors = {
+                    strand: '#0E3E4A',
+                    dot1: '#FF8142', // Oranssi
+                    dot2: '#4FA8CC'  // Sininen
+                };
+                
+                // Värit loppuvaiheeseen (teknologinen DNA)
+                let endColors = {
+                    strand: '#333333',
+                    dot1: '#00FFAA', // Neon vihreä
+                    dot2: '#FF3366'  // Neon pinkki
+                };
+                
+                // Luo DNA-rakenne
+                for (let i = 0; i < strandsCount; i++) {
+                    const strand = document.createElement('div');
+                    strand.className = 'dna-strand';
+                    strand.style.cssText = `
+                        position: absolute;
+                        width: 2px;
+                        height: ${strandHeight}px;
+                        left: ${(i * (strandGap + 2)) + 30}px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        border-left: 1px ${startColors.strand} dashed;
+                        transform-style: preserve-3d;
+                        animation: dna-rotate 10s linear infinite;
+                        animation-delay: ${(i * 0.1)}s;
+                    `;
+                    
+                    // Yläpiste (dot1)
+                    const topDot = document.createElement('div');
+                    topDot.className = 'dna-dot top-dot';
+                    topDot.style.cssText = `
+                        position: absolute;
+                        width: 10px;
+                        height: 10px;
+                        background: ${startColors.dot1};
+                        border-radius: 50%;
+                        top: 0;
+                        left: 50%;
+                        transform: translateX(-50%);
+                    `;
+                    
+                    // Alapiste (dot2)
+                    const bottomDot = document.createElement('div');
+                    bottomDot.className = 'dna-dot bottom-dot';
+                    bottomDot.style.cssText = `
+                        position: absolute;
+                        width: 10px;
+                        height: 10px;
+                        background: ${startColors.dot2};
+                        border-radius: 50%;
+                        bottom: 0;
+                        left: 50%;
+                        transform: translateX(-50%);
+                    `;
+                    
+                    strand.appendChild(topDot);
+                    strand.appendChild(bottomDot);
+                    dnaContainer.appendChild(strand);
+                }
+                
+                // Lisää @keyframes animaatio
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes dna-rotate {
+                        0% {
+                            transform: translateY(-50%) rotateX(0deg);
+                        }
+                        100% {
+                            transform: translateY(-50%) rotateX(360deg);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Lisää hover-efekti - kun hiiri menee päälle, muutetaan DNA:ta biologisesta teknologiseksi
+                if (evolutionAnimation) {
+                    evolutionAnimation.addEventListener('mouseenter', function() {
+                        // Etsi kaikki dot-elementit
+                        const topDots = document.querySelectorAll('.top-dot');
+                        const bottomDots = document.querySelectorAll('.bottom-dot');
+                        const strands = document.querySelectorAll('.dna-strand');
+                        
+                        // Muuta värit anime.js:llä
+                        anime({
+                            targets: topDots,
+                            background: endColors.dot1,
+                            scale: [1, 1.2],
+                            duration: 1500,
+                            easing: 'easeInOutQuad'
+                        });
+                        
+                        anime({
+                            targets: bottomDots,
+                            background: endColors.dot2,
+                            scale: [1, 1.2],
+                            duration: 1500,
+                            easing: 'easeInOutQuad'
+                        });
+                        
+                        // Nopeutetaan pyörimistä
+                        anime({
+                            targets: strands,
+                            borderColor: endColors.strand,
+                            duration: 1500,
+                            easing: 'easeInOutQuad',
+                            update: function(anim) {
+                                // Muutetaan animaation nopeutta
+                                strands.forEach(strand => {
+                                    strand.style.animationDuration = '5s';
+                                });
+                            }
+                        });
+                    });
+                    
+                    // Kun hiiri poistuu, palautetaan alkuperäinen tila
+                    evolutionAnimation.addEventListener('mouseleave', function() {
+                        const topDots = document.querySelectorAll('.top-dot');
+                        const bottomDots = document.querySelectorAll('.bottom-dot');
+                        const strands = document.querySelectorAll('.dna-strand');
+                        
+                        anime({
+                            targets: topDots,
+                            background: startColors.dot1,
+                            scale: 1,
+                            duration: 1500,
+                            easing: 'easeInOutQuad'
+                        });
+                        
+                        anime({
+                            targets: bottomDots,
+                            background: startColors.dot2,
+                            scale: 1,
+                            duration: 1500,
+                            easing: 'easeInOutQuad'
+                        });
+                        
+                        anime({
+                            targets: strands,
+                            borderColor: startColors.strand,
+                            duration: 1500,
+                            easing: 'easeInOutQuad',
+                            update: function(anim) {
+                                strands.forEach(strand => {
+                                    strand.style.animationDuration = '10s';
+                                });
+                            }
+                        });
+                    });
+                }
+            }
+            
+            // Luo DNA-animaatio kun sivu on ladattu
+            createDNAAnimation();
             
             // Add fade-in animation to elements
             const fadeElements = document.querySelectorAll('h1, h2, .subtitle, p');
