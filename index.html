@@ -3,746 +3,581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Says Yes</title>
+    <title>Computer Says Yes | Teknologis-filosofinen tutkimusmatka</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Space+Grotesk:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --bg-primary: #FF8142;
+            --text-light: #FFFAEB;
+            --text-dark: #0A0A0A;
+            --accent-blue: #4FA8CC;
+            --accent-green: #00A07D;
+            --accent-orange: #FF5C35;
+            --accent-yellow: #FFBE3C;
+        }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
-        body {
-            font-family: 'Gothic A1', sans-serif;
-            background-color: #121212;
-            color: white;
-            height: 100vh;
-            overflow: hidden;
+        
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
         }
-
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        section {
+            min-height: 100vh;
+            padding: 0 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+        }
+        
+        /* Typography */
+        h1, h2 {
+            font-family: 'Abril Fatface', serif;
+            line-height: 1;
+        }
+        
+        h1 {
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+        
+        h2 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+        
+        h3 {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            margin-bottom: 1.5rem;
+            max-width: 50ch;
+        }
+        
+        .subtitle {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+        
+        /* Hero Section */
         .hero {
             position: relative;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-left: 10%;
+            overflow: hidden;
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            width: 60%;
-        }
-
-        h1 {
-            font-size: 5rem;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-        }
-
-        .ml14 {
-            font-family: 'Gothic A1', sans-serif;
-            font-weight: 900;
-            font-size: 4.5em;
-            letter-spacing: -0.02em;
-        }
-
-        .ml14 .text-wrapper {
-            position: relative;
-            display: inline-block;
-            padding-top: 0.1em;
-            padding-right: 0.05em;
-            padding-bottom: 0.15em;
-            line-height: 1;
-        }
-
-        .ml14 .line {
-            opacity: 0;
+        
+        .hero-circle {
             position: absolute;
-            left: 0;
-            height: 4px;
-            width: 100%;
-            background-color: #fff;
-            transform-origin: 100% 100%;
-            bottom: 0;
-        }
-
-        .ml14 .letter {
-            display: inline-block;
-            line-height: 1em;
-        }
-
-        .ml14 .word {
-            display: block;
-            margin-bottom: 0.25em;
-        }
-
-        .ml14 .word.yes {
-            color: #FFD166;
-        }
-
-        p {
-            font-family: 'Gothic A1', sans-serif;
-            font-size: 1.25rem;
-            line-height: 1.6;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            font-weight: 400;
-        }
-
-        .visualization {
-            position: absolute;
+            width: 90vmin;
+            height: 90vmin;
+            border-radius: 50%;
+            background-color: #121212;
             top: 50%;
-            right: 10%;
-            transform: translateY(-50%);
-            width: 500px;
-            height: 500px;
-        }
-
-        .circle {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            top: 0;
-            left: 0;
-        }
-
-        .circle-bg {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: rgba(40, 40, 40, 0.4);
-        }
-
-        .ticks {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-        }
-
-        .tick {
-            position: absolute;
-            width: 1px;
-            height: 6px;
-            background-color: rgba(255, 75, 75, 0.5);
-            transform-origin: center bottom;
-        }
-
-        .waveform {
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            top: 20%;
-            left: 20%;
-        }
-
-        .wave-line {
-            position: absolute;
-            background-color: #FF4B4B;
-            height: 2px;
-        }
-
-        .dots {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .dot {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background-color: #FF4B4B;
-            border-radius: 50%;
-        }
-        
-        .circle-stroke {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: visible;
-        }
-        
-        /* Computer icon */
-        .computer-container {
-            position: absolute;
-            width: 60%;
-            height: 60%;
-            top: 20%;
-            left: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none;
         }
         
-        .computer-icon {
+        .robot-image {
+            width: 70%;
+            height: auto;
+            z-index: 2;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Content Sections */
+        .section-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 3rem 0;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .col-content {
+            max-width: 500px;
+        }
+        
+        .dark-section {
+            background-color: #121212;
+            color: var(--text-light);
+        }
+        
+        .blue-section {
+            background-color: var(--accent-blue);
+        }
+        
+        .algorithm-section {
+            background-color: var(--accent-green);
+        }
+        
+        .evolution-section {
+            background-color: var(--accent-orange);
+        }
+        
+        /* Interactive Elements */
+        .slider-container {
+            margin: 2rem 0;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .slider-label {
+            text-transform: uppercase;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: var(--text-light);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: var(--text-light);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Visual Elements */
+        .visual-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .visual-item {
+            background-color: #121212;
+            border-radius: 50%;
+            aspect-ratio: 1;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .visual-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .record {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 20px rgba(80, 227, 194, 0.4));
+            border-radius: 50%;
+            background: #121212;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
-        /* Media queries for responsive text */
-        @media (max-width: 1200px) {
-            .ml14 {
-                font-size: 3.8em;
-            }
+        .record::before {
+            content: '';
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
+        .record::after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .record-center {
+            width: 20%;
+            height: 20%;
+            border-radius: 50%;
+            background-color: var(--accent-yellow);
+            z-index: 3;
+        }
+        
+        .record-center.blue {
+            background-color: var(--accent-blue);
+        }
+        
+        .record-center.orange {
+            background-color: var(--accent-orange);
+        }
+        
+        .record-center.green {
+            background-color: var(--accent-green);
+        }
+        
+        /* Info Section */
+        .info-section {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            padding: 5rem 10%;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 2rem auto;
+            display: block;
+        }
+        
+        /* Animation Effect */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+        
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+        
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+        
+        /* Responsive styles */
         @media (max-width: 768px) {
-            .visualization {
-                position: relative;
-                top: 0;
-                right: 0;
-                transform: none;
-                width: 100%;
-                margin-top: 1rem;
-                max-width: 400px;
+            .two-col {
+                grid-template-columns: 1fr;
+                gap: 2rem;
             }
             
-            .hero {
-                flex-direction: column;
-                align-items: flex-start;
-                justify-content: flex-start;
-                padding-bottom: 2rem;
-                padding-top: 5rem;
-                overflow-y: auto;
-                height: auto;
-                min-height: 100vh;
+            .visual-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(4, 1fr);
             }
             
-            body {
-                overflow-y: auto;
-                height: auto;
-            }
-            
-            .ml14 {
-                font-size: 3em;
-                margin-top: 2rem;
-            }
-            
-            .hero-content {
-                width: 90%;
-            }
-            
-            p {
-                margin-bottom: 1rem;
-            }
-            
-            .waveform, .dots {
-                display: none;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .ml14 {
-                font-size: 2.5em;
-            }
-            
-            .hero {
-                padding-top: 7rem;
-            }
-            
-            p {
-                font-size: 1rem;
-            }
-            
-            .visualization {
-                margin-top: 0;
+            .col-content {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="hero-content">
-            <h1 class="ml14">
-                <span class="text-wrapper">
-                    <span class="word">Computer</span>
-                    <span class="word">Says</span>
-                    <span class="word yes">YES</span>
-                    <span class="line"></span>
-                </span>
-            </h1>
-            <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä, elämässä teknologian kanssa, jota emme täysin ymmärrä, mutta joka tietää meistä kaiken.</p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-circle">
+            <img src="/images/robotdog.png" alt="Robot and Dog" class="robot-image">
         </div>
+        <div class="hero-content">
+            <h1>Computer<br>Says Yes</h1>
+            <p class="subtitle">Teknologis-filosofinen tutkimusmatka algoritmien, tekoälyn ja ihmisyyden rajapinnalla!</p>
+        </div>
+    </section>
 
-        <div class="visualization">
-            <div class="circle circle-bg"></div>
-            <div class="ticks" id="ticks"></div>
-            <svg class="circle-stroke" id="circle-stroke" width="500" height="500" viewBox="0 0 500 500">
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="0" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-1"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="240" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-2"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF4B4B" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="480" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-3"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF3333" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="720" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-4"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="960" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-5"></circle>
-                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
-            </svg>
-            
-            <div class="waveform" id="waveform"></div>
-            <div class="dots" id="dots"></div>
-            
-            <!-- Retro Computer Icon -->
-            <div class="computer-container">
-                <svg class="computer-icon" viewBox="0 0 300 300" width="200" height="200">
-                    <!-- Monitor -->
-                    <rect x="70" y="50" width="160" height="140" fill="none" stroke="#50E3C2" stroke-width="8" rx="8" />
-                    <!-- Screen -->
-                    <rect x="85" y="65" width="130" height="95" fill="none" stroke="#50E3C2" stroke-width="5" rx="4" />
-                    <!-- Eyes -->
-                    <rect x="105" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
-                    <rect x="185" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
-                    <!-- Mouth -->
-                    <rect id="computer-mouth" x="120" y="125" width="60" height="8" fill="#50E3C2" rx="4" />
-                    <!-- Computer base -->
-                    <rect x="110" y="190" width="80" height="15" fill="none" stroke="#50E3C2" stroke-width="6" rx="2" />
-                    <!-- Keyboard -->
-                    <rect x="80" y="205" width="140" height="25" fill="none" stroke="#50E3C2" stroke-width="8" rx="4" />
-                    <!-- Keyboard detail -->
-                    <rect x="95" y="215" width="80" height="5" fill="#50E3C2" rx="2" />
-                    <rect x="190" y="215" width="10" height="5" fill="#50E3C2" rx="2" />
-                </svg>
+    <!-- Mustalaatikko Section -->
+    <section class="dark-section">
+        <div class="section-content">
+            <div class="two-col">
+                <div class="col-content">
+                    <h2>Musta Laatikko</h2>
+                    <p class="subtitle">Voima, joka kietoutuu arkeen huomaamattomasti mutta väistämättömästi!</p>
+                    <p>Olemme astuneet aikakauteen, jossa elämme teknologian kanssa, joita emme täysin ymmärrä, mutta joka tietää meistä kaiken. Olemme antaneet digitaalisten oligarkkien rakentaa koneita, jotka tekevät virheitä – mutta eivät osaa itse niitä korjata.</p>
+                    <p>Tekoälyn ja algoritmien vaikutukset näkyvät vasta ajan kuluessa – aivan kuten Charles Darwinin kuvaamat evoluution hitaat mutta peruuttamattomat muutokset.</p>
+                </div>
+                <div class="col-content">
+                    <div class="slider-container">
+                        <div class="slider-label">SÄÄDÄ ALGORITMIEN VAIKUTUSTA</div>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="algorithm-slider">
+                    </div>
+                    <div id="algorithm-visualization" style="height: 300px; background-color: rgba(255,255,255,0.1); border-radius: 10px; position: relative; overflow: hidden;">
+                        <!-- JS will fill this with visualization -->
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Evoluutio Section -->
+    <section class="evolution-section">
+        <div class="section-content">
+            <div class="two-col">
+                <div class="col-content">
+                    <h2>Evoluutio</h2>
+                    <p class="subtitle">Hitaat mutta peruuttamattomat muutokset yhteiskunnassamme.</p>
+                    <p>Charles Darwin kohtasi Lajien syntyä kirjoittaessaan saman haasteen kuin me nyt algoritmien kanssa: kuinka selittää näkymätöntä voimaa, jonka vaikutukset näemme vasta ajan kuluessa.</p>
+                    <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä. Teknologia ei enää mukaudu meihin - me mukaudumme siihen.</p>
+                </div>
+                <div class="col-content">
+                    <div class="visual-grid">
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center orange"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center green"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center blue"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center blue"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center green"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center"></div>
+                            </div>
+                        </div>
+                        <div class="visual-item">
+                            <div class="record">
+                                <div class="record-center orange"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-label">HOVER TO SEE EVOLUTION IN ACTION!</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Algoritmi Section -->
+    <section class="algorithm-section">
+        <div class="section-content">
+            <div class="two-col">
+                <div class="col-content">
+                    <div class="visual-grid" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr);">
+                        <div class="visual-item" style="grid-column: 1 / span 2; aspect-ratio: 2/1; border-radius: 10px;">
+                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
+                                IF human THEN optimize
+                            </div>
+                        </div>
+                        <div class="visual-item" style="border-radius: 10px;">
+                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--accent-blue); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
+                                01001
+                            </div>
+                        </div>
+                        <div class="visual-item" style="border-radius: 10px;">
+                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--accent-orange); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
+                                10110
+                            </div>
+                        </div>
+                        <div class="visual-item" style="grid-column: 1 / span 2; aspect-ratio: 2/1; border-radius: 10px;">
+                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
+                                Computer says yes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-content">
+                    <h2>Algoritmi</h2>
+                    <p class="subtitle">Digitaaliset oligarkit ja näkymättömät voimat ohjaavat valintojamme.</p>
+                    <p>Modernit algoritmit ja tekoälyjärjestelmät ovat monimutkaisia verkostoja, joiden toimintaperiaatteet ovat piilossa käyttäjiltä – ja yhä useammin myös niiden kehittäjiltä.</p>
+                    <p>Prosessista näemme vain syötteen ja tulosteen, mutta varsinainen päätöksentekomekanismi jää mysteeriksi. Tämä läpinäkymättömyys luo valtavan filosofisen haasteen autonomialle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ihmisyys Section -->
+    <section class="blue-section">
+        <div class="section-content">
+            <div class="two-col">
+                <div class="col-content">
+                    <h2>Ihmisyys</h2>
+                    <p class="subtitle">Kuinka säilytämme ydinarvomme teknologisessa maailmassa?</p>
+                    <p>Kirja kutsuu lukijan tarkastelemaan tekoälyä ja algoritmeja mustana laatikkona: voimana, joka kietoutuu arkeen huomaamattomasti mutta väistämättömästi.</p>
+                    <p>Se kysyy, kuinka voimme säilyttää ihmisyytemme ydinarvot maailmassa, jossa inhimillinen ja koneellinen sulautuvat toisiinsa yhä tiukemmin.</p>
+                </div>
+                <div class="col-content">
+                    <div id="human-visualization" style="height: 400px; background-color: rgba(0,0,0,0.1); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 80%; height: 80%; border-radius: 50%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-size: 2rem; text-align: center; padding: 2rem;">
+                            Ihminen vai algoritmi?
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <h2 style="color: var(--text-dark);">Info</h2>
+        <p style="max-width: 600px; margin: 0 auto 2rem;">
+            Tervetuloa teknologis-filosofiselle tutkimusmatkalle! Computer Says Yes on kirja, joka kutsuu sinut pohtimaan algoritmien, tekoälyn ja näkymättömien järjestelmien vaikutusta elämäämme.
+        </p>
+        <p style="max-width: 600px; margin: 0 auto 2rem;">
+            Haluatko tutustua aiheeseen lisää, jakaa ajatuksiasi tai tiedustella mediasta? Ota yhteyttä - olemme täällä keskustellaksemme teknologian ja ihmisyyden tulevaisuudesta.
+        </p>
+        
+        <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#000" stroke-width="2" />
+            <rect x="30" y="30" width="40" height="40" fill="none" stroke="#000" stroke-width="2" />
+            <text x="50" y="55" text-anchor="middle" fill="#000" font-family="monospace" font-size="12">CSY</text>
+        </svg>
+        
+        <div style="margin-top: 2rem;">
+            <h3 style="color: var(--text-dark);">OTA YHTEYTTÄ</h3>
+        </div>
+    </section>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Create ticks
-            const ticks = document.getElementById('ticks');
-            const numTicks = 60;
-            for (let i = 0; i < numTicks; i++) {
-                const tick = document.createElement('div');
-                tick.classList.add('tick');
-                tick.style.transform = `rotate(${i * (360 / numTicks)}deg) translateX(250px)`;
-                ticks.appendChild(tick);
+            // Algorithm slider and visualization
+            const algorithmSlider = document.getElementById('algorithm-slider');
+            const algorithmVisualization = document.getElementById('algorithm-visualization');
+            
+            // Generate initial binary matrix
+            generateBinaryMatrix();
+            
+            // Update visualization when slider changes
+            algorithmSlider.addEventListener('input', function() {
+                const value = this.value;
+                // Clear previous visualization
+                algorithmVisualization.innerHTML = '';
+                
+                // Generate new binary matrix based on slider value
+                generateBinaryMatrix(value);
+            });
+            
+            // Function to generate binary matrix
+            function generateBinaryMatrix(density = 50) {
+                const cols = Math.floor(algorithmVisualization.offsetWidth / 20);
+                const rows = Math.floor(algorithmVisualization.offsetHeight / 20);
+                
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        if (Math.random() * 100 < density) {
+                            const bit = document.createElement('div');
+                            bit.style.position = 'absolute';
+                            bit.style.left = (j * 20) + 'px';
+                            bit.style.top = (i * 20) + 'px';
+                            bit.style.width = '15px';
+                            bit.style.height = '15px';
+                            bit.style.display = 'flex';
+                            bit.style.justifyContent = 'center';
+                            bit.style.alignItems = 'center';
+                            bit.style.color = 'rgba(255, 255, 255, 0.8)';
+                            bit.style.fontSize = '12px';
+                            bit.style.fontFamily = 'monospace';
+                            bit.textContent = Math.round(Math.random());
+                            
+                            algorithmVisualization.appendChild(bit);
+                        }
+                    }
+                }
             }
             
-            // Create visualizations
-            const createWaveform = () => {
-                const waveform = document.getElementById('waveform');
-                waveform.innerHTML = '';
-                const numLines = 21;
-                
-                for (let i = 0; i < numLines; i++) {
-                    const line = document.createElement('div');
-                    line.classList.add('wave-line');
-                    line.style.top = `${(i / numLines) * 100}%`;
-                    
-                    // Randomize width for organic feeling
-                    const width = 30 + Math.random() * 30;
-                    line.style.width = `${width}%`;
-                    
-                    // Center the line
-                    line.style.left = `${(100 - width) / 2}%`;
-                    
-                    waveform.appendChild(line);
-                }
-            };
-
-            const createAudioWave = () => {
-                const waveform = document.getElementById('waveform');
-                waveform.innerHTML = '';
-                const numLines = 21;
-                
-                for (let i = 0; i < numLines; i++) {
-                    const line = document.createElement('div');
-                    line.classList.add('wave-line');
-                    line.style.top = `${(i / numLines) * 100}%`;
-                    
-                    // Audio-like pattern
-                    const width = 20 + Math.sin(i * 0.5) * 40;
-                    line.style.width = `${Math.abs(width)}%`;
-                    
-                    // Center the line
-                    line.style.left = `${(100 - Math.abs(width)) / 2}%`;
-                    
-                    waveform.appendChild(line);
-                }
-            };
-
-            const createPulsingWave = () => {
-                const waveform = document.getElementById('waveform');
-                waveform.innerHTML = '';
-                const numLines = 21;
-                
-                for (let i = 0; i < numLines; i++) {
-                    const line = document.createElement('div');
-                    line.classList.add('wave-line');
-                    line.style.top = `${(i / numLines) * 100}%`;
-                    
-                    // Pulsing wave pattern
-                    const width = 40 + Math.cos(i * 0.7) * 20;
-                    line.style.width = `${width}%`;
-                    
-                    // Center the line
-                    line.style.left = `${(100 - width) / 2}%`;
-                    
-                    waveform.appendChild(line);
-                }
-            };
-
-            const createDiamondWave = () => {
-                const waveform = document.getElementById('waveform');
-                waveform.innerHTML = '';
-                const numLines = 21;
-                const centerLine = Math.floor(numLines / 2);
-                
-                for (let i = 0; i < numLines; i++) {
-                    const line = document.createElement('div');
-                    line.classList.add('wave-line');
-                    line.style.top = `${(i / numLines) * 100}%`;
-                    
-                    // Dynamic pattern
-                    const distFromCenter = Math.abs(i - centerLine);
-                    const width = 60 - (distFromCenter * 2.5);
-                    
-                    line.style.width = `${Math.max(10, width)}%`;
-                    line.style.left = `${(100 - Math.max(10, width)) / 2}%`;
-                    
-                    waveform.appendChild(line);
-                }
-            };
-
-            // Create different dot patterns
-            const createStraightDots = () => {
-                const dotsContainer = document.getElementById('dots');
-                dotsContainer.innerHTML = '';
-                const numDots = 15;
-                
-                for (let i = 0; i < numDots; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('dot');
-                    dot.style.opacity = 0;
-                    dotsContainer.appendChild(dot);
-                }
-                
-                return Array.from({length: numDots}).map((_, i) => ({
-                    x: 120 + (i * 15),
-                    y: 250
-                }));
-            };
-
-            const createWaveDots = () => {
-                const dotsContainer = document.getElementById('dots');
-                dotsContainer.innerHTML = '';
-                const numDots = 20;
-                
-                for (let i = 0; i < numDots; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('dot');
-                    dot.style.opacity = 0;
-                    dotsContainer.appendChild(dot);
-                }
-                
-                return Array.from({length: numDots}).map((_, i) => ({
-                    x: 50 + (i * 20),
-                    y: 250 + (Math.sin(i * 0.4) * 40)
-                }));
-            };
-
-            const createDiagonalDots = () => {
-                const dotsContainer = document.getElementById('dots');
-                dotsContainer.innerHTML = '';
-                const numDots = 15;
-                
-                for (let i = 0; i < numDots; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('dot');
-                    dot.style.opacity = 0;
-                    dotsContainer.appendChild(dot);
-                }
-                
-                return Array.from({length: numDots}).map((_, i) => ({
-                    x: 100 + (i * 20),
-                    y: 150 + (i * 20)
-                }));
-            };
-
-            // Add random dots
-            const addRandomDots = () => {
-                const dotsContainer = document.getElementById('dots');
-                const numRandomDots = 8;
-                
-                for (let i = 0; i < numRandomDots; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('dot');
-                    dot.classList.add('random-dot');
-                    dot.style.left = `${Math.random() * 80 + 10}%`;
-                    dot.style.top = `${Math.random() * 80 + 10}%`;
-                    dot.style.opacity = 0;
-                    dotsContainer.appendChild(dot);
-                }
-            };
-
-            // Switch visualizations
-            const visualizations = [
-                { waveform: createWaveform, dots: createWaveDots, text: "animate" },
-                { waveform: createAudioWave, dots: createDiagonalDots, text: "animate Canvas 2D" },
-                { waveform: createPulsingWave, dots: createWaveDots, text: "animate HTML" },
-                { waveform: createDiamondWave, dots: createStraightDots, text: "animate SVG" }
-            ];
+            // Record interaction
+            const records = document.querySelectorAll('.record');
             
-            let currentVisualization = 0;
-            
-            const updateVisualization = () => {
-                // Create new visualization
-                visualizations[currentVisualization].waveform();
-                const dotPath = visualizations[currentVisualization].dots();
-                
-                // Clear existing random dots
-                document.querySelectorAll('.random-dot').forEach(dot => dot.remove());
-                addRandomDots();
-                
-                // Animate waveform - continuous motion
-                anime({
-                    targets: '.wave-line',
-                    width: function(el) {
-                        const currentWidth = parseFloat(el.style.width);
-                        return [currentWidth * 0.7 + '%', currentWidth * 1.3 + '%'];
-                    },
-                    left: function(el) {
-                        const currentLeft = parseFloat(el.style.left);
-                        return [currentLeft - 5 + '%', currentLeft + 5 + '%'];
-                    },
-                    easing: 'easeInOutSine',
-                    duration: function() { 
-                        return anime.random(1000, 2000); 
-                    },
-                    delay: anime.stagger(30),
-                    direction: 'alternate',
-                    loop: true
+            records.forEach(record => {
+                record.addEventListener('mouseenter', function() {
+                    this.style.transform = 'rotate(180deg)';
+                    this.style.transition = 'transform 1s ease';
                 });
                 
-                // Animate dots path with organic movement
-                anime({
-                    targets: '.dots .dot:not(.random-dot)',
-                    opacity: [0, 1],
-                    translateX: function(el, i) {
-                        if (i < dotPath.length) {
-                            return [0, dotPath[i].x + anime.random(-5, 5)];
-                        }
-                        return 0;
-                    },
-                    translateY: function(el, i) {
-                        if (i < dotPath.length) {
-                            return [0, dotPath[i].y + anime.random(-5, 5)];
-                        }
-                        return 0;
-                    },
-                    scale: [0, 1],
-                    delay: function(el, i) { 
-                        return i * 80 + anime.random(0, 200); 
-                    },
-                    duration: function() { 
-                        return anime.random(1200, 1800); 
-                    },
-                    easing: 'easeOutElastic(1, .6)'
+                record.addEventListener('mouseleave', function() {
+                    this.style.transform = 'rotate(0deg)';
                 });
-                
-                // Continuously move dots
-                anime({
-                    targets: '.dots .dot:not(.random-dot)',
-                    translateX: '+=3',
-                    translateY: '+=3',
-                    direction: 'alternate',
-                    duration: function() { 
-                        return anime.random(1000, 3000); 
-                    },
-                    easing: 'easeInOutSine',
-                    loop: true
+            });
+            
+            // Add fade-in animation to elements
+            const fadeElements = document.querySelectorAll('h1, h2, .subtitle, p');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
                 });
-                
-                // Animate random dots with more organic behavior
-                anime({
-                    targets: '.random-dot',
-                    opacity: [0, function() { return 0.5 + Math.random() * 0.5; }],
-                    scale: [0, function() { return 0.8 + Math.random() * 0.4; }],
-                    delay: anime.stagger(300, {from: 'random'}),
-                    duration: function() { 
-                        return anime.random(1000, 2000); 
-                    },
-                    easing: 'easeOutElastic(1, .5)'
-                });
-                
-                // Continuously pulse random dots
-                anime({
-                    targets: '.random-dot',
-                    opacity: function() { return 0.4 + Math.random() * 0.6; },
-                    scale: function() { return 0.7 + Math.random() * 0.5; },
-                    duration: function() { return anime.random(1500, 3000); },
-                    easing: 'easeInOutSine',
-                    direction: 'alternate',
-                    loop: true
-                });
-                
-                // Go to next visualization
-                currentVisualization = (currentVisualization + 1) % visualizations.length;
-            };
-            
-            // Animate computer icon
-            function animateComputerMouth() {
-                // Animate smile or neutral face
-                anime({
-                    targets: '#computer-mouth',
-                    y: [125, 122, 125],
-                    height: [8, 10, 8],
-                    rx: [4, 6, 4],
-                    fill: ['#50E3C2', '#6AEFD2', '#50E3C2'],
-                    duration: 3000,
-                    easing: 'easeInOutQuad',
-                    direction: 'alternate',
-                    loop: true
-                });
-                
-                // Blink eyes occasionally
-                const blinkEyes = () => {
-                    anime({
-                        targets: 'rect[y="85"]',
-                        height: [15, 2, 15],
-                        duration: 300,
-                        easing: 'easeInOutQuad',
-                        complete: function() {
-                            // Random time until next blink
-                            setTimeout(blinkEyes, anime.random(3000, 8000));
-                        }
-                    });
-                };
-                
-                // Start blinking
-                setTimeout(blinkEyes, anime.random(1000, 3000));
-            }
-            
-            // Start computer animation
-            animateComputerMouth();
-            
-            // Subtle hovering animation for the computer
-            anime({
-                targets: '.computer-icon',
-                translateY: [0, -5, 0],
-                duration: 4000,
-                easing: 'easeInOutQuad',
-                direction: 'alternate',
-                loop: true
+            }, {
+                threshold: 0.1
             });
             
-            // Glow effect animation
-            anime({
-                targets: '.computer-icon',
-                filter: [
-                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))',
-                    'drop-shadow(0 0 30px rgba(80, 227, 194, 0.6))',
-                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))'
-                ],
-                duration: 3000,
-                easing: 'easeInOutSine',
-                direction: 'alternate',
-                loop: true
+            fadeElements.forEach(element => {
+                observer.observe(element);
             });
-
-            // Wrap each letter in a span
-            const textElements = document.querySelectorAll('.ml14 .word');
-            
-            textElements.forEach(function(wordEl) {
-                wordEl.innerHTML = wordEl.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-            });
-            
-            // Animate the text
-            anime.timeline({loop: false})
-                .add({
-                    targets: '.ml14 .line',
-                    scaleX: [0,1],
-                    opacity: [0.5,1],
-                    easing: "easeInOutExpo",
-                    duration: 900
-                })
-                .add({
-                    targets: '.ml14 .word:nth-child(1) .letter',
-                    opacity: [0,1],
-                    translateX: [40,0],
-                    translateZ: 0,
-                    scaleX: [0.3, 1],
-                    easing: "easeOutExpo",
-                    duration: 800,
-                    offset: '-=600',
-                    delay: (el, i) => 150 + 25 * i
-                })
-                .add({
-                    targets: '.ml14 .word:nth-child(2) .letter',
-                    opacity: [0,1],
-                    translateX: [40,0],
-                    translateZ: 0,
-                    scaleX: [0.3, 1],
-                    easing: "easeOutExpo",
-                    duration: 800,
-                    offset: '-=600',
-                    delay: (el, i) => 150 + 25 * i
-                })
-                .add({
-                    targets: '.ml14 .word:nth-child(3) .letter',
-                    opacity: [0,1],
-                    translateX: [40,0],
-                    translateZ: 0,
-                    scaleX: [0.3, 1],
-                    easing: "easeOutExpo",
-                    duration: 800,
-                    offset: '-=600',
-                    delay: (el, i) => 150 + 25 * i
-                });
-            
-            // Initial visualization
-            updateVisualization();
-            
-            // Animate ticks
-            anime({
-                targets: '.tick',
-                opacity: [0, 0.5],
-                delay: anime.stagger(10),
-                duration: 1000,
-                easing: 'easeOutExpo'
-            });
-
-            // Animate circle segments
-            anime({
-                targets: '.circle-segment',
-                strokeDashoffset: function(el) {
-                    return parseInt(el.getAttribute('stroke-dashoffset')) - 240;
-                },
-                delay: anime.stagger(150),
-                duration: 1500,
-                easing: 'easeOutExpo'
-            });
-            
-            // Rotate the circle stroke
-            anime({
-                targets: '#circle-stroke',
-                rotate: 360,
-                duration: 60000,
-                loop: true,
-                easing: 'linear'
-            });
-            
-            // Breathing effect for the circle segments
-            anime({
-                targets: '.circle-segment',
-                strokeWidth: [8, 10, 8],
-                opacity: [0.7, 1, 0.7],
-                delay: anime.stagger(100),
-                duration: 3000,
-                direction: 'alternate',
-                loop: true,
-                easing: 'easeInOutSine'
-            });
-            
-            // Switch visualizations periodically
-            setInterval(updateVisualization, 8000);
         });
     </script>
 </body>
