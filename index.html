@@ -94,97 +94,6 @@
             max-width: 600px;
             font-weight: 400;
         }
-        
-        /* Media queries for responsive text */
-        @media (max-width: 1200px) {
-            .ml14 {
-                font-size: 3.8em;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .ml14 {
-                font-size: 3em;
-            }
-            
-            .hero-content {
-                width: 100%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .ml14 {
-                font-size: 2.5em;
-            }
-            
-            p {
-                font-size: 1rem;
-            }
-        }
-
-        .visualization {
-            position: relative;
-            width: 500px;
-            height: 500px;
-            margin: 0 auto;
-            max-width: 100%;
-        }
-
-        /* Responsive styles */
-        @media (max-width: 1200px) {
-            .ml14 {
-                font-size: 3.5em;
-            }
-            
-            .visualization {
-                width: 400px;
-                height: 400px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .hero {
-                padding-left: 5%;
-                padding-right: 5%;
-                flex-direction: column;
-                justify-content: center;
-            }
-            
-            .hero-content {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .ml14 {
-                font-size: 3em;
-            }
-            
-            p {
-                margin-left: auto;
-                margin-right: auto;
-                text-align: center;
-            }
-            
-            .visualization {
-                width: 300px;
-                height: 300px;
-                position: relative;
-                transform: none;
-                top: auto;
-                right: auto;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .ml14 {
-                font-size: 2.5em;
-            }
-            
-            .visualization {
-                width: 250px;
-                height: 250px;
-            }
-        }
 
         .visualization {
             position: absolute;
@@ -207,7 +116,6 @@
         .circle-bg {
             border: 1px solid rgba(255, 255, 255, 0.1);
             background-color: rgba(40, 40, 40, 0.4);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.5);
         }
 
         .ticks {
@@ -224,6 +132,34 @@
             background-color: rgba(255, 75, 75, 0.5);
             transform-origin: center bottom;
         }
+
+        .waveform {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
+
+        .wave-line {
+            position: absolute;
+            background-color: #FF4B4B;
+            height: 2px;
+        }
+
+        .dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #FF4B4B;
+            border-radius: 50%;
+        }
         
         .circle-stroke {
             position: absolute;
@@ -234,7 +170,7 @@
         }
         
         /* Computer icon */
-        .blob-container {
+        .computer-container {
             position: absolute;
             width: 60%;
             height: 60%;
@@ -252,10 +188,10 @@
             filter: drop-shadow(0 0 20px rgba(80, 227, 194, 0.4));
         }
         
-        /* Responsive adjustments for visualization */
+        /* Media queries for responsive text */
         @media (max-width: 1200px) {
-            .visualization {
-                transform: translateY(-50%) scale(0.8);
+            .ml14 {
+                font-size: 3.8em;
             }
         }
         
@@ -266,14 +202,16 @@
                 right: 0;
                 transform: none;
                 width: 100%;
-                margin-top: 3rem;
+                margin-top: 1rem;
                 max-width: 400px;
             }
             
             .hero {
                 flex-direction: column;
                 align-items: flex-start;
+                justify-content: flex-start;
                 padding-bottom: 2rem;
+                padding-top: 5rem;
                 overflow-y: auto;
                 height: auto;
                 min-height: 100vh;
@@ -282,6 +220,41 @@
             body {
                 overflow-y: auto;
                 height: auto;
+            }
+            
+            .ml14 {
+                font-size: 3em;
+                margin-top: 2rem;
+            }
+            
+            .hero-content {
+                width: 90%;
+            }
+            
+            p {
+                margin-bottom: 1rem;
+            }
+            
+            .waveform, .dots {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ml14 {
+                font-size: 2.5em;
+            }
+            
+            .hero {
+                padding-top: 7rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .visualization {
+                margin-top: 0;
             }
         }
     </style>
@@ -312,8 +285,11 @@
                 <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
             </svg>
             
+            <div class="waveform" id="waveform"></div>
+            <div class="dots" id="dots"></div>
+            
             <!-- Retro Computer Icon -->
-            <div class="blob-container">
+            <div class="computer-container">
                 <svg class="computer-icon" viewBox="0 0 300 300" width="200" height="200">
                     <!-- Monitor -->
                     <rect x="70" y="50" width="160" height="140" fill="none" stroke="#50E3C2" stroke-width="8" rx="8" />
@@ -349,10 +325,269 @@
                 ticks.appendChild(tick);
             }
             
-            // Animate computer icon
-            const computerMouth = document.getElementById('computer-mouth');
+            // Create visualizations
+            const createWaveform = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Randomize width for organic feeling
+                    const width = 30 + Math.random() * 30;
+                    line.style.width = `${width}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - width) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createAudioWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Audio-like pattern
+                    const width = 20 + Math.sin(i * 0.5) * 40;
+                    line.style.width = `${Math.abs(width)}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - Math.abs(width)) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createPulsingWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Pulsing wave pattern
+                    const width = 40 + Math.cos(i * 0.7) * 20;
+                    line.style.width = `${width}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - width) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createDiamondWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                const centerLine = Math.floor(numLines / 2);
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Dynamic pattern
+                    const distFromCenter = Math.abs(i - centerLine);
+                    const width = 60 - (distFromCenter * 2.5);
+                    
+                    line.style.width = `${Math.max(10, width)}%`;
+                    line.style.left = `${(100 - Math.max(10, width)) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            // Create different dot patterns
+            const createStraightDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 15;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 120 + (i * 15),
+                    y: 250
+                }));
+            };
+
+            const createWaveDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 20;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 50 + (i * 20),
+                    y: 250 + (Math.sin(i * 0.4) * 40)
+                }));
+            };
+
+            const createDiagonalDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 15;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 100 + (i * 20),
+                    y: 150 + (i * 20)
+                }));
+            };
+
+            // Add random dots
+            const addRandomDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                const numRandomDots = 8;
+                
+                for (let i = 0; i < numRandomDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.classList.add('random-dot');
+                    dot.style.left = `${Math.random() * 80 + 10}%`;
+                    dot.style.top = `${Math.random() * 80 + 10}%`;
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+            };
+
+            // Switch visualizations
+            const visualizations = [
+                { waveform: createWaveform, dots: createWaveDots, text: "animate" },
+                { waveform: createAudioWave, dots: createDiagonalDots, text: "animate Canvas 2D" },
+                { waveform: createPulsingWave, dots: createWaveDots, text: "animate HTML" },
+                { waveform: createDiamondWave, dots: createStraightDots, text: "animate SVG" }
+            ];
             
-            // Function to animate computer mouth
+            let currentVisualization = 0;
+            
+            const updateVisualization = () => {
+                // Create new visualization
+                visualizations[currentVisualization].waveform();
+                const dotPath = visualizations[currentVisualization].dots();
+                
+                // Clear existing random dots
+                document.querySelectorAll('.random-dot').forEach(dot => dot.remove());
+                addRandomDots();
+                
+                // Animate waveform - continuous motion
+                anime({
+                    targets: '.wave-line',
+                    width: function(el) {
+                        const currentWidth = parseFloat(el.style.width);
+                        return [currentWidth * 0.7 + '%', currentWidth * 1.3 + '%'];
+                    },
+                    left: function(el) {
+                        const currentLeft = parseFloat(el.style.left);
+                        return [currentLeft - 5 + '%', currentLeft + 5 + '%'];
+                    },
+                    easing: 'easeInOutSine',
+                    duration: function() { 
+                        return anime.random(1000, 2000); 
+                    },
+                    delay: anime.stagger(30),
+                    direction: 'alternate',
+                    loop: true
+                });
+                
+                // Animate dots path with organic movement
+                anime({
+                    targets: '.dots .dot:not(.random-dot)',
+                    opacity: [0, 1],
+                    translateX: function(el, i) {
+                        if (i < dotPath.length) {
+                            return [0, dotPath[i].x + anime.random(-5, 5)];
+                        }
+                        return 0;
+                    },
+                    translateY: function(el, i) {
+                        if (i < dotPath.length) {
+                            return [0, dotPath[i].y + anime.random(-5, 5)];
+                        }
+                        return 0;
+                    },
+                    scale: [0, 1],
+                    delay: function(el, i) { 
+                        return i * 80 + anime.random(0, 200); 
+                    },
+                    duration: function() { 
+                        return anime.random(1200, 1800); 
+                    },
+                    easing: 'easeOutElastic(1, .6)'
+                });
+                
+                // Continuously move dots
+                anime({
+                    targets: '.dots .dot:not(.random-dot)',
+                    translateX: '+=3',
+                    translateY: '+=3',
+                    direction: 'alternate',
+                    duration: function() { 
+                        return anime.random(1000, 3000); 
+                    },
+                    easing: 'easeInOutSine',
+                    loop: true
+                });
+                
+                // Animate random dots with more organic behavior
+                anime({
+                    targets: '.random-dot',
+                    opacity: [0, function() { return 0.5 + Math.random() * 0.5; }],
+                    scale: [0, function() { return 0.8 + Math.random() * 0.4; }],
+                    delay: anime.stagger(300, {from: 'random'}),
+                    duration: function() { 
+                        return anime.random(1000, 2000); 
+                    },
+                    easing: 'easeOutElastic(1, .5)'
+                });
+                
+                // Continuously pulse random dots
+                anime({
+                    targets: '.random-dot',
+                    opacity: function() { return 0.4 + Math.random() * 0.6; },
+                    scale: function() { return 0.7 + Math.random() * 0.5; },
+                    duration: function() { return anime.random(1500, 3000); },
+                    easing: 'easeInOutSine',
+                    direction: 'alternate',
+                    loop: true
+                });
+                
+                // Go to next visualization
+                currentVisualization = (currentVisualization + 1) % visualizations.length;
+            };
+            
+            // Animate computer icon
             function animateComputerMouth() {
                 // Animate smile or neutral face
                 anime({
@@ -411,7 +646,7 @@
                 direction: 'alternate',
                 loop: true
             });
-            
+
             // Wrap each letter in a span
             const textElements = document.querySelectorAll('.ml14 .word');
             
@@ -462,6 +697,9 @@
                     delay: (el, i) => 150 + 25 * i
                 });
             
+            // Initial visualization
+            updateVisualization();
+            
             // Animate ticks
             anime({
                 targets: '.tick',
@@ -502,6 +740,9 @@
                 loop: true,
                 easing: 'easeInOutSine'
             });
+            
+            // Switch visualizations periodically
+            setInterval(updateVisualization, 8000);
         });
     </script>
 </body>
