@@ -883,7 +883,8 @@
                 observer.observe(element);
             });
         });
-        // Bubble animation
+        
+       // Bubble animation - Fixed version
 const bubbleCanvas = document.getElementById('bubble-canvas');
 const bubbleAnimation = document.getElementById('bubble-animation');
 
@@ -894,35 +895,38 @@ if (bubbleCanvas) {
     let animationId;
     let isRunning = false;
     
-    // Set canvas resolution
+    // Set canvas resolution properly
     function resizeCanvas() {
-        const rect = bubbleCanvas.getBoundingClientRect();
-        bubbleCanvas.width = rect.width;
-        bubbleCanvas.height = rect.height;
+        const rect = bubbleAnimation.getBoundingClientRect();
+        const size = Math.min(rect.width, rect.height);
+        bubbleCanvas.width = size;
+        bubbleCanvas.height = size;
+        bubbleCanvas.style.width = size + 'px';
+        bubbleCanvas.style.height = size + 'px';
     }
     
     // Particle class
     class EmojiParticle {
         constructor() {
-            this.reset();
             this.emoji = emojis[Math.floor(Math.random() * emojis.length)];
-            this.size = Math.random() * 20 + 15;
+            this.size = Math.random() * 15 + 20; // Bigger size
+            this.reset();
         }
         
         reset() {
             const canvas = bubbleCanvas;
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = Math.min(canvas.width, canvas.height) / 2 - 50;
+            const radius = Math.min(canvas.width, canvas.height) / 2 - 60;
             
             // Random position within circle
             const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * radius * 0.8;
+            const distance = Math.random() * radius * 0.7;
             
             this.x = centerX + Math.cos(angle) * distance;
             this.y = centerY + Math.sin(angle) * distance;
-            this.vx = (Math.random() - 0.5) * 4;
-            this.vy = (Math.random() - 0.5) * 4;
+            this.vx = (Math.random() - 0.5) * 6;
+            this.vy = (Math.random() - 0.5) * 6;
         }
         
         update() {
@@ -932,7 +936,7 @@ if (bubbleCanvas) {
             const canvas = bubbleCanvas;
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const radius = Math.min(canvas.width, canvas.height) / 2 - 20;
+            const radius = Math.min(canvas.width, canvas.height) / 2 - 30;
             
             // Check collision with circular boundary
             const dx = this.x - centerX;
@@ -954,27 +958,31 @@ if (bubbleCanvas) {
                 this.x -= normalX * overlap;
                 this.y -= normalY * overlap;
                 
-                // Add some randomness to prevent stuck particles
-                this.vx += (Math.random() - 0.5) * 0.5;
-                this.vy += (Math.random() - 0.5) * 0.5;
+                // Add some energy back
+                this.vx *= 0.9;
+                this.vy *= 0.9;
             }
             
-            // Speed damping and minimum speed
-            this.vx *= 0.998;
-            this.vy *= 0.998;
-            
+            // Keep minimum speed
             const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-            if (speed < 1) {
+            if (speed < 2) {
                 const angle = Math.random() * Math.PI * 2;
-                this.vx = Math.cos(angle) * 1.5;
-                this.vy = Math.sin(angle) * 1.5;
+                this.vx = Math.cos(angle) * 3;
+                this.vy = Math.sin(angle) * 3;
             }
         }
         
         draw() {
-            ctx.font = `${this.size}px "Noto Emoji", "Apple Color Emoji", "Segoe UI Emoji", sans-serif`;
+            // Try multiple font fallbacks
+            ctx.font = `${this.size}px system-ui, -apple-system, "Segoe UI Emoji", "Apple Color Emoji", sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
+            
+            // Add text shadow for better visibility
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillText(this.emoji, this.x + 1, this.y + 1);
+            
+            ctx.fillStyle = '#000';
             ctx.fillText(this.emoji, this.x, this.y);
         }
     }
@@ -982,7 +990,7 @@ if (bubbleCanvas) {
     // Initialize particles
     function initParticles() {
         particles = [];
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 8; i++) { // Fewer particles for better performance
             particles.push(new EmojiParticle());
         }
     }
@@ -996,9 +1004,9 @@ if (bubbleCanvas) {
         // Draw bubble border (inner)
         const centerX = bubbleCanvas.width / 2;
         const centerY = bubbleCanvas.height / 2;
-        const radius = Math.min(bubbleCanvas.width, bubbleCanvas.height) / 2 - 20;
+        const radius = Math.min(bubbleCanvas.width, bubbleCanvas.height) / 2 - 30;
         
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
@@ -1013,13 +1021,17 @@ if (bubbleCanvas) {
         animationId = requestAnimationFrame(animate);
     }
     
+    // Initialize on page load
+    setTimeout(() => {
+        resizeCanvas();
+        initParticles();
+    }, 100);
+    
     // Start animation on hover
     if (bubbleAnimation) {
         bubbleAnimation.addEventListener('mouseenter', function() {
             if (!isRunning) {
                 isRunning = true;
-                resizeCanvas();
-                initParticles();
                 animate();
             }
         });
@@ -1029,18 +1041,20 @@ if (bubbleCanvas) {
             if (animationId) {
                 cancelAnimationFrame(animationId);
             }
-            // Clear canvas
-            ctx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
         });
     }
     
     // Handle window resize
     window.addEventListener('resize', function() {
-        if (isRunning) {
-            resizeCanvas();
-            initParticles();
+        resizeCanvas();
+        if (particles.length > 0) {
+            particles.forEach(particle => particle.reset());
         }
     });
+    
+    // Debug: Log when script runs
+    console.log('Bubble animation script loaded');
+};
     </script>
 </body>
 </html>
