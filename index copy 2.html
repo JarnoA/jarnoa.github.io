@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Says Yes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Gothic A1', sans-serif;
+            background-color: #121212;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-left: 10%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            width: 60%;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .ml14 {
+            font-family: 'Gothic A1', sans-serif;
+            font-weight: 900;
+            font-size: 4.5em;
+            letter-spacing: -0.02em;
+        }
+
+        .ml14 .text-wrapper {
+            position: relative;
+            display: inline-block;
+            padding-top: 0.1em;
+            padding-right: 0.05em;
+            padding-bottom: 0.15em;
+            line-height: 1;
+        }
+
+        .ml14 .line {
+            opacity: 0;
+            position: absolute;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background-color: #fff;
+            transform-origin: 100% 100%;
+            bottom: 0;
+        }
+
+        .ml14 .letter {
+            display: inline-block;
+            line-height: 1em;
+        }
+
+        .ml14 .word {
+            display: block;
+            margin-bottom: 0.25em;
+        }
+
+        .ml14 .word.yes {
+            color: #FFD166;
+        }
+
+        p {
+            font-family: 'Gothic A1', sans-serif;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            font-weight: 400;
+        }
+
+        .visualization {
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            width: 500px;
+            height: 500px;
+        }
+
+        .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+        }
+
+        .circle-bg {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(40, 40, 40, 0.4);
+        }
+
+        .ticks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+
+        .tick {
+            position: absolute;
+            width: 1px;
+            height: 6px;
+            background-color: rgba(255, 75, 75, 0.5);
+            transform-origin: center bottom;
+        }
+
+        .waveform {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
+
+        .wave-line {
+            position: absolute;
+            background-color: #FF4B4B;
+            height: 2px;
+        }
+
+        .dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #FF4B4B;
+            border-radius: 50%;
+        }
+        
+        .circle-stroke {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: visible;
+        }
+        
+        /* Computer icon */
+        .computer-container {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        
+        .computer-icon {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(80, 227, 194, 0.4));
+        }
+        
+        /* Media queries for responsive text */
+        @media (max-width: 1200px) {
+            .ml14 {
+                font-size: 3.8em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .visualization {
+                position: relative;
+                top: 0;
+                right: 0;
+                transform: none;
+                width: 100%;
+                margin-top: 1rem;
+                max-width: 400px;
+            }
+            
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding-bottom: 2rem;
+                padding-top: 5rem;
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+            }
+            
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            
+            .ml14 {
+                font-size: 3em;
+                margin-top: 2rem;
+            }
+            
+            .hero-content {
+                width: 90%;
+            }
+            
+            p {
+                margin-bottom: 1rem;
+            }
+            
+            .waveform, .dots {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ml14 {
+                font-size: 2.5em;
+            }
+            
+            .hero {
+                padding-top: 7rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+            
+            .visualization {
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1 class="ml14">
+                <span class="text-wrapper">
+                    <span class="word">Computer</span>
+                    <span class="word">Says</span>
+                    <span class="word yes">YES</span>
+                    <span class="line"></span>
+                </span>
+            </h1>
+            <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä, elämässä teknologian kanssa, jota emme täysin ymmärrä, mutta joka tietää meistä kaiken.</p>
+        </div>
+
+        <div class="visualization">
+            <div class="circle circle-bg"></div>
+            <div class="ticks" id="ticks"></div>
+            <svg class="circle-stroke" id="circle-stroke" width="500" height="500" viewBox="0 0 500 500">
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="0" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-1"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="240" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-2"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF4B4B" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="480" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-3"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF3333" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="720" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-4"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF9C64" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="960" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-5"></circle>
+                <circle cx="250" cy="250" r="245" fill="none" stroke="#FF7700" stroke-width="8" stroke-dasharray="240" stroke-dashoffset="1200" transform="rotate(-90, 250, 250)" class="circle-segment" id="segment-6"></circle>
+            </svg>
+            
+            <div class="waveform" id="waveform"></div>
+            <div class="dots" id="dots"></div>
+            
+            <!-- Retro Computer Icon -->
+            <div class="computer-container">
+                <svg class="computer-icon" viewBox="0 0 300 300" width="200" height="200">
+                    <!-- Monitor -->
+                    <rect x="70" y="50" width="160" height="140" fill="none" stroke="#50E3C2" stroke-width="8" rx="8" />
+                    <!-- Screen -->
+                    <rect x="85" y="65" width="130" height="95" fill="none" stroke="#50E3C2" stroke-width="5" rx="4" />
+                    <!-- Eyes -->
+                    <rect x="105" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
+                    <rect x="185" y="85" width="10" height="15" fill="#50E3C2" rx="2" />
+                    <!-- Mouth -->
+                    <rect id="computer-mouth" x="120" y="125" width="60" height="8" fill="#50E3C2" rx="4" />
+                    <!-- Computer base -->
+                    <rect x="110" y="190" width="80" height="15" fill="none" stroke="#50E3C2" stroke-width="6" rx="2" />
+                    <!-- Keyboard -->
+                    <rect x="80" y="205" width="140" height="25" fill="none" stroke="#50E3C2" stroke-width="8" rx="4" />
+                    <!-- Keyboard detail -->
+                    <rect x="95" y="215" width="80" height="5" fill="#50E3C2" rx="2" />
+                    <rect x="190" y="215" width="10" height="5" fill="#50E3C2" rx="2" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create ticks
+            const ticks = document.getElementById('ticks');
+            const numTicks = 60;
+            for (let i = 0; i < numTicks; i++) {
+                const tick = document.createElement('div');
+                tick.classList.add('tick');
+                tick.style.transform = `rotate(${i * (360 / numTicks)}deg) translateX(250px)`;
+                ticks.appendChild(tick);
+            }
+            
+            // Create visualizations
+            const createWaveform = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Randomize width for organic feeling
+                    const width = 30 + Math.random() * 30;
+                    line.style.width = `${width}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - width) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createAudioWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Audio-like pattern
+                    const width = 20 + Math.sin(i * 0.5) * 40;
+                    line.style.width = `${Math.abs(width)}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - Math.abs(width)) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createPulsingWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Pulsing wave pattern
+                    const width = 40 + Math.cos(i * 0.7) * 20;
+                    line.style.width = `${width}%`;
+                    
+                    // Center the line
+                    line.style.left = `${(100 - width) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            const createDiamondWave = () => {
+                const waveform = document.getElementById('waveform');
+                waveform.innerHTML = '';
+                const numLines = 21;
+                const centerLine = Math.floor(numLines / 2);
+                
+                for (let i = 0; i < numLines; i++) {
+                    const line = document.createElement('div');
+                    line.classList.add('wave-line');
+                    line.style.top = `${(i / numLines) * 100}%`;
+                    
+                    // Dynamic pattern
+                    const distFromCenter = Math.abs(i - centerLine);
+                    const width = 60 - (distFromCenter * 2.5);
+                    
+                    line.style.width = `${Math.max(10, width)}%`;
+                    line.style.left = `${(100 - Math.max(10, width)) / 2}%`;
+                    
+                    waveform.appendChild(line);
+                }
+            };
+
+            // Create different dot patterns
+            const createStraightDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 15;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 120 + (i * 15),
+                    y: 250
+                }));
+            };
+
+            const createWaveDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 20;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 50 + (i * 20),
+                    y: 250 + (Math.sin(i * 0.4) * 40)
+                }));
+            };
+
+            const createDiagonalDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                dotsContainer.innerHTML = '';
+                const numDots = 15;
+                
+                for (let i = 0; i < numDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+                
+                return Array.from({length: numDots}).map((_, i) => ({
+                    x: 100 + (i * 20),
+                    y: 150 + (i * 20)
+                }));
+            };
+
+            // Add random dots
+            const addRandomDots = () => {
+                const dotsContainer = document.getElementById('dots');
+                const numRandomDots = 8;
+                
+                for (let i = 0; i < numRandomDots; i++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('dot');
+                    dot.classList.add('random-dot');
+                    dot.style.left = `${Math.random() * 80 + 10}%`;
+                    dot.style.top = `${Math.random() * 80 + 10}%`;
+                    dot.style.opacity = 0;
+                    dotsContainer.appendChild(dot);
+                }
+            };
+
+            // Switch visualizations
+            const visualizations = [
+                { waveform: createWaveform, dots: createWaveDots, text: "animate" },
+                { waveform: createAudioWave, dots: createDiagonalDots, text: "animate Canvas 2D" },
+                { waveform: createPulsingWave, dots: createWaveDots, text: "animate HTML" },
+                { waveform: createDiamondWave, dots: createStraightDots, text: "animate SVG" }
+            ];
+            
+            let currentVisualization = 0;
+            
+            const updateVisualization = () => {
+                // Create new visualization
+                visualizations[currentVisualization].waveform();
+                const dotPath = visualizations[currentVisualization].dots();
+                
+                // Clear existing random dots
+                document.querySelectorAll('.random-dot').forEach(dot => dot.remove());
+                addRandomDots();
+                
+                // Animate waveform - continuous motion
+                anime({
+                    targets: '.wave-line',
+                    width: function(el) {
+                        const currentWidth = parseFloat(el.style.width);
+                        return [currentWidth * 0.7 + '%', currentWidth * 1.3 + '%'];
+                    },
+                    left: function(el) {
+                        const currentLeft = parseFloat(el.style.left);
+                        return [currentLeft - 5 + '%', currentLeft + 5 + '%'];
+                    },
+                    easing: 'easeInOutSine',
+                    duration: function() { 
+                        return anime.random(1000, 2000); 
+                    },
+                    delay: anime.stagger(30),
+                    direction: 'alternate',
+                    loop: true
+                });
+                
+                // Animate dots path with organic movement
+                anime({
+                    targets: '.dots .dot:not(.random-dot)',
+                    opacity: [0, 1],
+                    translateX: function(el, i) {
+                        if (i < dotPath.length) {
+                            return [0, dotPath[i].x + anime.random(-5, 5)];
+                        }
+                        return 0;
+                    },
+                    translateY: function(el, i) {
+                        if (i < dotPath.length) {
+                            return [0, dotPath[i].y + anime.random(-5, 5)];
+                        }
+                        return 0;
+                    },
+                    scale: [0, 1],
+                    delay: function(el, i) { 
+                        return i * 80 + anime.random(0, 200); 
+                    },
+                    duration: function() { 
+                        return anime.random(1200, 1800); 
+                    },
+                    easing: 'easeOutElastic(1, .6)'
+                });
+                
+                // Continuously move dots
+                anime({
+                    targets: '.dots .dot:not(.random-dot)',
+                    translateX: '+=3',
+                    translateY: '+=3',
+                    direction: 'alternate',
+                    duration: function() { 
+                        return anime.random(1000, 3000); 
+                    },
+                    easing: 'easeInOutSine',
+                    loop: true
+                });
+                
+                // Animate random dots with more organic behavior
+                anime({
+                    targets: '.random-dot',
+                    opacity: [0, function() { return 0.5 + Math.random() * 0.5; }],
+                    scale: [0, function() { return 0.8 + Math.random() * 0.4; }],
+                    delay: anime.stagger(300, {from: 'random'}),
+                    duration: function() { 
+                        return anime.random(1000, 2000); 
+                    },
+                    easing: 'easeOutElastic(1, .5)'
+                });
+                
+                // Continuously pulse random dots
+                anime({
+                    targets: '.random-dot',
+                    opacity: function() { return 0.4 + Math.random() * 0.6; },
+                    scale: function() { return 0.7 + Math.random() * 0.5; },
+                    duration: function() { return anime.random(1500, 3000); },
+                    easing: 'easeInOutSine',
+                    direction: 'alternate',
+                    loop: true
+                });
+                
+                // Go to next visualization
+                currentVisualization = (currentVisualization + 1) % visualizations.length;
+            };
+            
+            // Animate computer icon
+            function animateComputerMouth() {
+                // Animate smile or neutral face
+                anime({
+                    targets: '#computer-mouth',
+                    y: [125, 122, 125],
+                    height: [8, 10, 8],
+                    rx: [4, 6, 4],
+                    fill: ['#50E3C2', '#6AEFD2', '#50E3C2'],
+                    duration: 3000,
+                    easing: 'easeInOutQuad',
+                    direction: 'alternate',
+                    loop: true
+                });
+                
+                // Blink eyes occasionally
+                const blinkEyes = () => {
+                    anime({
+                        targets: 'rect[y="85"]',
+                        height: [15, 2, 15],
+                        duration: 300,
+                        easing: 'easeInOutQuad',
+                        complete: function() {
+                            // Random time until next blink
+                            setTimeout(blinkEyes, anime.random(3000, 8000));
+                        }
+                    });
+                };
+                
+                // Start blinking
+                setTimeout(blinkEyes, anime.random(1000, 3000));
+            }
+            
+            // Start computer animation
+            animateComputerMouth();
+            
+            // Subtle hovering animation for the computer
+            anime({
+                targets: '.computer-icon',
+                translateY: [0, -5, 0],
+                duration: 4000,
+                easing: 'easeInOutQuad',
+                direction: 'alternate',
+                loop: true
+            });
+            
+            // Glow effect animation
+            anime({
+                targets: '.computer-icon',
+                filter: [
+                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))',
+                    'drop-shadow(0 0 30px rgba(80, 227, 194, 0.6))',
+                    'drop-shadow(0 0 20px rgba(80, 227, 194, 0.4))'
+                ],
+                duration: 3000,
+                easing: 'easeInOutSine',
+                direction: 'alternate',
+                loop: true
+            });
+
+            // Wrap each letter in a span
+            const textElements = document.querySelectorAll('.ml14 .word');
+            
+            textElements.forEach(function(wordEl) {
+                wordEl.innerHTML = wordEl.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            });
+            
+            // Animate the text
+            anime.timeline({loop: false})
+                .add({
+                    targets: '.ml14 .line',
+                    scaleX: [0,1],
+                    opacity: [0.5,1],
+                    easing: "easeInOutExpo",
+                    duration: 900
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(1) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(2) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                })
+                .add({
+                    targets: '.ml14 .word:nth-child(3) .letter',
+                    opacity: [0,1],
+                    translateX: [40,0],
+                    translateZ: 0,
+                    scaleX: [0.3, 1],
+                    easing: "easeOutExpo",
+                    duration: 800,
+                    offset: '-=600',
+                    delay: (el, i) => 150 + 25 * i
+                });
+            
+            // Initial visualization
+            updateVisualization();
+            
+            // Animate ticks
+            anime({
+                targets: '.tick',
+                opacity: [0, 0.5],
+                delay: anime.stagger(10),
+                duration: 1000,
+                easing: 'easeOutExpo'
+            });
+
+            // Animate circle segments
+            anime({
+                targets: '.circle-segment',
+                strokeDashoffset: function(el) {
+                    return parseInt(el.getAttribute('stroke-dashoffset')) - 240;
+                },
+                delay: anime.stagger(150),
+                duration: 1500,
+                easing: 'easeOutExpo'
+            });
+            
+            // Rotate the circle stroke
+            anime({
+                targets: '#circle-stroke',
+                rotate: 360,
+                duration: 60000,
+                loop: true,
+                easing: 'linear'
+            });
+            
+            // Breathing effect for the circle segments
+            anime({
+                targets: '.circle-segment',
+                strokeWidth: [8, 10, 8],
+                opacity: [0.7, 1, 0.7],
+                delay: anime.stagger(100),
+                duration: 3000,
+                direction: 'alternate',
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+            
+            // Switch visualizations periodically
+            setInterval(updateVisualization, 8000);
+        });
+    </script>
+</body>
+</html>

@@ -1,1061 +1,134 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Says Yes | Teknologis-filosofinen tutkimusmatka</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&family=Noto+Emoji:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #FF8142;
-            --text-light: #FFFAEB;
-            --text-dark: #0A0A0A;
-            --accent-blue: #4FA8CC;
-            --accent-green: #00A07D;
-            --accent-orange: #FF5C35;
-            --accent-yellow: #FFBE3C;
-            --accent-purple: #9966CC;
-        }
-        
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html {
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        section {
-            min-height: 100vh;
-            padding: 0 5%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-        }
-        
-        /* Typography */
-        h1, h2 {
-            font-family: 'Abril Fatface', serif;
-            line-height: 1;
-        }
-        
-        h1 {
-            font-size: clamp(3.5rem, 12vw, 8rem);
-            margin-bottom: 0.5rem;
-            color: var(--text-light);
-        }
-        
-        h2 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            margin-bottom: 1rem;
-            color: var(--text-light);
-        }
-        
-        h3 {
-            font-size: clamp(1.5rem, 3vw, 2.5rem);
-            font-weight: 500;
-            margin-bottom: 1rem;
-        }
-        
-        p {
-            font-size: clamp(1rem, 1.5vw, 1.2rem);
-            margin-bottom: 1.5rem;
-            max-width: 50ch;
-        }
-        
-        .subtitle {
-            font-family: 'Righteous', sans-serif;
-            font-size: clamp(1.2rem, 2vw, 1.8rem);
-            margin-bottom: 2rem;
-            color: var(--text-light);
-        }
-        
-        
-        /* Hero Section */
-        .hero {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero-circle {
-            position: absolute;
-            width: 90vmin;
-            height: 90vmin;
-            border-radius: 50%;
-            background-color: #121212;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .robot-image {
-            width: 70%;
-            height: auto;
-            z-index: 2;
-        }
-        
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 0 1rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        /* Content Sections */
-        .section-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-            padding: 3rem 0;
-        }
-        
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-        
-        .col-content {
-            max-width: 500px;
-        }
-        
-        .dark-section {
-            background-color: #121212;
-            color: var(--text-light);
-        }
-        
-        .blue-section {
-            background-color: var(--accent-blue);
-        }
-        
-        .algorithm-section {
-            background-color: var(--accent-green);
-        }
-        
-        .evolution-section {
-            background-color: var(--accent-orange);
-        }
-        
-        /* Interactive Elements */
-        .slider-container {
-            margin: 2rem 0;
-            width: 100%;
-            max-width: 500px;
-        }
-        
-        .slider-label {
-            text-transform: uppercase;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-        
-        .slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-            outline: none;
-        }
-        
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            background: var(--text-light);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            background: var(--text-light);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        /* Visual Elements */
-        .visual-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .visual-item {
-            background-color: #121212;
-            border-radius: 50%;
-            aspect-ratio: 1;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        
-        .visual-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .record {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #121212;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .record::before {
-            content: '';
-            position: absolute;
-            width: 85%;
-            height: 85%;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .record::after {
-            content: '';
-            position: absolute;
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .record-center {
-            width: 20%;
-            height: 20%;
-            border-radius: 50%;
-            background-color: var(--accent-yellow);
-            z-index: 3;
-        }
-        
-        .record-center.blue {
-            background-color: var(--accent-blue);
-        }
-        
-        .record-center.orange {
-            background-color: var(--accent-orange);
-        }
-        
-        .record-center.green {
-            background-color: var(--accent-green);
-        }
-        
-        /* Info Section */
-        .info-section {
-            background-color: var(--accent-yellow);
-            color: var(--text-dark);
-            padding: 5rem 10%;
-            text-align: center;
-        }
-        
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin: 2rem auto;
-            display: block;
-        }
-        
-        /* Animation Effect */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            opacity: 0;
-            animation: fadeIn 1s forwards;
-        }
-        
-        .delay-1 {
-            animation-delay: 0.2s;
-        }
-        
-        .delay-2 {
-            animation-delay: 0.4s;
-        }
-        
-        .delay-3 {
-            animation-delay: 0.6s;
-        }
-        
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            .two-col {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .visual-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(4, 1fr);
-            }
-            
-            .col-content {
-                max-width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #FF8142;
+      --text-light: #FFFAEB;
+      --text-dark: #0A0A0A;
+      --accent-blue: #4FA8CC;
+      --accent-green: #00A07D;
+      --accent-yellow: #FFBE3C;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 5% 10%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      scroll-snap-align: start;
+    }
+
+    h1, h2, h3 { font-family: 'Abril Fatface', serif; line-height: 1.1; }
+    h1 { font-size: clamp(3rem, 10vw, 7rem); color: var(--text-light); }
+    h2 { font-size: clamp(2rem, 6vw, 4rem); color: var(--text-light); margin-bottom: 1rem; }
+    h3 { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--text-dark); margin-bottom: 1rem; }
+
+    p { max-width: 60ch; margin-bottom: 1.2rem; }
+
+    .subtitle {
+      font-family: 'Righteous', sans-serif;
+      font-size: 1.3rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .hero {
+      position: relative;
+      background: #121212;
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    .hero h1 { margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+    .section-dark { background-color: #121212; color: var(--text-light); }
+    .section-yellow { background-color: var(--accent-yellow); color: var(--text-dark); }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media(max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; }
+      section { padding: 10% 5%; }
+    }
+
+  </style>
 </head>
 <body>
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-circle">
-            <img src="/images/robotdog.png" alt="Robot and Dog" class="robot-image">
-        </div>
-        <div class="hero-content">
-            <h1>Computer<br>Says Yes</h1>
-            <p class="subtitle">Teknologis-filosofinen tutkimusmatka algoritmien, tekoälyn ja ihmisyyden rajapinnalla!</p>
-        </div>
-    </section>
 
-    <!-- Mustalaatikko Section -->
-    <section class="dark-section">
-        <div class="section-content">
-            <div class="two-col">
-                <div class="col-content">
-                    <h2>Musta Laatikko</h2>
-                    <p class="subtitle">Voima, joka kietoutuu arkeen huomaamattomasti mutta väistämättömästi!</p>
-                    <p>Olemme astuneet aikakauteen, jossa elämme teknologian kanssa, joita emme täysin ymmärrä, mutta joka tietää meistä kaiken. Olemme antaneet digitaalisten oligarkkien rakentaa koneita, jotka tekevät virheitä – mutta eivät osaa itse niitä korjata.</p>
-                    <p>Tekoälyn ja algoritmien vaikutukset näkyvät vasta ajan kuluessa – aivan kuten Charles Darwinin kuvaamat evoluution hitaat mutta peruuttamattomat muutokset.</p>
-                </div>
-                <div class="col-content">
-                    <div class="slider-container">
-                        <div class="slider-label">SÄÄDÄ ALGORITMIEN VAIKUTUSTA</div>
-                        <input type="range" min="0" max="100" value="50" class="slider" id="algorithm-slider">
-                    </div>
-                    <div id="algorithm-visualization" style="height: 300px; background-color: rgba(255,255,255,0.1); border-radius: 10px; position: relative; overflow: hidden;">
-                        <!-- JS will fill this with visualization -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="hero">
+    <h1>Computer Says Yes Lab</h1>
+    <p class="subtitle">Kutsu tekoälyttömyyteen.</p>
+    <p>Computer Says Yes Lab tutkii ja havainnollistaa, mitä tapahtuu, kun koneet alkavat ajatella – ja mitä ihmiselle silloin jää. Se on työskentelyalusta, jossa tekoälyä tarkastellaan kriittisesti, luovasti ja inhimillisesti.</p>
+    <p><em>Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</em></p>
+  </section>
 
-    <!-- Evoluutio Section -->
-    <section class="evolution-section">
-        <div class="section-content">
-            <div class="two-col">
-                <div class="col-content">
-                    <h2>Evoluutio</h2>
-                    <p class="subtitle">Hitaat mutta peruuttamattomat muutokset yhteiskunnassamme.</p>
-                    <p>Charles Darwin kohtasi Lajien syntyä kirjoittaessaan saman haasteen kuin me nyt algoritmien kanssa: kuinka selittää näkymätöntä voimaa, jonka vaikutukset näemme vasta ajan kuluessa.</p>
-                    <p>Tässä testilaboratoriossa me olemme sekä kokeilijoita että koehenkilöitä. Teknologia ei enää mukaudu meihin - me mukaudumme siihen.</p>
-                </div>
-                <div class="col-content">
-                    <div id="evolution-animation" style="height: 400px; background-color: rgba(0,0,0,0.1); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;">
-                        <!-- DNA double helix animaatio -->
-                        <div class="dna-container" style="width: 100%; height: 100%; position: relative; perspective: 800px;">
-                            <!-- DNA kierteet -->
-                            <div id="dna-animation"></div>
-                        </div>
-                    </div>
-                    <div class="slider-label">HOVER TO SEE EVOLUTION IN ACTION!</div>
-                </div>
-                        <!-- DNA double helix animaatio -->
-                        <div class="dna-container" style="width: 100%; height: 100%; position: relative; perspective: 800px;">
-                            <!-- DNA kierteet -->
-                            <div id="dna-animation"></div>
-                        </div>
-                    </div>
-                    <div class="slider-label">HOVER TO SEE EVOLUTION IN ACTION!</div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="section-dark">
+    <div class="two-col">
+      <div>
+        <h2>Ajatus</h2>
+        <p>Tekoäly ei ole vain teknologiaa. Se on kulttuurinen, eettinen ja emotionaalinen ilmiö, joka muokkaa päätöksiä, arvoja ja yhteisöjä.</p>
+        <p>CSY Lab tarjoaa välineitä nähdä sen vaikutukset yhteiskunnassa, työelämässä ja arjessa – ja auttaa kysymään oikeita kysymyksiä ennen kuin kone antaa vastauksia.</p>
+      </div>
+      <div>
+        <img src="/images/robotdog.png" alt="Robot and Dog" style="width:100%; border-radius:20px;">
+      </div>
+    </div>
+  </section>
 
-    <!-- Algoritmi Section -->
-    <section class="algorithm-section">
-        <div class="section-content">
-            <div class="two-col">
-                <div class="col-content">
-                    <div class="visual-grid" style="grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(4, 1fr);">
-                        <div class="visual-item" style="grid-column: 1 / span 2; aspect-ratio: 2/1; border-radius: 10px;">
-                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
-                                IF human THEN optimize
-                            </div>
-                        </div>
-                        <div class="visual-item" style="border-radius: 10px;">
-                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--accent-blue); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
-                                01001
-                            </div>
-                        </div>
-                        <div class="visual-item" style="border-radius: 10px;">
-                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--accent-orange); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
-                                10110
-                            </div>
-                        </div>
-                        <div class="visual-item" style="grid-column: 1 / span 2; aspect-ratio: 2/1; border-radius: 10px;">
-                            <div style="width: 100%; height: 100%; background-color: #121212; display: flex; justify-content: center; align-items: center; color: var(--text-light); font-family: monospace; font-size: 1.5rem; border-radius: 10px;">
-                                Computer says yes
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-content">
-                    <h2>Algoritmi</h2>
-                    <p class="subtitle">Digitaaliset oligarkit ja näkymättömät voimat ohjaavat valintojamme.</p>
-                    <p>Modernit algoritmit ja tekoälyjärjestelmät ovat monimutkaisia verkostoja, joiden toimintaperiaatteet ovat piilossa käyttäjiltä – ja yhä useammin myös niiden kehittäjiltä.</p>
-                    <p>Prosessista näemme vain syötteen ja tulosteen, mutta varsinainen päätöksentekomekanismi jää mysteeriksi. Tämä läpinäkymättömyys luo valtavan filosofisen haasteen autonomialle.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <section class="section-yellow">
+    <h2>Mitä Lab tekee</h2>
+    <div class="two-col">
+      <div>
+        <h3>Asiantuntijaluennot ja koulutukset</h3>
+        <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta.</p>
 
-    <!-- Ihmisyys Section -->
-    <section class="blue-section">
-        <div class="section-content">
-            <div class="two-col">
-                <div class="col-content">
-                    <h2>Ihmisyys</h2>
-                    <p class="subtitle">Kuinka säilytämme ydinarvomme teknologisessa maailmassa?</p>
-                    <p>Algoritmit ovat mustan laatikko: voima, joka kietoutuu arkeen huomaamattomasti mutta väistämättömästi.</p>
-                    <p>Kuinka voimme säilyttää ihmisyytemme ydinarvot maailmassa, jossa inhimillinen ja koneellinen sulautuvat toisiinsa yhä tiukemmin?</p>
-                </div>
-                <div class="col-content">
-                    <div id="human-visualization" style="height: 400px; background-color: rgba(0,0,0,0.1); border-radius: 10px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;">
-                        <div class="decision-container">
-                            <div class="decision-text">Ihminen</div>
-                            <div class="decision-or">vai</div>
-                            <div class="decision-text">algoritmi?</div>
-                            <div class="decision-cursor">|</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    
-    
-    
-    
-    <style>
-        .decision-container {
-            position: relative;
-            font-family: 'Righteous', sans-serif;
-            text-align: center;
-            color: var(--text-light);
-        }
-        
-        .decision-text {
-            font-size: 3rem;
-            font-weight: bold;
-            line-height: 1.2;
-        }
-        
-        .decision-or {
-            font-size: 2rem;
-            margin: 0.5rem 0;
-            opacity: 0.7;
-        }
-        
-        .decision-cursor {
-            position: absolute;
-            right: -20px;
-            bottom: 0;
-            font-size: 3rem;
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        
-        /* Animaatio efekti */
-        .scramble-text {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .text-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-        }
-    </style>
+        <h3>Työpajat ja residenssit</h3>
+        <p>Tilat ja prosessit, joissa tutkitaan tekoälyn roolia työssä, luovuudessa ja eettisessä päätöksenteossa.</p>
+      </div>
 
+      <div>
+        <h3>Konsultointi</h3>
+        <p>Tuki organisaatioille, jotka haluavat ymmärtää tekoälyä pintaa syvemmältä: ajattelun, kielen ja arvojen tasolla.</p>
 
-<!-- Kuplat Section -->
-    <section class="bubble-section">
-        <div class="section-content">
-            <div class="two-col">
-                <div class="col-content">
-                    <h2>Kuplat</h2>
-                    <p class="subtitle">Algoritmit rakentavat näkymättömiä kuplia ympärillemme.</p>
-                    <p>Elämme digitaalisissa kuplissa, jotka vahvistavat olemassa olevia uskomuksiamme ja rajoittavat näkemystämme maailmasta. Algoritmit oppivat mieltymyksistämme ja syöttävät meille sisältöä, joka tuntuu tutulta ja turvalliselta.</p>
-                    <p>Mutta mitä tapahtuu, kun törmäämme kuplan seinämään? Kimpoammeko takaisin omaan mukavuusalueeseemme vai murtaudummeko läpi kohti uusia näkökulmia?</p>
-                </div>
-                <div class="col-content">
-                    <div id="bubble-animation" style="height: 400px; background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); border-radius: 50%; position: relative; overflow: hidden; border: 3px solid rgba(255,255,255,0.3);">
-                        <canvas id="bubble-canvas" width="400" height="400" style="width: 100%; height: 100%; border-radius: 50%;"></canvas>
-                    </div>
-                    <div class="slider-label" style="text-align: center; margin-top: 1rem;">WATCH THE ECHO CHAMBER IN ACTION</div>
-                </div>
-            </div>
-        </div>
-    </section>
+        <h3>Tutkimus ja taide</h3>
+        <p>Laboratorioita, joissa yhdistyvät tiede, taide ja filosofia – keinotekoinen ja inhimillinen äly rinnakkain.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- Info Section -->
-    <section class="info-section">
+  <section class="section-dark">
+    <h2>Tavoite</h2>
+    <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
+    <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen.</em></p>
+  </section>
 
-    <!-- Info Section -->
-    <section class="info-section">
-        <h2 style="color: var(--text-dark);">Info</h2>
-        <p style="max-width: 600px; margin: 0 auto 2rem;">
-            Tervetuloa teknologis-filosofiselle tutkimusmatkalle! Computer Says Yes on ajatusten paikka, joka kutsuu sinut pohtimaan algoritmien, tekoälyn ja näkymättömien järjestelmien vaikutusta elämäämme.
-        </p>
-        <p style="max-width: 600px; margin: 0 auto 2rem;">
-            Haluatko tutustua aiheeseen lisää, jakaa ajatuksiasi tai tiedustella mediasta? Ota yhteyttä - olemme täällä keskustellaksemme teknologian ja ihmisyyden tulevaisuudesta.
-        </p>
-        
-        <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#000" stroke-width="2" />
-            <rect x="30" y="30" width="40" height="40" fill="none" stroke="#000" stroke-width="2" />
-            <text x="50" y="55" text-anchor="middle" fill="#000" font-family="monospace" font-size="12">CSY</text>
-        </svg>
-        
-        <div style="margin-top: 2rem;">
-            <h3 style="color: var(--text-dark);">OTA YHTEYTTÄ</h3>
-            <h3><p class="subtitle"><center>jarno@csy.fi</center></p></h3>
-        </div>
-    </section>
+  <section class="section-yellow" style="text-align:center;">
+    <h2>Ota yhteyttä</h2>
+    <p>Jarno Alastalo</p>
+    <p><strong>jarno@csy.fi</strong></p>
+  </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Algorithm slider and visualization
-            const algorithmSlider = document.getElementById('algorithm-slider');
-            const algorithmVisualization = document.getElementById('algorithm-visualization');
-            
-            // Generate initial binary matrix
-            generateBinaryMatrix();
-            
-            // Update visualization when slider changes
-            algorithmSlider.addEventListener('input', function() {
-                const value = this.value;
-                // Clear previous visualization
-                algorithmVisualization.innerHTML = '';
-                
-                // Generate new binary matrix based on slider value
-                generateBinaryMatrix(value);
-            });
-            
-            // Function to generate binary matrix
-            function generateBinaryMatrix(density = 50) {
-                const cols = Math.floor(algorithmVisualization.offsetWidth / 20);
-                const rows = Math.floor(algorithmVisualization.offsetHeight / 20);
-                
-                for (let i = 0; i < rows; i++) {
-                    for (let j = 0; j < cols; j++) {
-                        if (Math.random() * 100 < density) {
-                            const bit = document.createElement('div');
-                            bit.style.position = 'absolute';
-                            bit.style.left = (j * 20) + 'px';
-                            bit.style.top = (i * 20) + 'px';
-                            bit.style.width = '15px';
-                            bit.style.height = '15px';
-                            bit.style.display = 'flex';
-                            bit.style.justifyContent = 'center';
-                            bit.style.alignItems = 'center';
-                            bit.style.color = 'rgba(255, 255, 255, 0.8)';
-                            bit.style.fontSize = '12px';
-                            bit.style.fontFamily = 'monospace';
-                            bit.textContent = Math.round(Math.random());
-                            
-                            algorithmVisualization.appendChild(bit);
-                        }
-                    }
-                }
-            }
-            
-            // Ihminen vai algoritmi? -animaatio
-            const humanVisualization = document.getElementById('human-visualization');
-            const decisionContainer = document.querySelector('.decision-container');
-
-            if (humanVisualization && decisionContainer) {
-                // Sanaparit ihmisestä ja algoritmista
-                const humanWords = ['Ihminen', 'Tunne', 'Tietoisuus', 'Intuitio', 'Luovuus'];
-                const algoWords = ['algoritmi', 'logiikka', 'laskenta', 'data', 'koodi'];
-                
-                // Tila
-                let currentIndex = 0;
-                let isHovering = false;
-                
-                // Teksti scramble animaatio
-                function scrambleText(element, oldText, newText, duration = 1000) {
-                    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÖÅäöå0123456789!@#$%^&*()_-+={}[]|;:,.<>?/';
-                    let steps = 10;
-                    let stepDuration = duration / steps;
-                    
-                    for (let i = 0; i < steps; i++) {
-                        setTimeout(() => {
-                            // Scramble ratio laskee jokaisen askeleen myötä
-                            let scrambleRatio = 1 - (i / steps);
-                            let resultText = '';
-                            
-                            // Tavoitetekstin pituus kasvaa jokaisella askeleella
-                            let targetLength = Math.floor(oldText.length * (1 - i/steps) + newText.length * (i/steps));
-                            
-                            for (let j = 0; j < targetLength; j++) {
-                                // Päätä, käytetäänkö tavoitetekstiä vai satunnaisia merkkejä
-                                if (Math.random() > scrambleRatio && j < newText.length) {
-                                    resultText += newText[j];
-                                } else {
-                                    resultText += chars[Math.floor(Math.random() * chars.length)];
-                                }
-                            }
-                            
-                            element.textContent = resultText;
-                            
-                            // Viimeinen askel näyttää oikean tekstin
-                            if (i === steps - 1) {
-                                element.textContent = newText;
-                            }
-                        }, stepDuration * i);
-                    }
-                }
-                
-                // Päivitä tekstit
-                function updateWords() {
-                    if (!isHovering) return;
-                    
-                    const humanTextEl = decisionContainer.querySelector('.decision-text:first-child');
-                    const algoTextEl = decisionContainer.querySelector('.decision-text:last-of-type');
-                    
-                    let nextIndex = (currentIndex + 1) % humanWords.length;
-                    
-                    // Vaihdetaan teksti scramble-efektillä
-                    scrambleText(humanTextEl, humanWords[currentIndex], humanWords[nextIndex], 800);
-                    scrambleText(algoTextEl, algoWords[currentIndex], algoWords[nextIndex], 800);
-                    
-                    currentIndex = nextIndex;
-                    
-                    // Jatka päivitystä, jos hiiri on edelleen päällä
-                    if (isHovering) {
-                        setTimeout(updateWords, 2000);
-                    }
-                }
-                
-                // Lisää hover-tapahtumakäsittelijät
-                humanVisualization.addEventListener('mouseenter', function() {
-                    isHovering = true;
-                    updateWords();
-                });
-                
-                humanVisualization.addEventListener('mouseleave', function() {
-                    isHovering = false;
-                    
-                    // Palautetaan alkuperäiset sanat, kun hiiri poistuu
-                    const humanTextEl = decisionContainer.querySelector('.decision-text:first-child');
-                    const algoTextEl = decisionContainer.querySelector('.decision-text:last-of-type');
-                    
-                    scrambleText(humanTextEl, humanTextEl.textContent, 'Ihminen', 800);
-                    scrambleText(algoTextEl, algoTextEl.textContent, 'algoritmi', 800);
-                    
-                    currentIndex = 0;
-                });
-            }
-            
-            // Evolution animation
-            const dnaContainer = document.getElementById('dna-animation');
-            const evolutionAnimation = document.getElementById('evolution-animation');
-            
-            function createDNAAnimation() {
-                if (!dnaContainer) return;
-                
-                // DNA rakenne
-                const strandsCount = 30; // Säikeiden määrä
-                const strandHeight = 350; // Säikeen korkeus
-                const strandGap = 8; // Väliaika säikeiden välillä
-                
-                // Tyhjennä container
-                dnaContainer.innerHTML = '';
-                
-                // Värit alkuvaiheeseen (biologinen DNA)
-                let startColors = {
-                    strand: '#0E3E4A',
-                    dot1: '#FF8142', // Oranssi
-                    dot2: '#4FA8CC'  // Sininen
-                };
-                
-                // Värit loppuvaiheeseen (teknologinen DNA)
-                let endColors = {
-                    strand: '#333333',
-                    dot1: '#00FFAA', // Neon vihreä
-                    dot2: '#FF3366'  // Neon pinkki
-                };
-                
-                // Luo DNA-rakenne
-                for (let i = 0; i < strandsCount; i++) {
-                    const strand = document.createElement('div');
-                    strand.className = 'dna-strand';
-                    strand.style.cssText = `
-                        position: absolute;
-                        width: 2px;
-                        height: ${strandHeight}px;
-                        left: ${(i * (strandGap + 2)) + 30}px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        border-left: 1px ${startColors.strand} dashed;
-                        transform-style: preserve-3d;
-                        animation: dna-rotate 10s linear infinite;
-                        animation-delay: ${(i * 0.1)}s;
-                    `;
-                    
-                    // Yläpiste (dot1)
-                    const topDot = document.createElement('div');
-                    topDot.className = 'dna-dot top-dot';
-                    topDot.style.cssText = `
-                        position: absolute;
-                        width: 10px;
-                        height: 10px;
-                        background: ${startColors.dot1};
-                        border-radius: 50%;
-                        top: 0;
-                        left: 50%;
-                        transform: translateX(-50%);
-                    `;
-                    
-                    // Alapiste (dot2)
-                    const bottomDot = document.createElement('div');
-                    bottomDot.className = 'dna-dot bottom-dot';
-                    bottomDot.style.cssText = `
-                        position: absolute;
-                        width: 10px;
-                        height: 10px;
-                        background: ${startColors.dot2};
-                        border-radius: 50%;
-                        bottom: 0;
-                        left: 50%;
-                        transform: translateX(-50%);
-                    `;
-                    
-                    strand.appendChild(topDot);
-                    strand.appendChild(bottomDot);
-                    dnaContainer.appendChild(strand);
-                }
-                
-                // Lisää @keyframes animaatio
-                const style = document.createElement('style');
-                style.textContent = `
-                    @keyframes dna-rotate {
-                        0% {
-                            transform: translateY(-50%) rotateX(0deg);
-                        }
-                        100% {
-                            transform: translateY(-50%) rotateX(360deg);
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                // Lisää hover-efekti - kun hiiri menee päälle, muutetaan DNA:ta biologisesta teknologiseksi
-                if (evolutionAnimation) {
-                    evolutionAnimation.addEventListener('mouseenter', function() {
-                        // Etsi kaikki dot-elementit
-                        const topDots = document.querySelectorAll('.top-dot');
-                        const bottomDots = document.querySelectorAll('.bottom-dot');
-                        const strands = document.querySelectorAll('.dna-strand');
-                        
-                        // Muuta värit anime.js:llä
-                        anime({
-                            targets: topDots,
-                            background: endColors.dot1,
-                            scale: [1, 1.2],
-                            duration: 1500,
-                            easing: 'easeInOutQuad'
-                        });
-                        
-                        anime({
-                            targets: bottomDots,
-                            background: endColors.dot2,
-                            scale: [1, 1.2],
-                            duration: 1500,
-                            easing: 'easeInOutQuad'
-                        });
-                        
-                        // Nopeutetaan pyörimistä
-                        anime({
-                            targets: strands,
-                            borderColor: endColors.strand,
-                            duration: 1500,
-                            easing: 'easeInOutQuad',
-                            update: function(anim) {
-                                // Muutetaan animaation nopeutta
-                                strands.forEach(strand => {
-                                    strand.style.animationDuration = '5s';
-                                });
-                            }
-                        });
-                    });
-                    
-                    // Kun hiiri poistuu, palautetaan alkuperäinen tila
-                    evolutionAnimation.addEventListener('mouseleave', function() {
-                        const topDots = document.querySelectorAll('.top-dot');
-                        const bottomDots = document.querySelectorAll('.bottom-dot');
-                        const strands = document.querySelectorAll('.dna-strand');
-                        
-                        anime({
-                            targets: topDots,
-                            background: startColors.dot1,
-                            scale: 1,
-                            duration: 1500,
-                            easing: 'easeInOutQuad'
-                        });
-                        
-                        anime({
-                            targets: bottomDots,
-                            background: startColors.dot2,
-                            scale: 1,
-                            duration: 1500,
-                            easing: 'easeInOutQuad'
-                        });
-                        
-                        anime({
-                            targets: strands,
-                            borderColor: startColors.strand,
-                            duration: 1500,
-                            easing: 'easeInOutQuad',
-                            update: function(anim) {
-                                strands.forEach(strand => {
-                                    strand.style.animationDuration = '10s';
-                                });
-                            }
-                        });
-                    });
-                }
-            }
-            
-            // Luo DNA-animaatio kun sivu on ladattu
-            createDNAAnimation();
-            
-            // Add fade-in animation to elements
-            const fadeElements = document.querySelectorAll('h1, h2, .subtitle, p');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-            
-            fadeElements.forEach(element => {
-                observer.observe(element);
-            });
-        });
-        
-       // Bubble animation - Fixed version
-const bubbleCanvas = document.getElementById('bubble-canvas');
-const bubbleAnimation = document.getElementById('bubble-animation');
-
-if (bubbleCanvas) {
-    const ctx = bubbleCanvas.getContext('2d');
-    const emojis = ['😊', '😢', '😡', '🤔', '😱', '🙄', '🤯', '😴', '🥳', '😭'];
-    let particles = [];
-    let animationId;
-    let isRunning = false;
-    
-    // Set canvas resolution properly
-    function resizeCanvas() {
-        const rect = bubbleAnimation.getBoundingClientRect();
-        const size = Math.min(rect.width, rect.height);
-        bubbleCanvas.width = size;
-        bubbleCanvas.height = size;
-        bubbleCanvas.style.width = size + 'px';
-        bubbleCanvas.style.height = size + 'px';
-    }
-    
-    // Particle class
-    class EmojiParticle {
-        constructor() {
-            this.emoji = emojis[Math.floor(Math.random() * emojis.length)];
-            this.size = Math.random() * 15 + 20; // Bigger size
-            this.reset();
-        }
-        
-        reset() {
-            const canvas = bubbleCanvas;
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(canvas.width, canvas.height) / 2 - 60;
-            
-            // Random position within circle
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * radius * 0.7;
-            
-            this.x = centerX + Math.cos(angle) * distance;
-            this.y = centerY + Math.sin(angle) * distance;
-            this.vx = (Math.random() - 0.5) * 6;
-            this.vy = (Math.random() - 0.5) * 6;
-        }
-        
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            
-            const canvas = bubbleCanvas;
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = Math.min(canvas.width, canvas.height) / 2 - 30;
-            
-            // Check collision with circular boundary
-            const dx = this.x - centerX;
-            const dy = this.y - centerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance + this.size/2 > radius) {
-                // Calculate normal vector
-                const normalX = dx / distance;
-                const normalY = dy / distance;
-                
-                // Reflect velocity
-                const dotProduct = this.vx * normalX + this.vy * normalY;
-                this.vx = this.vx - 2 * dotProduct * normalX;
-                this.vy = this.vy - 2 * dotProduct * normalY;
-                
-                // Move particle back inside
-                const overlap = distance + this.size/2 - radius;
-                this.x -= normalX * overlap;
-                this.y -= normalY * overlap;
-                
-                // Add some energy back
-                this.vx *= 0.9;
-                this.vy *= 0.9;
-            }
-            
-            // Keep minimum speed
-            const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-            if (speed < 2) {
-                const angle = Math.random() * Math.PI * 2;
-                this.vx = Math.cos(angle) * 3;
-                this.vy = Math.sin(angle) * 3;
-            }
-        }
-        
-        draw() {
-            // Try multiple font fallbacks
-            ctx.font = `${this.size}px system-ui, -apple-system, "Segoe UI Emoji", "Apple Color Emoji", sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            
-            // Add text shadow for better visibility
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            ctx.fillText(this.emoji, this.x + 1, this.y + 1);
-            
-            ctx.fillStyle = '#000';
-            ctx.fillText(this.emoji, this.x, this.y);
-        }
-    }
-    
-    // Initialize particles
-    function initParticles() {
-        particles = [];
-        for (let i = 0; i < 8; i++) { // Fewer particles for better performance
-            particles.push(new EmojiParticle());
-        }
-    }
-    
-    // Animation loop
-    function animate() {
-        if (!isRunning) return;
-        
-        ctx.clearRect(0, 0, bubbleCanvas.width, bubbleCanvas.height);
-        
-        // Draw bubble border (inner)
-        const centerX = bubbleCanvas.width / 2;
-        const centerY = bubbleCanvas.height / 2;
-        const radius = Math.min(bubbleCanvas.width, bubbleCanvas.height) / 2 - 30;
-        
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        ctx.stroke();
-        
-        // Update and draw particles
-        particles.forEach(particle => {
-            particle.update();
-            particle.draw();
-        });
-        
-        animationId = requestAnimationFrame(animate);
-    }
-    
-    // Initialize on page load
-    setTimeout(() => {
-        resizeCanvas();
-        initParticles();
-    }, 100);
-    
-    // Start animation on hover
-    if (bubbleAnimation) {
-        bubbleAnimation.addEventListener('mouseenter', function() {
-            if (!isRunning) {
-                isRunning = true;
-                animate();
-            }
-        });
-        
-        bubbleAnimation.addEventListener('mouseleave', function() {
-            isRunning = false;
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-        });
-    }
-    
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        resizeCanvas();
-        if (particles.length > 0) {
-            particles.forEach(particle => particle.reset());
-        }
-    });
-    
-    // Debug: Log when script runs
-    console.log('Bubble animation script loaded');
-};
-    </script>
 </body>
 </html>
