@@ -1,134 +1,191 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg-primary: #FF8142;
-      --text-light: #FFFAEB;
-      --text-dark: #0A0A0A;
-      --accent-blue: #4FA8CC;
-      --accent-green: #00A07D;
-      --accent-yellow: #FFBE3C;
+    :root{
+      --bg:#0a0a0a; --ink:#fffaeb; --accent:#ff8142; --accent2:#4fa8cc; --card:#121212; --highlight:#ffbe3c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:"Space Grotesk",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink);}
+    a{color:inherit}
+
+    /* Layout */
+    .container{max-width:1100px; margin:0 auto; padding:0 24px}
+    section{padding:96px 0; position:relative}
+
+    /* Hero */
+    .hero{min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
+    .hero-canvas{position:absolute; inset:0; z-index:0}
+    .hero-content{position:relative; z-index:1}
+
+    h1{font-family:"Abril Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
+    .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
+    p.lead{max-width:62ch; margin:0 auto 8px; font-size:clamp(1.05rem,1.7vw,1.2rem); line-height:1.7}
+
+    /* Sections */
+    .section-dark{background:var(--card)}
+    .section-yellow{background:var(--highlight); color:#0a0a0a}
+    .section-yellow h2, .section-yellow h3{color:#0a0a0a}
+
+    h2{font-family:"Abril Fatface",serif; font-size:clamp(2rem,4.5vw,3.2rem); margin:0 0 16px}
+    h3{font-weight:700; font-size:clamp(1.2rem,2.2vw,1.5rem); margin:20px 0 8px}
+    p{max-width:70ch; line-height:1.7}
+
+    /* Grid */
+    .grid{display:grid; gap:32px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+    @media (max-width:900px){
+      .grid-2{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr}
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:24px}
+    .img-frame{border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08)}
+    .img{width:100%; display:block}
 
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-dark);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    section {
-      min-height: 100vh;
-      padding: 5% 10%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      scroll-snap-align: start;
-    }
-
-    h1, h2, h3 { font-family: 'Abril Fatface', serif; line-height: 1.1; }
-    h1 { font-size: clamp(3rem, 10vw, 7rem); color: var(--text-light); }
-    h2 { font-size: clamp(2rem, 6vw, 4rem); color: var(--text-light); margin-bottom: 1rem; }
-    h3 { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--text-dark); margin-bottom: 1rem; }
-
-    p { max-width: 60ch; margin-bottom: 1.2rem; }
-
-    .subtitle {
-      font-family: 'Righteous', sans-serif;
-      font-size: 1.3rem;
-      color: var(--text-light);
-      margin-bottom: 2rem;
-    }
-
-    .hero {
-      position: relative;
-      background: #121212;
-      color: var(--text-light);
-      text-align: center;
-    }
-
-    .hero h1 { margin-bottom: 1rem; }
-    .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
-
-    .section-dark { background-color: #121212; color: var(--text-light); }
-    .section-yellow { background-color: var(--accent-yellow); color: var(--text-dark); }
-
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    @media(max-width: 900px) {
-      .two-col { grid-template-columns: 1fr; }
-      section { padding: 10% 5%; }
-    }
-
+    /* Footer */
+    .center{text-align:center}
   </style>
 </head>
 <body>
-
-  <section class="hero">
-    <h1>Computer Says Yes Lab</h1>
-    <p class="subtitle">Kutsu tekoälyttömyyteen.</p>
-    <p>Computer Says Yes Lab tutkii ja havainnollistaa, mitä tapahtuu, kun koneet alkavat ajatella – ja mitä ihmiselle silloin jää. Se on työskentelyalusta, jossa tekoälyä tarkastellaan kriittisesti, luovasti ja inhimillisesti-</p> 
-    <p><em>Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</em></p>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="csy-scene" class="hero-canvas"></canvas>
+    <div class="hero-content container">
+      <h1>Computer Says Yes Lab</h1>
+      <p class="subtitle">Kutsu tekoälyttömyyteen.</p>
+      <p class="lead">Computer Says Yes Lab tutkii ja havainnollistaa, mitä tapahtuu, kun koneet alkavat ajatella – ja mitä ihmiselle silloin jää. Se on työskentelyalusta, jossa tekoälyä tarkastellaan kriittisesti, luovasti ja inhimillisesti.</p>
+      <p class="lead">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+    </div>
   </section>
 
+  <!-- AJATUS -->
   <section class="section-dark">
-    <div class="two-col">
+    <div class="container grid grid-2">
       <div>
         <h2>Ajatus</h2>
         <p>Tekoäly ei ole vain teknologiaa. Se on kulttuurinen, eettinen ja emotionaalinen ilmiö, joka muokkaa päätöksiä, arvoja ja yhteisöjä.</p>
         <p>CSY Lab tarjoaa välineitä nähdä sen vaikutukset yhteiskunnassa, työelämässä ja arjessa – ja auttaa kysymään oikeita kysymyksiä ennen kuin kone antaa vastauksia.</p>
       </div>
-      <div>
-        <img src="/images/robotdog.png" alt="Robot and Dog" style="width:100%; border-radius:20px;">
+      <div class="img-frame">
+        <img src="/images/robotdog.png" alt="Robot and Dog" class="img" />
       </div>
     </div>
   </section>
 
+  <!-- ROBOT AND DOG (otsikko erikseen, kuten pyydetty) -->
+  <section class="section-dark" style="padding-top:24px;">
+    <div class="container">
+      <h2>Robot and Dog</h2>
+    </div>
+  </section>
+
+  <!-- MITÄ LAB TEKEE -->
   <section class="section-yellow">
-    <h2>Mitä Lab tekee</h2>
-    <div class="two-col">
-      <div>
-        <h3>Asiantuntijaluennot ja koulutukset</h3>
-        <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta.</p>
-
-        <h3>Työpajat ja residenssit</h3>
-        <p>Tilat ja prosessit, joissa tutkitaan tekoälyn roolia työssä, luovuudessa ja eettisessä päätöksenteossa.</p>
-      </div>
-
-      <div>
-        <h3>Konsultointi</h3>
-        <p>Tuki organisaatioille, jotka haluavat ymmärtää tekoälyä pintaa syvemmältä: ajattelun, kielen ja arvojen tasolla.</p>
-
-        <h3>Tutkimus ja taide</h3>
-        <p>Laboratorioita, joissa yhdistyvät tiede, taide ja filosofia – keinotekoinen ja inhimillinen äly rinnakkain.</p>
+    <div class="container">
+      <h2>Mitä Lab tekee</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Asiantuntijaluennot ja koulutukset</h3>
+          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta.</p>
+        </div>
+        <div class="card">
+          <h3>Työpajat ja residenssit</h3>
+          <p>Tilat ja prosessit, joissa tutkitaan tekoälyn roolia työssä, luovuudessa ja eettisessä päätöksenteossa.</p>
+        </div>
+        <div class="card">
+          <h3>Konsultointi</h3>
+          <p>Tuki organisaatioille, jotka haluavat ymmärtää tekoälyä pintaa syvemmältä: ajattelun, kielen ja arvojen tasolla.</p>
+        </div>
+        <div class="card">
+          <h3>Tutkimus ja taide</h3>
+          <p>Laboratorioita, joissa yhdistyvät tiede, taide ja filosofia – keinotekoinen ja inhimillinen äly rinnakkain.</p>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- TAVOITE -->
   <section class="section-dark">
-    <h2>Tavoite</h2>
-    <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
-    <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen.</em></p>
+    <div class="container center">
+      <h2>Tavoite</h2>
+      <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
+      <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen.</em></p>
+    </div>
   </section>
 
-  <section class="section-yellow" style="text-align:center;">
-    <h2>Ota yhteyttä</h2>
-    <p>Jarno Alastalo</p>
-    <p><strong>jarno@csy.fi</strong></p>
+  <!-- YHTEYS -->
+  <section class="section-yellow">
+    <div class="container center">
+      <h2>Ota yhteyttä</h2>
+      <p>Jarno Alastalo</p>
+      <p><strong>jarno@csy.fi</strong></p>
+    </div>
   </section>
 
+  <!-- THREE.JS (hero only) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    const canvas = document.getElementById('csy-scene');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 1.4, 3.2);
+
+    function resize(){
+      const rect = document.getElementById('hero').getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height, false);
+      camera.aspect = rect.width / rect.height; 
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    const key = new THREE.PointLight(0xff8142, 1.1); key.position.set(3, 3, 3);
+    const rim = new THREE.PointLight(0x4fa8cc, 0.8); rim.position.set(-3, 2, -2);
+    scene.add(ambient, key, rim);
+
+    // Object (breathing icosahedron)
+    const geo = new THREE.IcosahedronGeometry(1, 2);
+    const mat = new THREE.MeshStandardMaterial({color:0xff8142, metalness:0.55, roughness:0.35});
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+
+    // Subtle star field
+    const starGeo = new THREE.BufferGeometry();
+    const count = 500; const arr = new Float32Array(count*3);
+    for(let i=0;i<count;i++){arr[i*3]=(Math.random()-0.5)*12; arr[i*3+1]=(Math.random()-0.5)*8; arr[i*3+2]=(Math.random()-0.5)*10;}
+    starGeo.setAttribute('position', new THREE.BufferAttribute(arr,3));
+    const starMat = new THREE.PointsMaterial({color:0x4fa8cc, size:0.02});
+    const stars = new THREE.Points(starGeo, starMat); scene.add(stars);
+
+    // Mouse parallax
+    let mx=0,my=0; window.addEventListener('mousemove', (e)=>{
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      mx = x*0.3; my = y*0.15;
+    });
+
+    let t=0; function tick(){
+      requestAnimationFrame(tick); t+=0.01;
+      mesh.rotation.x += 0.003; mesh.rotation.y += 0.002;
+      const s = 1 + Math.sin(t)*0.05; mesh.scale.set(s,s,s);
+      camera.position.x += (mx - camera.position.x)*0.02;
+      camera.position.y += (1.4 - my - camera.position.y)*0.02;
+      stars.rotation.y += 0.0008;
+      renderer.render(scene,camera);
+    }
+
+    // Initial size and start
+    resize(); tick();
+  </script>
 </body>
 </html>
