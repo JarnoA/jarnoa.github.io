@@ -40,6 +40,7 @@
     .grid{display:grid; gap:32px}
     .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
     @media (max-width:900px){
       .grid-2{grid-template-columns:1fr}
       .grid-4{grid-template-columns:1fr}
@@ -48,7 +49,8 @@
     .card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:24px}
     .img-frame{border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08)}
     .img{width:100%; display:block}
-    #explodeCanvas{display:block; width:100%; height:380px;}
+
+    /* Footer */
     .center{text-align:center}
   </style>
 </head>
@@ -78,6 +80,13 @@
     </div>
   </section>
 
+  <!-- ROBOT AND DOG (otsikko erikseen, kuten pyydetty) -->
+  <!--<section class="section-dark" style="padding-top:24px;">
+    <div class="container">
+      <h2>Robot and Dog</h2>
+    </div>
+  </section>-->
+
   <!-- MITÄ LAB TEKEE -->
   <section class="section-yellow">
     <div class="container">
@@ -103,11 +112,6 @@
     </div>
   </section>
 
-  <!-- ANIMAATIO: Purkautuva kone -->
-  <section class="section-yellow" style="padding:0; overflow:hidden;">
-    <canvas id="explodeCanvas"></canvas>
-  </section>
-
   <!-- TAVOITE -->
   <section class="section-dark">
     <div class="container">
@@ -129,10 +133,9 @@
     </div>
   </section>
 
-  <!-- THREE.JS -->
+  <!-- THREE.JS (hero only) -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
   <script>
-    // HERO
     const canvas = document.getElementById('csy-scene');
     const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
     const scene = new THREE.Scene();
@@ -183,104 +186,9 @@
       stars.rotation.y += 0.0008;
       renderer.render(scene,camera);
     }
+
+    // Initial size and start
     resize(); tick();
-
-    // =========================
-    // EXPLODING CUBE - ANIMAATIO
-    // =========================
-    (function(){
-      const expCanvas = document.getElementById('explodeCanvas');
-      if(!expCanvas) return;
-
-      const expRenderer = new THREE.WebGLRenderer({canvas: expCanvas, antialias:true, alpha:true});
-      expRenderer.setPixelRatio(window.devicePixelRatio);
-      expRenderer.setClearColor(0x000000, 0);
-
-      const expScene = new THREE.Scene();
-      const expCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
-      expCamera.position.set(0, 0.6, 4);
-
-      // Valot
-      const amb2 = new THREE.AmbientLight(0xffffff, 0.7);
-      const dir2 = new THREE.DirectionalLight(0xff8142, 1.1); dir2.position.set(2, 2, 3);
-      const rim2 = new THREE.PointLight(0x4fa8cc, 0.7); rim2.position.set(-2, 1.5, -2);
-      expScene.add(amb2, dir2, rim2);
-
-      // Pistepilvi
-      const step = 0.2, half = 1.2;
-      const pts = [];
-      for(let x=-half; x<=half; x+=step){
-        for(let y=-half; y<=half; y+=step){
-          for(let z=-half; z<=half; z+=step){
-            const onSurface = (
-              Math.abs(Math.abs(x)-half)<1e-6 ||
-              Math.abs(Math.abs(y)-half)<1e-6 ||
-              Math.abs(Math.abs(z)-half)<1e-6
-            );
-            if(onSurface) pts.push(x,y,z);
-          }
-        }
-      }
-
-      const basePositions = new Float32Array(pts);
-      const geom = new THREE.BufferGeometry();
-      geom.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3));
-
-      const colors = new Float32Array((basePositions.length/3)*3);
-      for(let i=0;i<colors.length/3;i++){
-        const t = (i % 60) / 60;
-        const c1 = new THREE.Color(0xff8142);
-        const c2 = new THREE.Color(0x4fa8cc);
-        const c = c1.clone().lerp(c2, t);
-        colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
-      }
-      geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-      const matPts = new THREE.PointsMaterial({vertexColors:true, size:0.06, sizeAttenuation:true});
-      const cloud = new THREE.Points(geom, matPts);
-      expScene.add(cloud);
-
-      const normals = new Float32Array(basePositions.length);
-      for(let i=0;i<basePositions.length;i+=3){
-        const vx=basePositions[i], vy=basePositions[i+1], vz=basePositions[i+2];
-        const len=Math.hypot(vx,vy,vz)||1;
-        normals[i]=vx/len; normals[i+1]=vy/len; normals[i+2]=vz/len;
-      }
-
-      function resizeExplode(){
-        const rect = expCanvas.parentElement.getBoundingClientRect();
-        const h = 380;
-        expRenderer.setSize(rect.width, h, false);
-        expCamera.aspect = rect.width / h;
-        expCamera.updateProjectionMatrix();
-      }
-      window.addEventListener('resize', resizeExplode);
-      resizeExplode();
-
-      let tt = 0;
-      function tickExplode(){
-        requestAnimationFrame(tickExplode);
-        tt += 0.016;
-        const explodeAmount = (Math.sin(tt*0.9)*0.5 + 0.5);
-        const wobble = Math.sin(tt*2.3)*0.06;
-        const pos = geom.getAttribute('position');
-        const arr = pos.array;
-
-        for(let i=0;i<arr.length;i+=3){
-          const bx=basePositions[i], by=basePositions[i+1], bz=basePositions[i+2];
-          const nx=normals[i], ny=normals[i+1], nz=normals[i+2];
-          const amp = 0.8*explodeAmount;
-          arr[i]   = bx + nx*amp + Math.sin(tt*1.7 + bx*1.3)*wobble;
-          arr[i+1] = by + ny*amp + Math.sin(tt*1.9 + by*1.1)*wobble;
-          arr[i+2] = bz + nz*amp + Math.sin(tt*2.1 + bz*1.5)*wobble;
-        }
-        pos.needsUpdate = true;
-        cloud.rotation.y += 0.003;
-        cloud.rotation.x = Math.sin(tt*0.2)*0.08;
-        expRenderer.render(expScene, expCamera);
-      }
-      tickExplode();
-    })();
   </script>
 </body>
 </html>
