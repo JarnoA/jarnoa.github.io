@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Tekoälyagentti – Strategiapeli</title>
+<style>
+  body { margin:0; background:#101820; color:#0f0; font-family: monospace; overflow:hidden; }
+  #overlay {
+    position: absolute; bottom: 20px; left: 20px; width: 40%; 
+    background: rgba(0,0,0,0.6); padding: 10px; border: 1px solid #0f0;
+  }
+  #speech { min-height: 60px; }
+  #objects {
+    position: absolute; right: 20px; bottom: 20px; display: flex; gap: 12px;
+  }
+  button {
+    background: #303840; color:#0f0; border:1px solid #0f0;
+    padding: 6px 10px; cursor:pointer; font-family: monospace;
+  }
+  button:hover { background:#0f0; color:#000; }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="overlay">
+  <div id="speech">Robotti on valmiina ottamaan vastaan syötteitä...</div>
+</div>
+<div id="objects">
+  <button onclick="giveObject('kahvikuppi')">☕ Kahvikuppi</button>
+  <button onclick="giveObject('kirja')">📖 Kirja</button>
+  <button onclick="giveObject('porkkana')">🥕 Porkkana</button>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165/build/three.module.js';
+import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.165/examples/jsm/controls/OrbitControls.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#101820');
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 1.5, 4);
+
+const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('scene'), antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+window.addEventListener('resize', ()=>renderer.setSize(innerWidth, innerHeight));
+
+// valo
+const light = new THREE.PointLight(0xffffff, 2);
+light.position.set(0,2,3);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404040));
+
+// retrorobotti (pää, silmät, vartalo)
+const robot = new THREE.Group();
+const body = new THREE.Mesh(new THREE.CylinderGeometry(0.6,0.6,1.2,16), new THREE.MeshStandardMaterial({color:0x777777, metalness:0.8, roughness:0.3}));
+const head = new THREE.Mesh(new THREE.SphereGeometry(0.4,16,16), new THREE.MeshStandardMaterial({color:0x888888, metalness:0.9}));
+head.position.y = 1;
+const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.08,12,12), new THREE.MeshStandardMaterial({color:0xff0000, emissive:0xff0000}));
+eyeL.position.set(-0.15,1.05,0.35);
+const eyeR = eyeL.clone(); eyeR.position.x = 0.15;
+robot.add(body, head, eyeL, eyeR);
+scene.add(robot);
+
+// orbit ohjaus
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false; controls.enableZoom = false;
+
+// animaatio
+let t=0;
+function animate(){
+  requestAnimationFrame(animate);
+  t+=0.02;
+  head.rotation.y = Math.sin(t*0.5)*0.3;
+  eyeL.material.emissiveIntensity = 0.6 + Math.sin(t*5)*0.4;
+  eyeR.material.emissiveIntensity = 0.6 + Math.cos(t*5)*0.4;
+  renderer.render(scene,camera);
+}
+animate();
+
+// logiikka
+const speech = document.getElementById('speech');
+const lines = {
+  kahvikuppi:[
+    "Tehokkuusstrategia perustuu nyt kofeiinitasapainoon.",
+    "Kahvitauko määritellään kansalliseksi resurssiksi.",
+    "Budjetti allokoidaan lämpimien juomien kehittämiseen."
+  ],
+  kirja:[
+    "Tieto sidotaan reseptimuotoisiin malleihin.",
+    "Oppiminen tapahtuu nyt alitajuisesti keittokirjoista.",
+    "Tiedonhallinta kirjataan kovakantisena tavoitteena."
+  ],
+  porkkana:[
+    "Kannustimet muunnetaan ravintopohjaisiksi.",
+    "Motivaatiopolitiikka juurtuu maaperään.",
+    "Kestävä kehitys mitataan oransseina yksiköinä."
+  ]
+};
+let given = [];
+
+function giveObject(name){
+  if(!lines[name]) return;
+  const quote = lines[name][Math.floor(Math.random()*lines[name].length)];
+  speak(quote);
+  given.push(quote);
+  if(given.length>=5) showReport();
+}
+
+function speak(text){
+  let i=0;
+  speech.textContent="";
+  const interval = setInterval(()=>{
+    speech.textContent += text[i];
+    i++;
+    if(i>=text.length) clearInterval(interval);
+  },40);
+}
+
+function showReport(){
+  const all = given.sort(()=>0.5-Math.random()).slice(0,5);
+  const endings = [
+    "Strategia valmis. Kukaan ei tiedä miksi.",
+    "Järjestelmä toimi, mutta menetti tarkoituksensa.",
+    "Tekoäly ymmärsi tehtävän – ei sen merkitystä."
+  ];
+  const report = "\n\n*** VALTION STRATEGIARAPORTTI 2035 ***\n" + all.join("\n") + "\n\n" + endings[Math.floor(Math.random()*endings.length)];
+  setTimeout(()=>speak(report),1000);
+  given=[];
+}
+</script>
+</body>
+</html>

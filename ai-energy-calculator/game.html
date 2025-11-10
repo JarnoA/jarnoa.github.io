@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Awakening Machine</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#000;}
+  canvas{display:block;}
+</style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+<script>
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x02050a,0.04);
+
+// Renderer
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(devicePixelRatio);
+renderer.shadowMap.enabled=true;
+document.body.appendChild(renderer.domElement);
+
+// Camera
+const camera = new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,300);
+camera.position.set(0,5,25);
+
+// Lights
+const hemi = new THREE.HemisphereLight(0x4fa8cc,0xff8142,0.6);
+scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xffbe3c,1.2);
+sun.position.set(30,40,10);
+sun.castShadow=true;
+scene.add(sun);
+const fill = new THREE.PointLight(0x4fa8cc,2,80);
+fill.position.set(-10,5,-20);
+scene.add(fill);
+
+// Sky gradient
+const skyGeo=new THREE.SphereGeometry(200,32,32);
+const skyMat=new THREE.ShaderMaterial({
+ side:THREE.BackSide,
+ uniforms:{top:{value:new THREE.Color(0x162444)},bottom:{value:new THREE.Color(0x000000)}},
+ vertexShader:`varying vec3 vPos;void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+ fragmentShader:`uniform vec3 top;uniform vec3 bottom;varying vec3 vPos;
+  void main(){float h=normalize(vPos).y;gl_FragColor=vec4(mix(bottom,top,max(h,0.0)),1.0);}`
+});
+scene.add(new THREE.Mesh(skyGeo,skyMat));
+
+// Ground
+const groundGeo=new THREE.PlaneGeometry(300,300,128,128);
+for(let i=0;i<groundGeo.attributes.position.count;i++){
+  const y=(Math.sin(i*0.05)+Math.random()*0.5)*0.6;
+  groundGeo.attributes.position.setY(i,y);
+}
+groundGeo.computeVertexNormals();
+const groundMat=new THREE.MeshStandardMaterial({
+  color:0x111111,metalness:0.9,roughness:0.3,envMapIntensity:1});
+const ground=new THREE.Mesh(groundGeo,groundMat);
+ground.rotation.x=-Math.PI/2;
+ground.receiveShadow=true;
+scene.add(ground);
+
+// Core (the Awakening Machine)
+const coreGeo=new THREE.IcosahedronGeometry(2,1);
+const coreMat=new THREE.MeshStandardMaterial({
+  color:0xff8142,emissive:0xff4000,emissiveIntensity:0.8,metalness:0.6,roughness:0.3});
+const core=new THREE.Mesh(coreGeo,coreMat);
+core.castShadow=true;
+scene.add(core);
+
+// Floating shards
+const shards=new THREE.Group();
+for(let i=0;i<80;i++){
+  const g=new THREE.TetrahedronGeometry(Math.random()*0.3+0.1);
+  const m=new THREE.MeshStandardMaterial({
+    color:0x4fa8cc,emissive:0x4fa8cc,emissiveIntensity:Math.random()*0.8+0.2,
+    metalness:0.9,roughness:0.2});
+  const s=new THREE.Mesh(g,m);
+  const r=3+Math.random()*10;
+  const ang=Math.random()*Math.PI*2;
+  s.position.set(Math.cos(ang)*r,Math.random()*3-1.5,Math.sin(ang)*r);
+  shards.add(s);
+}
+scene.add(shards);
+
+// Camera motion parameters
+let t=0;
+function animate(){
+  requestAnimationFrame(animate);
+  t+=0.003;
+
+  // Camera gentle fly path
+  camera.position.x=Math.cos(t*0.5)*20;
+  camera.position.z=Math.sin(t*0.5)*20;
+  camera.position.y=5+Math.sin(t*0.3)*2;
+  camera.lookAt(core.position);
+
+  // Core pulse & rotation
+  core.rotation.x+=0.002;
+  core.rotation.y+=0.004;
+  core.scale.setScalar(1+Math.sin(t*3)*0.05);
+
+  // Shards rotation/orbit
+  shards.children.forEach((s,i)=>{
+    const angle=t*0.6+i*0.2;
+    const radius=4+(i%10)*0.5;
+    s.position.x=Math.cos(angle+i)*radius;
+    s.position.z=Math.sin(angle+i)*radius;
+    s.position.y=Math.sin(t*2+i)*1.5;
+    s.rotation.x+=0.02;
+    s.rotation.y+=0.01;
+  });
+
+  // Dynamic color shift
+  const hue=(Math.sin(t*0.3)*0.5+0.5)*0.08;
+  renderer.setClearColor(new THREE.Color().setHSL(hue,0.6,0.05));
+
+  renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
