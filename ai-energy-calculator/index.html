@@ -168,7 +168,7 @@
       let aiEnergy = 0;
       if (scenario === "image") aiEnergy = aiUse * 1.5;
       if (scenario === "text") aiEnergy = aiUse * 0.3;
-      if (scenario === "video") aiEnergy = aiUse * 250;
+      if (scenario === "video") aiEnergy = aiUse * 940;
 
       let oversightEnergy = aiOversight * devicePower;
       let totalAIEnergy = aiEnergy + oversightEnergy;
@@ -209,6 +209,8 @@
         </div>
         <div class="sources">
           <ul>
+            <li><a href="https://www.technologyreview.com/2025/05/20/1102297/ai-energy-footprint-analysis/" target="_blank">MIT Technology Review – We did the math on AI’s energy footprint. Here’s the story you haven’t heard.
+James O’Donnell & Casey Crownhart, May 20 2025.</a></li>
             <li><a href="https://www.notebookcheck.net" target="_blank">NotebookCheck: MacBook M1 Load Power Data</a></li>
             <li><a href="https://arxiv.org/html/2506.17016v1#abstract" target="_blank">Bertazzini et al. 2025: The Hidden Cost of an Image: Quantifying the Energy Consumption of AI Image Generation</a></li>
             <li><a href="https://ar5iv.labs.arxiv.org/html/2311.16863" target="_blank">Luccioni et al. 2023: Energy Use of Text-to-Image Models</a></li>
