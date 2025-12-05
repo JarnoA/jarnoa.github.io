@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0a0a0a; --ink:#fffaeb; --accent:#ff8142; --accent2:#4fa8cc; --card:#121212; --highlight:#ffbe3c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:"Space Grotesk",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink);}
+    a{color:inherit}
+
+    /* Layout */
+    .container{max-width:1100px; margin:0 auto; padding:0 24px}
+    section{padding:96px 0; position:relative}
+
+    /* Hero */
+    .hero{min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
+    .hero-canvas{position:absolute; inset:0; z-index:0}
+    .hero-content{position:relative; z-index:1}
+
+    h1{font-family:"Abril Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
+    .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
+    p.lead{max-width:62ch; margin:0 auto 8px; font-size:clamp(1.05rem,1.7vw,1.2rem); line-height:1.7}
+
+    /* Sections */
+    .section-dark{background:var(--card)}
+    .section-yellow{background:var(--highlight); color:#0a0a0a}
+    .section-yellow h2, .section-yellow h3{color:#0a0a0a}
+
+    h2{font-family:"Abril Fatface",serif; font-size:clamp(2rem,4.5vw,3.2rem); margin:0 0 16px}
+    h3{font-weight:700; font-size:clamp(1.2rem,2.2vw,1.5rem); margin:20px 0 8px}
+    p{max-width:70ch; line-height:1.7}
+
+    /* Grid */
+    .grid{display:grid; gap:32px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){
+      .grid-2{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr}
+    }
+
+    .card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:24px}
+    .img-frame{border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08)}
+    .img{width:100%; display:block}
+    #explodeCanvas{display:block; width:100%; height:380px;}
+    .center{text-align:center}
+  </style>
+  <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="csy-scene" class="hero-canvas"></canvas>
+    <div class="hero-content container">
+      <h1>Computer Says Yes Lab</h1>
+      <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
+      <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
+      <p class="lead">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+    </div>
+  </section>
+
+  <!-- AJATUS -->
+  <section class="section-dark">
+    <div class="container grid grid-2">
+      <div>
+        <h2>Ajatus</h2>
+        <p>Tekoäly on enemmän kuin teknologia; se on kulttuurinen ja moraalinen ilmiö, joka heijastaa ja vahvistaa yhteiskuntamme vinoumia. Labimme tarjoaa organisaatioille välineet nähdä tekoäly peilinä, joka paljastaa omat sokeat pisteemme ja narsistisen taipumuksemme.</p>
+        <p>Autamme ymmärtämään, miten järjestelmät hyödyntävät kognitiivista sokerisiirappia muokatakseen valintojamme. Tavoitteena on auttaa organisaatioita kysymään oikeita kysymyksiä – ja välttämään olemasta älykkäiden koneiden tyhmiä käyttäjiä.</p>
+      </div>
+      <div class="img">
+        <img src="/images/robotdog.png" alt="Robot and Dog" class="img" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MITÄ LAB TEKEE -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Mitä CSY Lab tekee</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Asiantuntijaluennot ja koulutukset</h3>
+          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta. Keskitymme ymmärtämään tekoälyjärjestelmien perusperiaatteita ja toimintalogiikkaa – emme vain yksittäisiä sovelluksia, kuten ChatGPT:n käyttöä.</p>
+        </div>
+        <div class="card">
+          <h3>Työpajat</h3>
+          <p>Käytännön harjoituksia ja sparrausta, jotka tukevat kriittisen hitaan ajattelun ja algoritmisen lukutaidon kehittämistä. Autamme organisaatioita sietämään monimutkaisuutta ja epäselvyyttä tekoälyyn liittyvässä päätöksenteossa.</p>
+        </div>
+        <div class="card">
+          <h3>Koulutus ja konsultointi</h3>
+          <p>Konsultoin organisaatioita tekoälyn strategisessa käyttöönotossa ja koulutan henkilöstöä hyödyntämään tekoälyä tehokkaasti arjessaan. Lähestyn tekoälyä sekä käytännön työkaluna että kulttuurisena ilmiönä – tuon kokemusta siitä, miten tekoäly todella tuottaa arvoa liiketoimintaprosesseissa ilman, että ulkoistamme ajattelun kokonaan koneille.</p>
+        </div>
+        <div class="card">
+          <h3>Tutkimus ja taide</h3>
+          <p>Toteutamme kokeellisia projekteja, joissa testaamme tekoälyn rajoja luovassa työssä. Tutkimme, miten algoritmit tulkitsevat merkityksiä, luovat sisältöä ja tekevät valintoja – ja mitä nämä prosessit paljastavat ihmisen ajattelusta. Tulokset näkyvät installaatioina, julkaisuina ja keskustelunavauksina, jotka laittavat sekä koneen että ihmisen uuteen valoon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- TYÖKALUT -->
+  <section class="section-dark" id="tools" style="position:relative; overflow:hidden;">
+    <canvas id="tools-bg" style="position:absolute; inset:0; z-index:0;"></canvas>
+    <div class="container" style="position:relative; z-index:1;">
+      <h2>Työkalut</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3><a href="https://csy.fi/ai-energy-calculator/" target="_blank" rel="noopener noreferrer">AI Energy Calculator</a></h3>
+          <p>Arvioi ja vertaile, kuinka paljon energiaa ja vettä kuluu luovassa työssä – käsin tehden tai tekoälyn avulla.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // ================
+    // TOOLS BACKGROUND
+    // ================
+    (function(){
+      const canvas = document.getElementById('tools-bg');
+      if(!canvas) return;
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
+      camera.position.z = 5;
+
+      // Points geometry
+      const count = 800;
+      const positions = new Float32Array(count * 3);
+      for(let i=0;i<count;i++){
+        positions[i*3]   = (Math.random()-0.5)*10;
+        positions[i*3+1] = (Math.random()-0.5)*6;
+        positions[i*3+2] = (Math.random()-0.5)*8;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+
+      const mat = new THREE.PointsMaterial({
+        color:0xff8142,
+        size:0.03,
+        transparent:true,
+        opacity:0.7,
+        blending:THREE.AdditiveBlending
+      });
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+
+      // Secondary layer (blue)
+      const geo2 = geo.clone();
+      const mat2 = new THREE.PointsMaterial({
+        color:0x4fa8cc,
+        size:0.02,
+        transparent:true,
+        opacity:0.6,
+        blending:THREE.AdditiveBlending
+      });
+      const points2 = new THREE.Points(geo2, mat2);
+      scene.add(points2);
+
+      // Resize
+      function resize(){
+        const rect = canvas.parentElement.getBoundingClientRect();
+        renderer.setSize(rect.width, rect.height, false);
+        camera.aspect = rect.width / rect.height;
+        camera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      let t=0;
+      function animate(){
+        requestAnimationFrame(animate);
+        t += 0.001;
+        points.rotation.y += 0.0008;
+        points2.rotation.y -= 0.001;
+        points.position.x = Math.sin(t*4)*0.1;
+        points2.position.y = Math.sin(t*3)*0.1;
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+  </script>
+
+
+  <!-- ANIMAATIO: Purkautuva kone -->
+  <section class="section-yellow" style="padding:0; overflow:hidden;">
+    <canvas id="explodeCanvas"></canvas>
+  </section>
+
+  <!-- TAVOITE -->
+  <section class="section-dark">
+    <div class="container">
+      <h2>Tavoite</h2>
+      <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
+      <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen. Tavoitteenamme on kuroa umpeen digitaalinen kuilu ja palauttaa toimijuus organisaatioille, jotta voitte kehittää tekoälyä, joka tukee ihmisen kykyä ajatella.</em></p>
+      <p>Viisas tekoälyttömyys on muistutus siitä, että teknologia tarvitsee rinnalleen aidon, ihmisen antaman huomion ja läsnäolon – asioita, joita algoritmit eivät voi väärentää.</p>
+    </div>
+  </section>
+
+  <!-- YHTEYS -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Ota yhteyttä</h2>
+      <p>Jarno Alastalo</p>
+      <p><strong>jarno@csy.fi</strong></p>
+      <p>Jarno Alastalo on tekno-filosofi, kirjailija, digitaalisten yhteisöjen rakentaja ja kissavideoiden asiantuntija, joka on suunnitellut mustia laatikoita. Hän tarkastelee teknologiaa inhimillisestä näkökulmasta: miten tekoäly, sosiaalinen media ja algoritmit muokkaavat ihmisyyttä, identiteettiä ja arvoja.</p>
+      <p><strong>CSY Lab, Y-tunnus 2578992-5 (osa MPH Making People Happy -yritystä)</strong></p>
+      <p></p>
+      <p><i>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</i></p>
+    </div>
+  </section>
+
+  <!-- THREE.JS -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <script>
+    // HERO
+    const canvas = document.getElementById('csy-scene');
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 1.4, 3.2);
+
+    function resize(){
+      const rect = document.getElementById('hero').getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height, false);
+      camera.aspect = rect.width / rect.height; 
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+
+    // Lights
+    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    const key = new THREE.PointLight(0xff8142, 1.1); key.position.set(3, 3, 3);
+    const rim = new THREE.PointLight(0x4fa8cc, 0.8); rim.position.set(-3, 2, -2);
+    scene.add(ambient, key, rim);
+
+    // Object (breathing icosahedron)
+    const geo = new THREE.IcosahedronGeometry(1, 2);
+    const mat = new THREE.MeshStandardMaterial({color:0xff8142, metalness:0.55, roughness:0.35});
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+
+    // Subtle star field
+    const starGeo = new THREE.BufferGeometry();
+    const count = 500; const arr = new Float32Array(count*3);
+    for(let i=0;i<count;i++){arr[i*3]=(Math.random()-0.5)*12; arr[i*3+1]=(Math.random()-0.5)*8; arr[i*3+2]=(Math.random()-0.5)*10;}
+    starGeo.setAttribute('position', new THREE.BufferAttribute(arr,3));
+    const starMat = new THREE.PointsMaterial({color:0x4fa8cc, size:0.02});
+    const stars = new THREE.Points(starGeo, starMat); scene.add(stars);
+
+    // Mouse parallax
+    let mx=0,my=0; window.addEventListener('mousemove', (e)=>{
+      const x = (e.clientX / window.innerWidth) * 2 - 1;
+      const y = (e.clientY / window.innerHeight) * 2 - 1;
+      mx = x*0.3; my = y*0.15;
+    });
+
+    let t=0; function tick(){
+      requestAnimationFrame(tick); t+=0.01;
+      mesh.rotation.x += 0.003; mesh.rotation.y += 0.002;
+      const s = 1 + Math.sin(t)*0.05; mesh.scale.set(s,s,s);
+      camera.position.x += (mx - camera.position.x)*0.02;
+      camera.position.y += (1.4 - my - camera.position.y)*0.02;
+      stars.rotation.y += 0.0008;
+      renderer.render(scene,camera);
+    }
+    resize(); tick();
+
+    // =========================
+    // EXPLODING CUBE - ANIMAATIO
+    // =========================
+    (function(){
+      const expCanvas = document.getElementById('explodeCanvas');
+      if(!expCanvas) return;
+
+      const expRenderer = new THREE.WebGLRenderer({canvas: expCanvas, antialias:true, alpha:true});
+      expRenderer.setPixelRatio(window.devicePixelRatio);
+      expRenderer.setClearColor(0x000000, 0);
+
+      const expScene = new THREE.Scene();
+      const expCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+      expCamera.position.set(0, 0.6, 4);
+
+      // Valot
+      const amb2 = new THREE.AmbientLight(0xffffff, 0.7);
+      const dir2 = new THREE.DirectionalLight(0xff8142, 1.1); dir2.position.set(2, 2, 3);
+      const rim2 = new THREE.PointLight(0x4fa8cc, 0.7); rim2.position.set(-2, 1.5, -2);
+      expScene.add(amb2, dir2, rim2);
+
+      // Pistepilvi
+      const step = 0.2, half = 1.2;
+      const pts = [];
+      for(let x=-half; x<=half; x+=step){
+        for(let y=-half; y<=half; y+=step){
+          for(let z=-half; z<=half; z+=step){
+            const onSurface = (
+              Math.abs(Math.abs(x)-half)<1e-6 ||
+              Math.abs(Math.abs(y)-half)<1e-6 ||
+              Math.abs(Math.abs(z)-half)<1e-6
+            );
+            if(onSurface) pts.push(x,y,z);
+          }
+        }
+      }
+
+      const basePositions = new Float32Array(pts);
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3));
+
+      const colors = new Float32Array((basePositions.length/3)*3);
+      for(let i=0;i<colors.length/3;i++){
+        const t = (i % 60) / 60;
+        const c1 = new THREE.Color(0xff8142);
+        const c2 = new THREE.Color(0x4fa8cc);
+        const c = c1.clone().lerp(c2, t);
+        colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
+      }
+      geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const matPts = new THREE.PointsMaterial({vertexColors:true, size:0.06, sizeAttenuation:true});
+      const cloud = new THREE.Points(geom, matPts);
+      expScene.add(cloud);
+
+      const normals = new Float32Array(basePositions.length);
+      for(let i=0;i<basePositions.length;i+=3){
+        const vx=basePositions[i], vy=basePositions[i+1], vz=basePositions[i+2];
+        const len=Math.hypot(vx,vy,vz)||1;
+        normals[i]=vx/len; normals[i+1]=vy/len; normals[i+2]=vz/len;
+      }
+
+      function resizeExplode(){
+        const rect = expCanvas.parentElement.getBoundingClientRect();
+        const h = 380;
+        expRenderer.setSize(rect.width, h, false);
+        expCamera.aspect = rect.width / h;
+        expCamera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', resizeExplode);
+      resizeExplode();
+
+      let tt = 0;
+      function tickExplode(){
+        requestAnimationFrame(tickExplode);
+        tt += 0.016;
+        const explodeAmount = (Math.sin(tt*0.9)*0.5 + 0.5);
+        const wobble = Math.sin(tt*2.3)*0.06;
+        const pos = geom.getAttribute('position');
+        const arr = pos.array;
+
+        for(let i=0;i<arr.length;i+=3){
+          const bx=basePositions[i], by=basePositions[i+1], bz=basePositions[i+2];
+          const nx=normals[i], ny=normals[i+1], nz=normals[i+2];
+          const amp = 0.8*explodeAmount;
+          arr[i]   = bx + nx*amp + Math.sin(tt*1.7 + bx*1.3)*wobble;
+          arr[i+1] = by + ny*amp + Math.sin(tt*1.9 + by*1.1)*wobble;
+          arr[i+2] = bz + nz*amp + Math.sin(tt*2.1 + bz*1.5)*wobble;
+        }
+        pos.needsUpdate = true;
+        cloud.rotation.y += 0.003;
+        cloud.rotation.x = Math.sin(tt*0.2)*0.08;
+        expRenderer.render(expScene, expCamera);
+      }
+      tickExplode();
+    })();
+  </script>
+</body>
+</html>
