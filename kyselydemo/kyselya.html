@@ -5,61 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sain tulokseksi: Rohkea Reissaaja!</title>
 
-    <meta property="og:url" content="https://csy.fi/kyselydemo/tulos-a.html" />
-    
+    <meta property="og:url" content="https://csy.fi/kysely/tulos-a/" />
     <meta property="og:title" content="Olen Rohkea Reissaaja - Mikä kansainvälinen seikkailija sinä olet?" />
     <meta property="og:description" content="Tein testin ja selvisi, että olen peloton reissaaja. Testaa itsesi!" />
-    
     <meta property="og:image" content="https://placehold.co/1200x630/orange/white?text=Reissaaja+Kuva" />
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="og:type" content="website" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
         .container { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .char-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
-        
         h1 { color: #2c3e50; margin: 10px 0; }
-        p { font-size: 1.1em; color: #555; margin-bottom: 30px; }
-
-        /* Jakonappien tyylit */
-        .share-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .share-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: opacity 0.3s;
-        }
-        .share-btn:hover { opacity: 0.9; }
-
-        /* Eri värit eri someille */
-        .fb { background-color: #3b5998; }
-        .wa { background-color: #25D366; }
-        .li { background-color: #0077b5; }
-        .x { background-color: #000000; }
-
-        .retry-btn {
-            display: block;
+        
+        /* QR-KOODIN TYYLIT */
+        .qr-section {
             margin-top: 30px;
-            padding: 15px;
-            background-color: #ecf0f1;
-            color: #333;
-            text-decoration: none;
-            border-radius: 8px;
+            padding-top: 20px;
+            border-top: 2px dashed #eee;
         }
-        .retry-btn:hover { background-color: #bdc3c7; }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        .instruction {
+            font-size: 0.9em;
+            color: #666;
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -67,38 +44,37 @@
     <div class="container">
         <h2>Olet eniten kuin...</h2>
         <h1>Rohkea Reissaaja</h1>
-        
         <img src="https://placehold.co/600x400/orange/white?text=Reissaaja" alt="Reissaaja" class="char-img">
-        
-        <p>Olet peloton ja aina valmis uusiin haasteisiin! Reppu selkään ja menoksi.</p>
+        <p>Olet peloton ja aina valmis uusiin haasteisiin!</p>
 
-        <h3>Jaa tuloksesi:</h3>
-        
-        <div class="share-buttons">
-            <a href="#" id="share-fb" class="share-btn fb" target="_blank">Jaa Facebookissa</a>
+        <div class="qr-section">
+            <p class="instruction">📱 <strong>Haluatko jakaa tuloksen?</strong><br>Olet messukoneella. Skannaa tämä koodi omalla puhelimellasi, niin voit jakaa tuloksen somessa!</p>
             
-            <a href="#" id="share-wa" class="share-btn wa" target="_blank">Lähetä WhatsAppissa</a>
-            
-            <a href="#" id="share-li" class="share-btn li" target="_blank">Jaa LinkedInissä</a>
-            
-            <a href="#" id="share-x" class="share-btn x" target="_blank">Jaa X:ssä</a>
+            <div id="qrcode"></div>
         </div>
 
-        <a href="kysely.html" class="retry-btn">Tee kysely uudestaan</a>
+        <a href="../index.html" class="retry-btn" style="display:block; margin-top:20px; text-decoration:none; color:#333;">⬅ Tee kysely uudestaan</a>
     </div>
 
     <script>
-        // --- TÄMÄ SKRIPTI TEKEE JAKOLINKEISTÄ TOIMIVIA ---
+        /* TÄMÄ PIENI KOODI LUO QR-KOODIN 
+           Se ottaa selaimen nykyisen osoitteen ja muuttaa sen kuvaksi.
+        */
         
-        // Hakee automaattisesti tämän sivun nykyisen osoitteen
-        const currentUrl = encodeURIComponent(window.location.href);
-        const title = encodeURIComponent("Sain tulokseksi Rohkea Reissaaja! Testaa mikä sinä olet:");
+        // 1. Haetaan nykyinen osoite (esim. csy.fi/tulos-a/)
+        // Huom: Nyt kun testaat koneellasi, se tekee QR-koodin file:// -osoitteesta.
+        // Kun laitat tämän nettiin, se toimii oikein.
+        var currentUrl = window.location.href;
 
-        // Asetetaan linkit nappeihin
-        document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
-        document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${title}%20${currentUrl}`;
-        document.getElementById('share-li').href = `https://www.linkedin.com/sharing/share-offsite/?url=${currentUrl}`;
-        document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${title}&url=${currentUrl}`;
+        // 2. Piirretään QR-koodi laatikkoon, jonka id on "qrcode"
+        new QRCode(document.getElementById("qrcode"), {
+            text: currentUrl,
+            width: 150,
+            height: 150,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
     </script>
 
 </body>
