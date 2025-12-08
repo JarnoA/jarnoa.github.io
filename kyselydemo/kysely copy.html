@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikä hahmo olet? - Demo</title>
+    <style>
+        /* PERUSTYYLIT (CSS) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 { color: #2c3e50; margin-bottom: 20px; }
+        p { font-size: 1.1em; line-height: 1.6; margin-bottom: 30px; }
+
+        /* Kuvat */
+        .char-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Napit */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+            text-align: left;
+        }
+
+        .btn:hover { background-color: #2980b9; }
+
+        .start-btn {
+            background-color: #27ae60;
+            text-align: center;
+            font-weight: bold;
+        }
+        .start-btn:hover { background-color: #219150; }
+
+        .hidden { display: none; }
+
+        /* Palkki joka näyttää etenemisen */
+        .progress-bar {
+            width: 100%;
+            background-color: #eee;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Tulosnäkymä */
+        .result-box {
+            border: 2px solid #3498db;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #eaf6ff;
+        }
+        .share-btn {
+            background-color: #3b5998; /* Facebook sininen */
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="quiz-container">
+        <div id="intro">
+            <h1>Mikä kansainvälinen seikkailija olet?</h1>
+            <p>Vastaa 9 kysymykseen ja selvitä, ketä nuorisotyön seikkailijaa muistutat eniten! Tämä on tekninen demo.</p>
+            <button class="btn start-btn" onclick="startQuiz()">Aloita kysely</button>
+        </div>
+
+        <div id="question-screen" class="hidden">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <h2 id="question-text">Kysymys tulee tähän</h2>
+            <div id="answers">
+                </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h2>Olet eniten kuin...</h2>
+            <div class="result-box">
+                <img id="result-img" src="" alt="Hahmo" class="char-img">
+                <h3 id="result-title">Hahmon Nimi</h3>
+                <p id="result-desc">Kuvaus hahmosta tulee tähän.</p>
+            </div>
+            <button class="btn start-btn" onclick="location.reload()">Tee uudestaan</button>
+            <button class="btn share-btn" onclick="alert('Tässä aukeaisi Facebook-jakoikkuna!')">Jaa tulos Facebookissa</button>
+        </div>
+    </div>
+
+    <script>
+        /* LOGIIKKA (JavaScript) */
+        
+        // 1. Määritellään Hahmot (5 kpl)
+        const characters = {
+            'A': { name: "Rohkea Reissaaja", desc: "Olet peloton ja aina valmis uusiin haasteisiin!", img: "https://placehold.co/400x300/orange/white?text=Reissaaja" },
+            'B': { name: "Kulttuuri Kaisa", desc: "Rakastat syventyä uusiin kulttuureihin ja oppia kieliä.", img: "https://placehold.co/400x300/purple/white?text=Kulttuuri" },
+            'C': { name: "Suunnitelmallinen Saku", desc: "Pidät langat käsissäsi ja organisoit kaiken täydellisesti.", img: "https://placehold.co/400x300/blue/white?text=Saku" },
+            'D': { name: "Empaattinen Eevi", desc: "Tärkeintä sinulle on ihmisten kohtaaminen ja hyvinvointi.", img: "https://placehold.co/400x300/pink/white?text=Eevi" },
+            'E': { name: "Innovatiivinen Ismo", desc: "Keksit aina uusia tapoja tehdä asioita ja ratkaista ongelmia.", img: "https://placehold.co/400x300/green/white?text=Ismo" }
+        };
+
+        // 2. Määritellään Kysymykset (Tässä demossa 4, oikeasti 9)
+        // 'target' kertoo, kenelle hahmolle piste menee
+        const questions = [
+            {
+                text: "Miten valmistaudut matkaan?",
+                options: [
+                    { text: "Pakkaan repun ja lähden heti!", target: 'A' },
+                    { text: "Opiskelen kohdemaan historiaa kirjastossa.", target: 'B' },
+                    { text: "Teen Excel-taulukon aikatauluista.", target: 'C' },
+                    { text: "Varmistan, että kaikilla muilla on passi mukana.", target: 'D' },
+                    { text: "Etsin äpillä siisteimmät startup-tapahtumat.", target: 'E' }
+                ]
+            },
+            {
+                text: "Mikä on pahin painajaisesi reissussa?",
+                options: [
+                    { text: "Joutua olemaan paikallaan hotellissa.", target: 'A' },
+                    { text: "Että en ymmärrä paikallista kieltä.", target: 'B' },
+                    { text: "Bussi on myöhässä 5 minuuttia.", target: 'C' },
+                    { text: "Joku matkaseurueesta pahoittaa mielensä.", target: 'D' },
+                    { text: "Netti ei toimi.", target: 'E' }
+                ]
+            },
+            {
+                text: "Mitä teet vapaa-ajalla?",
+                options: [
+                    { text: "Kiipeilen tai urheilen.", target: 'A' },
+                    { text: "Käyn museoissa tai teatterissa.", target: 'B' },
+                    { text: "Järjestelen kotia.", target: 'C' },
+                    { text: "Kahvittelen ystävien kanssa.", target: 'D' },
+                    { text: "Koodaan tai rakennan legoja.", target: 'E' }
+                ]
+            },
+            // Lisää kysymyksiä voi lisätä tähän listaan...
+        ];
+
+        let currentQuestion = 0;
+        let scores = { 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0 };
+
+        // Aloita kysely
+        function startQuiz() {
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('question-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        // Näytä kysymys
+        function showQuestion() {
+            let q = questions[currentQuestion];
+            document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + q.text;
+            
+            let answersDiv = document.getElementById('answers');
+            answersDiv.innerHTML = ""; // Tyhjennä vanhat
+
+            // Päivitä palkki
+            let progressPercent = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progress').style.width = progressPercent + "%";
+
+            // Luo napit
+            q.options.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => handleAnswer(opt.target);
+                answersDiv.appendChild(btn);
+            });
+        }
+
+        // Käsittele vastaus
+        function handleAnswer(targetChar) {
+            scores[targetChar]++; // Lisää piste hahmolle
+            
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // Laske ja näytä tulos
+        function showResult() {
+            document.getElementById('question-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Etsi kenellä on eniten pisteitä
+            let winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            
+            let resultData = characters[winner];
+
+            document.getElementById('result-title').innerText = resultData.name;
+            document.getElementById('result-desc').innerText = resultData.desc;
+            document.getElementById('result-img').src = resultData.img;
+        }
+    </script>
+</body>
+</html>
