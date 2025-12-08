@@ -6,8 +6,8 @@
     <title>Sain tulokseksi: Rohkea Reissaaja!</title>
 
     <meta property="og:url" content="https://csy.fi/kysely/tulos-a/" />
-    <meta property="og:title" content="Olen Rohkea Reissaaja - Mikä kansainvälinen seikkailija sinä olet?" />
-    <meta property="og:description" content="Tein testin ja selvisi, että olen peloton reissaaja. Testaa itsesi!" />
+    <meta property="og:title" content="Olen Rohkea Reissaaja - Mikä sinä olet?" />
+    <meta property="og:description" content="Tein testin ja selvisi, että olen peloton reissaaja." />
     <meta property="og:image" content="https://placehold.co/1200x630/orange/white?text=Reissaaja+Kuva" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -16,27 +16,14 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
         .container { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .char-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
-        h1 { color: #2c3e50; margin: 10px 0; }
         
-        /* QR-KOODIN TYYLIT */
-        .qr-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px dashed #eee;
-        }
-        #qrcode {
-            display: flex;
-            justify-content: center;
-            margin: 15px 0;
-        }
-        .instruction {
-            font-size: 0.9em;
-            color: #666;
-            background: #fff3cd;
-            padding: 10px;
-            border-radius: 5px;
-            display: inline-block;
-        }
+        /* Oletuksena piilotetaan molemmat, JavaScript näyttää oikean */
+        #kiosk-view { display: none; }
+        #mobile-view { display: none; }
+
+        .share-btn { display: block; padding: 12px; margin: 5px 0; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; background-color: #3b5998; }
+        .qr-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px dashed #ccc; }
+        #qrcode { display: flex; justify-content: center; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -47,34 +34,53 @@
         <img src="https://placehold.co/600x400/orange/white?text=Reissaaja" alt="Reissaaja" class="char-img">
         <p>Olet peloton ja aina valmis uusiin haasteisiin!</p>
 
-        <div class="qr-section">
-            <p class="instruction">📱 <strong>Haluatko jakaa tuloksen?</strong><br>Olet messukoneella. Skannaa tämä koodi omalla puhelimellasi, niin voit jakaa tuloksen somessa!</p>
-            
-            <div id="qrcode"></div>
+        <div id="kiosk-view">
+            <div class="qr-box">
+                <h3>📱 Jaa tulos omalla puhelimella</h3>
+                <p>Skannaa koodi, niin tulos siirtyy puhelimeesi ja voit jakaa sen!</p>
+                <div id="qrcode"></div>
+            </div>
+            <a href="../../index.html" class="share-btn" style="background:#7f8c8d; margin-top:20px;">⬅ Palaa alkuun (Seuraava vastaaja)</a>
         </div>
 
-        <a href="../index.html" class="retry-btn" style="display:block; margin-top:20px; text-decoration:none; color:#333;">⬅ Tee kysely uudestaan</a>
+        <div id="mobile-view">
+            <h3>Jaa tuloksesi somessa:</h3>
+            <a href="#" id="share-fb" class="share-btn">Jaa Facebookissa</a>
+            <a href="#" id="share-wa" class="share-btn" style="background:#25D366;">Lähetä WhatsAppissa</a>
+            
+            <a href="../../index.html" class="share-btn" style="background:#7f8c8d; margin-top:20px;">Tee testi uudestaan</a>
+        </div>
     </div>
 
     <script>
-        /* TÄMÄ PIENI KOODI LUO QR-KOODIN 
-           Se ottaa selaimen nykyisen osoitteen ja muuttaa sen kuvaksi.
-        */
-        
-        // 1. Haetaan nykyinen osoite (esim. csy.fi/tulos-a/)
-        // Huom: Nyt kun testaat koneellasi, se tekee QR-koodin file:// -osoitteesta.
-        // Kun laitat tämän nettiin, se toimii oikein.
-        var currentUrl = window.location.href;
+        // 1. TARKISTETAAN OLLAANKO MESSUILLA VAI PUHELIMELLA
+        const params = new URLSearchParams(window.location.search);
+        const isKiosk = params.get('source') === 'kiosk';
 
-        // 2. Piirretään QR-koodi laatikkoon, jonka id on "qrcode"
-        new QRCode(document.getElementById("qrcode"), {
-            text: currentUrl,
-            width: 150,
-            height: 150,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        });
+        // Määritetään puhdas osoite (ilman ?source=kiosk -sotkua)
+        // TÄRKEÄÄ: Tämä "window.location.origin + window.location.pathname" poistaa kysymysmerkit
+        const cleanUrl = window.location.origin + window.location.pathname; 
+
+        if (isKiosk) {
+            // OLLAAN MESSUILLA -> Näytä QR-koodi
+            document.getElementById('kiosk-view').style.display = 'block';
+
+            // Luo QR-koodi puhtaasta osoitteesta
+            new QRCode(document.getElementById("qrcode"), {
+                text: cleanUrl, // Tässä ei ole ?source=kiosk mukana
+                width: 180,
+                height: 180
+            });
+
+        } else {
+            // OLLAAN PUHELIMELLA -> Näytä some-napit
+            document.getElementById('mobile-view').style.display = 'block';
+
+            // Päivitä some-linkit
+            const shareTitle = "Olen Rohkea Reissaaja! Testaa itsesi:";
+            document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cleanUrl)}`;
+            document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${shareTitle}%20${encodeURIComponent(cleanUrl)}`;
+        }
     </script>
 
 </body>
