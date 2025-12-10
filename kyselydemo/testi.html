@@ -49,9 +49,24 @@
             background-color: #e2e8f0;
             position: relative;
             overflow: hidden;
+            /* Taivaan väri */
             background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
         }
         
+        /* --- UUSI ELEMENTTI: AURINKO --- */
+        .sun {
+            width: 45px;
+            height: 45px;
+            background: #FFD54F; /* Lämmin keltainen */
+            border-radius: 50%;
+            position: absolute;
+            top: 25px;
+            left: 10%; /* Aloituskohta */
+            box-shadow: 0 0 25px rgba(255, 213, 79, 0.6); /* Hehku */
+            transition: left 0.8s ease-in-out, top 0.8s ease-in-out; /* Pehmeä liike */
+            z-index: 1; /* Alin taso elementeistä (vuorten takana) */
+        }
+
         .mountain {
             position: absolute;
             bottom: -20px;
@@ -60,6 +75,7 @@
             background: #6C63FF;
             border-radius: 100% 100% 0 0;
             opacity: 0.8;
+            z-index: 5; /* Auringon edessä */
         }
         .mountain-2 {
             background: #3B2F99;
@@ -68,6 +84,7 @@
             bottom: -40px;
             height: 120px;
             opacity: 0.9;
+            z-index: 5; /* Auringon edessä */
         }
 
         .character-avatar {
@@ -76,7 +93,7 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
+            z-index: 10; /* Kaiken päällä */
             filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
             transition: left 0.5s ease-in-out;
         }
@@ -92,11 +109,11 @@
 
         h1 {
             font-weight: 800;
-            font-size: 24px; /* Hieman pienennetty jotta mahtuu paremmin */
+            font-size: 24px;
             margin: 0 0 15px 0;
             line-height: 1.2;
             color: var(--text-dark);
-            min-height: 60px; /* Estää hyppimisen kun teksti vaihtuu */
+            min-height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,7 +209,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Uusi luokka tekstin vaihtumis-animaatiolle */
         .slide-text { animation: slideText 0.4s ease-out; }
         @keyframes slideText {
             from { opacity: 0; transform: translateX(10px); }
@@ -206,6 +222,8 @@
     <div class="app-container">
         
         <div class="header-scene">
+            <div class="sun" id="sun"></div>
+
             <div class="mountain mountain-2"></div>
             <div class="mountain"></div>
             <div class="character-avatar" id="avatar">🎒</div>
@@ -290,8 +308,19 @@
             let progressPercent = ((index) / questions.length) * 100 + 10;
             document.getElementById('progress').style.width = progressPercent + '%';
             
-            // Liikutetaan hahmoa
+            // Liikutetaan hahmoa (reppua)
             document.getElementById('avatar').style.left = (30 + (index * 25)) + '%';
+
+            // --- AURINGON LIIKE ---
+            // Lasketaan auringon sijainti. 
+            // Kysymys 1: Vasen laita (15%) -> Kysymys 3: Oikea laita (85%)
+            let sunPercent = 15; // Aloituskohta
+            if (questions.length > 1) {
+                // Skaalaa liike kysymysten määrän mukaan
+                sunPercent = 15 + (index / (questions.length - 1)) * 70;
+            }
+            document.getElementById('sun').style.left = sunPercent + '%';
+
 
             // Haetaan data
             const q = questions[index];
@@ -340,7 +369,12 @@
             const avatar = document.getElementById('avatar');
             avatar.style.left = '50%';
             avatar.innerHTML = '🦁'; 
+            
+            // Palkki täyteen
             document.getElementById('progress').style.width = '100%';
+            
+            // Aurinko "laskee" tai menee keskelle (valinnainen tyyli)
+            // Tässä se pysyy viimeisessä kohdassa, mikä näyttää hyvältä.
         }
     </script>
 
