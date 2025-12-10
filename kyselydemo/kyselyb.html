@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sain tulokseksi: Rohkea Reissaaja!</title>
+
+    <meta property="og:url" content="https://csy.fi/kysely/tulos-a/" />
+    <meta property="og:title" content="Olen Rohkea Reissaaja - Mikä sinä olet?" />
+    <meta property="og:description" content="Tein testin ja selvisi, että olen peloton reissaaja." />
+    <meta property="og:image" content="https://placehold.co/1200x630/orange/white?text=Reissaaja+Kuva" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: white; padding: 40px; border-radius: 15px; text-align: center; max-width: 500px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .char-img { width: 100%; border-radius: 10px; margin-bottom: 20px; }
+        
+        /* Piilotetaan näkymät aluksi */
+        #kiosk-view, #mobile-view, #fallback-buttons { display: none; }
+
+        /* Tyylikäs iso päänappi */
+        .main-share-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background-color: #3498db;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px; /* Pyöreä nappi */
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            text-decoration: none;
+            margin-bottom: 20px;
+        }
+        .main-share-btn:hover { background-color: #2980b9; }
+
+        /* Pienemmät varanapit (jos native share ei toimi) */
+        .fallback-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 0.9em;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .fb { background: #3b5998; }
+        .wa { background: #25D366; }
+        
+        .qr-box { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px dashed #ccc; }
+        #qrcode { display: flex; justify-content: center; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Olet eniten kuin...</h2>
+        <h1>Rohkea Reissaaja</h1>
+        <img src="https://placehold.co/600x400/orange/white?text=Reissaaja" alt="Reissaaja" class="char-img">
+        <p>Olet peloton ja aina valmis uusiin haasteisiin!</p>
+
+        <div id="kiosk-view">
+            <div class="qr-box">
+                <h3>📱 Jaa tulos omalla puhelimella</h3>
+                <p>Skannaa koodi, niin tulos siirtyy puhelimeesi ja voit jakaa sen (Telegram, WA, yms)!</p>
+                <div id="qrcode"></div>
+            </div>
+            <a href="../../index.html" class="fallback-btn" style="background:#7f8c8d; display:block; margin-top:20px;">⬅ Seuraava vastaaja</a>
+        </div>
+
+        <div id="mobile-view">
+            
+            <button id="native-share-btn" class="main-share-btn">
+                📤 Jaa tuloksesi
+            </button>
+
+            <div id="fallback-buttons">
+                <p style="font-size:0.9em; color:#777;">Tai valitse:</p>
+                <a href="#" id="share-fb" class="fallback-btn fb">Facebook</a>
+                <a href="#" id="share-wa" class="fallback-btn wa">WhatsApp</a>
+            </div>
+
+            <a href="../../index.html" class="fallback-btn" style="background:#95a5a6; margin-top:30px; display:block;">Tee testi uudestaan</a>
+        </div>
+    </div>
+
+    <script>
+        // ASETUKSET
+        const params = new URLSearchParams(window.location.search);
+        const isKiosk = params.get('source') === 'kiosk';
+        const cleanUrl = window.location.origin + window.location.pathname; 
+        const shareTitle = "Olen Rohkea Reissaaja! Testaa itsesi:";
+        const shareText = "Tein Seikkailija-testin ja tulokseni osui oikeaan. Katso täältä:";
+
+        if (isKiosk) {
+            // --- MESSUTILA ---
+            document.getElementById('kiosk-view').style.display = 'block';
+            new QRCode(document.getElementById("qrcode"), {
+                text: cleanUrl,
+                width: 180,
+                height: 180
+            });
+        } else {
+            // --- PUHELINTILA ---
+            document.getElementById('mobile-view').style.display = 'block';
+            
+            const shareBtn = document.getElementById('native-share-btn');
+            
+            // Logiikka: Jos selain tukee yleistä jakoa, käytetään sitä.
+            shareBtn.addEventListener('click', async () => {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: shareTitle,
+                            text: shareText,
+                            url: cleanUrl
+                        });
+                        console.log('Jako onnistui');
+                    } catch (err) {
+                        console.log('Jako peruttiin', err);
+                    }
+                } else {
+                    // Jos ei tukea (esim. vanha PC), näytetään nappilista
+                    alert("Selaimesi ei tue suoraa jakoa. Kopioi osoite tai käytä alla olevia nappeja.");
+                    document.getElementById('fallback-buttons').style.display = 'block';
+                }
+            });
+
+            // Päivitetään varanapit varmuuden vuoksi
+            document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cleanUrl)}`;
+            document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(cleanUrl)}`;
+        }
+    </script>
+</body>
+</html>
