@@ -3,235 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikä hahmo olet? - Demo</title>
+    <title>Seikkailijatesti</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
     <style>
-        /* PERUSTYYLIT (CSS) */
+        :root {
+            --primary: #6C63FF; /* Moderni violetti */
+            --primary-dark: #5243aa;
+            --accent: #FF6584; /* Pirteä korostusväri */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: #ffffff;
+            --text-dark: #2D3748;
+            --text-light: #718096;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: var(--text-dark);
         }
 
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 600px;
+        /* --- KORTTI (The App View) --- */
+        .app-container {
+            background: var(--card-bg);
             width: 100%;
+            max-width: 380px; /* Mobiilioptimoitu kapea näkymä */
+            height: 90vh;
+            max-height: 800px;
+            border-radius: 30px; /* Todella pyöreät kulmat */
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); /* Iso, pehmeä varjo */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- YLÄOSA (Header / Maisema) --- */
+        .header-scene {
+            height: 35%;
+            background-color: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            /* Moderni abstrakti tausta kuvan tilalla */
+            background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
+        }
+        
+        /* CSS-vuoret (korvaavat kuvat demossa) */
+        .mountain {
+            position: absolute;
+            bottom: -20px;
+            width: 100%;
+            height: 100px;
+            background: #6C63FF;
+            border-radius: 100% 100% 0 0;
+            opacity: 0.8;
+        }
+        .mountain-2 {
+            background: #3B2F99;
+            width: 120%;
+            left: -10%;
+            bottom: -40px;
+            height: 120px;
+            opacity: 0.9;
+        }
+
+        /* Hahmo maisemassa */
+        .character-avatar {
+            font-size: 60px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+            transition: left 0.5s ease-in-out;
+        }
+
+        /* --- SISÄLTÖALUE --- */
+        .content-area {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             text-align: center;
         }
 
-        h1 { color: #2c3e50; margin-bottom: 20px; }
-        p { font-size: 1.1em; line-height: 1.6; margin-bottom: 30px; }
+        h1 {
+            font-weight: 800;
+            font-size: 28px;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
 
-        /* Kuvat */
-        .char-img {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            border-radius: 10px;
+        h2 {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 20px;
         }
 
-        /* Napit */
+        p {
+            color: var(--text-light);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* --- MODERNIT NAPIT --- */
         .btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background-color: #3498db;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
+            padding: 16px 20px;
+            border-radius: 50px; /* "Pill" shape */
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
-            text-align: left;
-        }
-
-        .btn:hover { background-color: #2980b9; }
-
-        .start-btn {
-            background-color: #27ae60;
-            text-align: center;
-            font-weight: bold;
-        }
-        .start-btn:hover { background-color: #219150; }
-
-        .hidden { display: none; }
-
-        /* Palkki joka näyttää etenemisen */
-        .progress-bar {
             width: 100%;
-            background-color: #eee;
-            height: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3); /* Värillinen varjo */
+            transition: all 0.2s ease;
+            position: relative;
             overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* --- ETENEMISPALKKI (Capsule Style) --- */
+        .progress-wrapper {
+            width: 100%;
+            background: #EDF2F7;
+            height: 10px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
         }
         .progress-fill {
             height: 100%;
-            background-color: #3498db;
-            width: 0%;
-            transition: width 0.3s ease;
+            background: var(--accent);
+            width: 10%;
+            border-radius: 20px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Tulosnäkymä */
-        .result-box {
-            border: 2px solid #3498db;
-            padding: 20px;
-            border-radius: 10px;
-            background-color: #eaf6ff;
+        /* --- TULOSNÄKYMÄN SPESIAALIT --- */
+        .qr-placeholder {
+            background: #F7FAFC;
+            border: 2px dashed #CBD5E0;
+            border-radius: 20px;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #A0AEC0;
+            font-weight: 600;
         }
-        .share-btn {
-            background-color: #3b5998; /* Facebook sininen */
-            text-align: center;
-            margin-top: 20px;
+
+        /* Piilotetaan näkymät aluksi */
+        #view-question, #view-result { display: none; }
+
+        /* Animaatio sisääntulolle */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
     </style>
 </head>
 <body>
 
-    <div class="container" id="quiz-container">
-        <div id="intro">
-            <h1>Mikä kansainvälinen seikkailija olet?</h1>
-            <p>Vastaa 9 kysymykseen ja selvitä, ketä nuorisotyön seikkailijaa muistutat eniten! Tämä on tekninen demo.</p>
-            <button class="btn start-btn" onclick="startQuiz()">Aloita kysely</button>
+    <div class="app-container">
+        
+        <div class="header-scene">
+            <div class="mountain mountain-2"></div>
+            <div class="mountain"></div>
+            <div class="character-avatar" id="avatar">🎒</div>
         </div>
 
-        <div id="question-screen" class="hidden">
-            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-            <h2 id="question-text">Kysymys tulee tähän</h2>
-            <div id="answers">
-                </div>
-        </div>
-
-        <div id="result-screen" class="hidden">
-            <h2>Olet eniten kuin...</h2>
-            <div class="result-box">
-                <img id="result-img" src="" alt="Hahmo" class="char-img">
-                <h3 id="result-title">Hahmon Nimi</h3>
-                <p id="result-desc">Kuvaus hahmosta tulee tähän.</p>
+        <div class="content-area">
+            
+            <div id="view-start" class="fade-in">
+                <h2>Seikkailijatesti</h2>
+                <h1>Löydä sisäinen sankarisi</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Oletko valmis matkaan?</p>
+                <button class="btn" onclick="goToQuestion()">Aloita Seikkailu →</button>
             </div>
-            <button class="btn start-btn" onclick="location.reload()">Tee uudestaan</button>
-            <button class="btn share-btn" onclick="alert('Tässä aukeaisi Facebook-jakoikkuna!')">Jaa tulos Facebookissa</button>
+
+            <div id="view-question">
+                <div class="progress-wrapper">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+                
+                <h2>Kysymys 1 / 3</h2>
+                <h1 style="font-size: 22px; margin-bottom: 30px;">Edessäsi aukeaa tuntematon polku. Mitä teet?</h1>
+
+                <button class="btn btn-outline" onclick="nextStep()">Juoksen katsomaan!</button>
+                <button class="btn btn-outline" onclick="nextStep()">Tutkin karttaa ensin.</button>
+                <button class="btn btn-outline" onclick="nextStep()">Odotan muita.</button>
+            </div>
+
+            <div id="view-result">
+                <h1>Olet Rohkea Reissaaja!</h1>
+                <p style="margin-bottom: 15px;">Peloton ja aina valmis uusiin haasteisiin.</p>
+                
+                <div class="qr-placeholder">
+                    QR-KOODI
+                </div>
+                
+                <p style="font-size: 13px; color: #A0AEC0;">Skannaa ja jaa tulos puhelimellasi</p>
+                
+                <button class="btn" style="background: #2D3748; margin-top: 10px;" onclick="location.reload()">Seuraava vastaaja ↻</button>
+            </div>
+
         </div>
     </div>
 
     <script>
-        /* LOGIIKKA (JavaScript) */
-        
-        // 1. Määritellään Hahmot (5 kpl)
-        const characters = {
-            'A': { name: "Rohkea Reissaaja", desc: "Olet peloton ja aina valmis uusiin haasteisiin!", img: "https://placehold.co/400x300/orange/white?text=Reissaaja" },
-            'B': { name: "Kulttuuri Kaisa", desc: "Rakastat syventyä uusiin kulttuureihin ja oppia kieliä.", img: "https://placehold.co/400x300/purple/white?text=Kulttuuri" },
-            'C': { name: "Suunnitelmallinen Saku", desc: "Pidät langat käsissäsi ja organisoit kaiken täydellisesti.", img: "https://placehold.co/400x300/blue/white?text=Saku" },
-            'D': { name: "Empaattinen Eevi", desc: "Tärkeintä sinulle on ihmisten kohtaaminen ja hyvinvointi.", img: "https://placehold.co/400x300/pink/white?text=Eevi" },
-            'E': { name: "Innovatiivinen Ismo", desc: "Keksit aina uusia tapoja tehdä asioita ja ratkaista ongelmia.", img: "https://placehold.co/400x300/green/white?text=Ismo" }
-        };
+        // Yksinkertainen demo-logiikka
+        let step = 1;
 
-        // 2. Määritellään Kysymykset (Tässä demossa 4, oikeasti 9)
-        // 'target' kertoo, kenelle hahmolle piste menee
-        const questions = [
-            {
-                text: "Miten valmistaudut matkaan?",
-                options: [
-                    { text: "Pakkaan repun ja lähden heti!", target: 'A' },
-                    { text: "Opiskelen kohdemaan historiaa kirjastossa.", target: 'B' },
-                    { text: "Teen Excel-taulukon aikatauluista.", target: 'C' },
-                    { text: "Varmistan, että kaikilla muilla on passi mukana.", target: 'D' },
-                    { text: "Etsin äpillä siisteimmät startup-tapahtumat.", target: 'E' }
-                ]
-            },
-            {
-                text: "Mikä on pahin painajaisesi reissussa?",
-                options: [
-                    { text: "Joutua olemaan paikallaan hotellissa.", target: 'A' },
-                    { text: "Että en ymmärrä paikallista kieltä.", target: 'B' },
-                    { text: "Bussi on myöhässä 5 minuuttia.", target: 'C' },
-                    { text: "Joku matkaseurueesta pahoittaa mielensä.", target: 'D' },
-                    { text: "Netti ei toimi.", target: 'E' }
-                ]
-            },
-            {
-                text: "Mitä teet vapaa-ajalla?",
-                options: [
-                    { text: "Kiipeilen tai urheilen.", target: 'A' },
-                    { text: "Käyn museoissa tai teatterissa.", target: 'B' },
-                    { text: "Järjestelen kotia.", target: 'C' },
-                    { text: "Kahvittelen ystävien kanssa.", target: 'D' },
-                    { text: "Koodaan tai rakennan legoja.", target: 'E' }
-                ]
-            },
-            // Lisää kysymyksiä voi lisätä tähän listaan...
-        ];
-
-        let currentQuestion = 0;
-        let scores = { 'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0 };
-
-        // Aloita kysely
-        function startQuiz() {
-            document.getElementById('intro').classList.add('hidden');
-            document.getElementById('question-screen').classList.remove('hidden');
-            showQuestion();
+        function goToQuestion() {
+            document.getElementById('view-start').style.display = 'none';
+            document.getElementById('view-question').style.display = 'block';
+            document.getElementById('view-question').classList.add('fade-in');
+            updateProgress(20);
         }
 
-        // Näytä kysymys
-        function showQuestion() {
-            let q = questions[currentQuestion];
-            document.getElementById('question-text').innerText = (currentQuestion + 1) + ". " + q.text;
-            
-            let answersDiv = document.getElementById('answers');
-            answersDiv.innerHTML = ""; // Tyhjennä vanhat
-
-            // Päivitä palkki
-            let progressPercent = ((currentQuestion) / questions.length) * 100;
-            document.getElementById('progress').style.width = progressPercent + "%";
-
-            // Luo napit
-            q.options.forEach(opt => {
-                let btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.innerText = opt.text;
-                btn.onclick = () => handleAnswer(opt.target);
-                answersDiv.appendChild(btn);
-            });
-        }
-
-        // Käsittele vastaus
-        function handleAnswer(targetChar) {
-            scores[targetChar]++; // Lisää piste hahmolle
-            
-            currentQuestion++;
-            
-            if (currentQuestion < questions.length) {
-                showQuestion();
+        function nextStep() {
+            if (step < 3) {
+                // Simuloidaan kysymyksen vaihtoa (demossa vain teksti pysyy samana)
+                step++;
+                // Hahmo liikkuu maisemassa
+                document.getElementById('avatar').style.left = (50 + (step * 15)) + '%';
+                updateProgress(20 + (step * 20));
             } else {
-                showResult();
+                // Mennään tulokseen
+                document.getElementById('view-question').style.display = 'none';
+                document.getElementById('view-result').style.display = 'block';
+                document.getElementById('view-result').classList.add('fade-in');
+                document.getElementById('avatar').style.left = '50%';
+                document.getElementById('avatar').innerHTML = '🦁'; // Hahmo muuttuu tulokseksi
             }
         }
 
-        // Laske ja näytä tulos
-        function showResult() {
-            document.getElementById('question-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-
-            // Etsi kenellä on eniten pisteitä
-            let winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            
-            let resultData = characters[winner];
-
-            document.getElementById('result-title').innerText = resultData.name;
-            document.getElementById('result-desc').innerText = resultData.desc;
-            document.getElementById('result-img').src = resultData.img;
+        function updateProgress(percent) {
+            document.getElementById('progress').style.width = percent + '%';
         }
     </script>
+
 </body>
 </html>
