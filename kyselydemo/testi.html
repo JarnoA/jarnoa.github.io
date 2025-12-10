@@ -3,24 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seikkailijatesti Demo</title>
+    <title>Seikkailijatesti - Demo</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #6C63FF;
-            --primary-dark: #5243aa;
-            --accent: #FF6584;
-            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --card-bg: #ffffff;
+            --primary: #4A90E2;
+            --accent: #FF6B6B;
             --text-dark: #2D3748;
             --text-light: #718096;
+            --card-bg: #ffffff;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: var(--bg-gradient);
+            background: #2c3e50;
             margin: 0;
             padding: 0;
             display: flex;
@@ -37,67 +35,92 @@
             height: 90vh;
             max-height: 800px;
             border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
+        /* --- SCENE --- */
         .header-scene {
-            height: 35%;
-            background-color: #e2e8f0;
+            height: 45%;
             position: relative;
             overflow: hidden;
-            /* Taivaan väri */
-            background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
+            /* LUKITTU: Iltarusko */
+            background: linear-gradient(to bottom, #FF9966 0%, #FF5E62 100%);
         }
         
-        /* --- UUSI ELEMENTTI: AURINKO --- */
         .sun {
-            width: 45px;
-            height: 45px;
-            background: #FFD54F; /* Lämmin keltainen */
+            width: 50px; height: 50px;
+            background: #FFD54F;
             border-radius: 50%;
             position: absolute;
-            top: 25px;
-            left: 10%; /* Aloituskohta */
-            box-shadow: 0 0 25px rgba(255, 213, 79, 0.6); /* Hehku */
-            transition: left 0.8s ease-in-out, top 0.8s ease-in-out; /* Pehmeä liike */
-            z-index: 1; /* Alin taso elementeistä (vuorten takana) */
+            top: 40px; left: 15%;
+            box-shadow: 0 0 30px rgba(255, 213, 79, 0.4);
+            z-index: 1;
+            transition: transform 1s ease-out; 
         }
 
-        .mountain {
+        /* Vuoristot */
+        .layer {
             position: absolute;
+            bottom: 0; left: 0;
+            width: 150%; height: 100%;
+            background-repeat: no-repeat;
+            background-position: bottom left;
+            background-size: cover;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            pointer-events: none;
+        }
+
+        .layer-back {
+            z-index: 2;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath fill='%23642B73' fill-opacity='0.6' d='M0,320 L0,150 L150,50 L300,180 L450,80 L600,200 L750,60 L900,160 L1050,40 L1200,140 L1200,320 Z'/%3E%3C/svg%3E");
+            bottom: -10px;
+        }
+        .layer-mid {
+            z-index: 3;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 320' preserveAspectRatio='none'%3E%3Cpath fill='%23C6426E' fill-opacity='0.8' d='M0,320 L0,200 L200,80 L400,220 L600,100 L800,240 L1000,90 L1200,210 L1200,320 Z'/%3E%3C/svg%3E");
             bottom: -20px;
-            width: 100%;
-            height: 100px;
-            background: #6C63FF;
-            border-radius: 100% 100% 0 0;
-            opacity: 0.8;
-            z-index: 5; /* Auringon edessä */
         }
-        .mountain-2 {
-            background: #3B2F99;
-            width: 120%;
-            left: -10%;
-            bottom: -40px;
-            height: 120px;
-            opacity: 0.9;
-            z-index: 5; /* Auringon edessä */
+        .layer-ground {
+            z-index: 4; height: 40px; width: 100%;
+            background: #2D3748; bottom: 0; position: absolute;
         }
 
-        .character-avatar {
-            font-size: 60px;
+        /* --- HAHMOT --- */
+        
+        /* Pelaaja (Jänis) */
+        .character-container {
+            width: 85px; height: 85px;
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10; /* Kaiken päällä */
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
-            transition: left 0.5s ease-in-out;
+            bottom: 25px; left: 20%; /* Aloituskohta */
+            z-index: 10;
+            transition: left 0.8s ease-in-out;
+            filter: drop-shadow(0 5px 8px rgba(0,0,0,0.3));
         }
 
+        /* Tulos-hahmo (Leijona) - Aluksi piilossa */
+        .result-hero {
+            width: 130px; height: 130px; /* Suurempi kuin jänis */
+            position: absolute;
+            bottom: 20px; 
+            left: 65%; /* Tulee oikealle puolelle */
+            z-index: 11;
+            transform: translateY(100px) scale(0.8); /* Piilossa alhaalla */
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* "Pop-up" efekti */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.4));
+        }
+        
+        /* Luokka joka paljastaa tuloshahmon */
+        .result-hero.reveal {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* --- UI --- */
         .content-area {
             padding: 30px;
             flex-grow: 1;
@@ -105,114 +128,40 @@
             flex-direction: column;
             justify-content: center;
             text-align: center;
+            background: white;
+            z-index: 20;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -10px 20px rgba(0,0,0,0.05);
         }
 
-        h1 {
-            font-weight: 800;
-            font-size: 24px;
-            margin: 0 0 15px 0;
-            line-height: 1.2;
-            color: var(--text-dark);
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        h2 {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: var(--text-light);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
+        h1 { font-weight: 800; font-size: 22px; margin: 0 0 10px 0; color: var(--text-dark); line-height: 1.2; }
+        h2 { font-weight: 600; font-size: 14px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
+        p { color: var(--text-light); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
         .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--text-dark); color: white; border: none;
+            padding: 16px; 
+            border-radius: 50px; /* TÄMÄ TEKEE NAPEISTA NYT PYÖREITÄ */
+            font-weight: 600; font-size: 16px;
+            cursor: pointer; width: 100%; margin-bottom: 12px;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        .btn:active { transform: scale(0.98); }
+        .btn-outline { background: white; border: 2px solid #E2E8F0; color: var(--text-dark); box-shadow: none; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: #FFF5F5; }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
-            background: var(--primary-dark);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .progress-wrapper {
-            width: 100%;
-            background: #EDF2F7;
-            height: 10px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            position: relative;
-        }
-        .progress-fill {
-            height: 100%;
-            background: var(--accent);
-            width: 10%;
-            border-radius: 20px;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .qr-placeholder {
-            background: #F7FAFC;
-            border: 2px dashed #CBD5E0;
-            border-radius: 20px;
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #A0AEC0;
-            font-weight: 600;
-        }
+        .progress-bar-bg { width: 100%; background: #EDF2F7; height: 8px; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); width: 5%; border-radius: 10px; transition: width 0.5s ease; }
 
         #view-question, #view-result { display: none; }
-
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .slide-text { animation: slideText 0.4s ease-out; }
-        @keyframes slideText {
-            from { opacity: 0; transform: translateX(10px); }
-            to { opacity: 1; transform: translateX(0); }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bounce { animation: bounce 0.6s ease; }
+        @keyframes bounce { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-12px); } 
         }
 
     </style>
@@ -221,76 +170,99 @@
 
     <div class="app-container">
         
-        <div class="header-scene">
+        <div class="header-scene" id="scene-bg">
             <div class="sun" id="sun"></div>
+            
+            <div class="layer layer-back" id="mountains-back"></div>
+            <div class="layer layer-mid" id="mountains-mid"></div>
+            <div class="layer-ground"></div>
 
-            <div class="mountain mountain-2"></div>
-            <div class="mountain"></div>
-            <div class="character-avatar" id="avatar">🎒</div>
+            <div class="character-container" id="avatar">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="55" width="25" height="28" rx="6" fill="#795548"/>
+                    <path d="M20 55 L45 55 L40 50 L25 50 Z" fill="#5D4037"/>
+                    <g id="bunny-body">
+                        <path d="M40 70 C40 70 35 88 45 92 L75 92 C80 88 80 70 80 70 L40 70Z" fill="#E0E0E0"/>
+                        <path d="M45 55 C45 42 52 35 65 35 C78 35 85 42 85 55 C85 65 78 72 65 72 C52 72 45 65 45 55Z" fill="#E0E0E0"/>
+                        <ellipse cx="55" cy="25" rx="6" ry="18" transform="rotate(-15 55 25)" fill="#E0E0E0"/>
+                        <ellipse cx="55" cy="25" rx="3" ry="12" transform="rotate(-15 55 25)" fill="#FFD1DC"/>
+                        <ellipse cx="75" cy="25" rx="6" ry="18" transform="rotate(15 75 25)" fill="#E0E0E0"/>
+                        <ellipse cx="75" cy="25" rx="3" ry="12" transform="rotate(15 75 25)" fill="#FFD1DC"/>
+                        <ellipse cx="65" cy="58" rx="9" ry="7" fill="white"/>
+                        <path d="M62 57 L68 57 L65 61 Z" fill="#FF8A80"/>
+                        <path d="M61 63 Q65 67 69 63" stroke="#333" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                        <path d="M55 58 L45 55 M55 60 L45 60 M55 62 L45 65" stroke="#999" stroke-width="1"/>
+                        <path d="M75 58 L85 55 M75 60 L85 60 M75 62 L85 65" stroke="#999" stroke-width="1"/>
+                        <circle cx="58" cy="48" r="3" fill="#333"/>
+                        <circle cx="72" cy="48" r="3" fill="#333"/>
+                    </g>
+                    <g id="hat">
+                        <ellipse cx="65" cy="38" rx="25" ry="6" fill="#D84315"/>
+                        <path d="M50 38 C50 38 52 20 65 20 C78 20 80 38 80 38" fill="#BF360C"/>
+                        <rect x="52" y="34" width="26" height="4" fill="#3E2723"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="result-hero" id="result-hero">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="35" fill="#FFA000"/>
+                    <circle cx="50" cy="50" r="30" fill="#FFB300"/>
+                    <circle cx="35" cy="35" r="8" fill="#FFB300"/>
+                    <circle cx="65" cy="35" r="8" fill="#FFB300"/>
+                    <circle cx="50" cy="55" r="22" fill="#FFECB3"/>
+                    <ellipse cx="50" cy="62" rx="10" ry="8" fill="#FFF8E1"/>
+                    <path d="M46 60 L54 60 L50 64 Z" fill="#5D4037"/> <path d="M50 64 L50 68 M45 68 Q50 72 55 68" stroke="#5D4037" stroke-width="2" stroke-linecap="round" fill="none"/>
+                    <circle cx="42" cy="52" r="3" fill="#333"/>
+                    <circle cx="58" cy="52" r="3" fill="#333"/>
+                    <path d="M35 25 L42 35 L50 20 L58 35 L65 25 L65 40 L35 40 Z" fill="#FFD700" stroke="#F57F17" stroke-width="1"/>
+                </svg>
+            </div>
+
         </div>
 
         <div class="content-area">
             
             <div id="view-start" class="fade-in">
                 <h2>Seikkailijatesti</h2>
-                <h1>Löydä sisäinen sankarisi</h1>
-                <p>Vastaa kolmeen kysymykseen ja selvitä, millainen kansainvälinen seikkailija olet!</p>
-                <button class="btn" onclick="startQuiz()">Aloita Seikkailu →</button>
+                <h1>Valmiina matkaan?</h1>
+                <p>Matka alkaa aamun sarastaessa. Pakkaa reppusi ja astu tuntemattomaan!</p>
+                <button class="btn" onclick="startQuiz()">Aloita Seikkailu</button>
             </div>
 
             <div id="view-question">
-                <div class="progress-wrapper">
+                <div class="progress-bar-bg">
                     <div class="progress-fill" id="progress"></div>
                 </div>
                 
-                <h2 id="question-count">Kysymys 1 / 3</h2>
-                <h1 id="question-text">Ladataan...</h1>
-
+                <h2 id="question-count">Etappi 1 / 3</h2>
+                <h1 id="question-text">...</h1>
                 <div id="options-container"></div>
             </div>
 
             <div id="view-result">
-                <h1>Olet Rohkea Reissaaja!</h1>
-                <p style="margin-bottom: 15px;">Peloton, utelias ja aina valmis kohtaamaan uusia kulttuureja.</p>
-                
-                <div class="qr-placeholder">
-                    QR-KOODI
-                </div>
-                
-                <p style="font-size: 13px; color: #A0AEC0;">Skannaa ja jaa tulos puhelimellasi</p>
-                
-                <button class="btn" style="background: #2D3748; margin-top: 10px;" onclick="location.reload()">Seuraava vastaaja ↻</button>
+                <h1>Olet Rohkea Leijona!</h1>
+                <p>Synnynnäinen johtaja, joka ei pelkää haasteita.</p>
+                <div style="background:#F7FAFC; padding: 20px; border-radius:15px; margin-bottom:20px; border:2px dashed #CBD5E0; color:#A0AEC0; font-weight:600;">QR-KOODI</div>
+                <button class="btn" onclick="location.reload()">Uusi matka ↻</button>
             </div>
 
         </div>
     </div>
 
     <script>
-        // --- DATA: KYSYMYKSET JA VASTAUKSET ---
         const questions = [
             {
-                text: "Edessäsi aukeaa tuntematon polku viidakkoon. Mitä teet?",
-                options: [
-                    "Juoksen innoissani katsomaan!",
-                    "Tutkin ensin karttaa tarkasti.",
-                    "Odotan, että muut menevät ensin."
-                ]
+                text: "Polku haarautuu viidakkoon. Aurinko nousee. Mitä teet?",
+                options: ["Menen rohkeasti pimeään.", "Valitsen valoisan reitin.", "Kiipeän puuhun tähystämään."]
             },
             {
-                text: "Myrsky nousee horisontissa. Miten toimit?",
-                options: [
-                    "Rakennan suojan koko ryhmälle.",
-                    "Jatkan matkaa sateesta välittämättä.",
-                    "Etsin turvallisen luolan ja teen tulet."
-                ]
+                text: "Löydät sillan, joka näyttää huteralta.",
+                options: ["Juoksen yli vauhdilla!", "Korjaan sen ensin.", "Etsin kahluupaikan joesta."]
             },
             {
-                text: "Löydät vanhan, lukitun arkun. Mitä teet?",
-                options: [
-                    "Yritän tiirikoida lukon auki.",
-                    "Etsin omistajan käsiini.",
-                    "Jätän sen rauhaan, se voi olla ansa."
-                ]
+                text: "Eväät on loppu ja ilta pimenee.",
+                options: ["Kalastan joesta illallisen.", "Jatkan matkaa nälkäisenä.", "Perustan leirin ja lepään."]
             }
         ];
 
@@ -304,46 +276,37 @@
         }
 
         function loadQuestion(index) {
-            // Päivitetään etenemispalkki
-            let progressPercent = ((index) / questions.length) * 100 + 10;
+            // Päivitetään UI
+            let progressPercent = ((index + 1) / questions.length) * 100;
             document.getElementById('progress').style.width = progressPercent + '%';
             
-            // Liikutetaan hahmoa (reppua)
-            document.getElementById('avatar').style.left = (30 + (index * 25)) + '%';
-
-            // --- AURINGON LIIKE ---
-            // Lasketaan auringon sijainti. 
-            // Kysymys 1: Vasen laita (15%) -> Kysymys 3: Oikea laita (85%)
-            let sunPercent = 15; // Aloituskohta
-            if (questions.length > 1) {
-                // Skaalaa liike kysymysten määrän mukaan
-                sunPercent = 15 + (index / (questions.length - 1)) * 70;
-            }
-            document.getElementById('sun').style.left = sunPercent + '%';
-
-
-            // Haetaan data
             const q = questions[index];
+            document.getElementById('question-text').innerText = q.text;
+            document.getElementById('question-count').innerText = `ETAPPI ${index + 1} / ${questions.length}`;
             
-            // Päivitetään tekstit pienellä animaatiolla
-            const qText = document.getElementById('question-text');
-            const qCount = document.getElementById('question-count');
-            
-            qText.innerText = q.text;
-            qCount.innerText = `Kysymys ${index + 1} / ${questions.length}`;
-            
-            // Poistetaan ja luodaan animaatioluokka uudestaan (tekstiefekti)
-            qText.classList.remove('slide-text');
-            void qText.offsetWidth; // Trigger reflow
-            qText.classList.add('slide-text');
+            // --- LIIKE ---
+            let charPos = 20 + (index * 15);
+            let mountBackPos = index * -50; 
+            let mountMidPos = index * -120;
+            let sunPosX = index * 80;
 
-            // Luodaan vastausnapit
+            document.getElementById('avatar').style.left = charPos + '%';
+            document.getElementById('mountains-back').style.transform = `translateX(${mountBackPos}px)`;
+            document.getElementById('mountains-mid').style.transform = `translateX(${mountMidPos}px)`;
+            document.getElementById('sun').style.transform = `translateX(${sunPosX}px)`;
+
+            // Pupu hyppää
+            const bunny = document.getElementById('avatar');
+            bunny.classList.remove('bounce');
+            void bunny.offsetWidth; 
+            bunny.classList.add('bounce');
+
+            // Napit
             const container = document.getElementById('options-container');
-            container.innerHTML = ''; // Tyhjennetään vanhat
-
+            container.innerHTML = '';
             q.options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = 'btn btn-outline slide-text';
+                btn.className = 'btn btn-outline fade-in';
                 btn.innerText = opt;
                 btn.onclick = () => nextStep();
                 container.appendChild(btn);
@@ -352,7 +315,6 @@
 
         function nextStep() {
             currentStep++;
-
             if (currentStep < questions.length) {
                 loadQuestion(currentStep);
             } else {
@@ -365,16 +327,14 @@
             document.getElementById('view-result').style.display = 'block';
             document.getElementById('view-result').classList.add('fade-in');
             
-            // Hahmo keskelle ja muuttuu ikoniksi
-            const avatar = document.getElementById('avatar');
-            avatar.style.left = '50%';
-            avatar.innerHTML = '🦁'; 
+            // --- LOPPUKOHTAUS ---
+            // 1. Pelaaja siirtyy vasemmalle (25%)
+            document.getElementById('avatar').style.left = '25%';
             
-            // Palkki täyteen
-            document.getElementById('progress').style.width = '100%';
+            // 2. Tuloshahmo (Leijona) paljastuu ja tulee esiin
+            document.getElementById('result-hero').classList.add('reveal');
             
-            // Aurinko "laskee" tai menee keskelle (valinnainen tyyli)
-            // Tässä se pysyy viimeisessä kohdassa, mikä näyttää hyvältä.
+            // 3. Tausta pysähtyy (vapaaehtoinen)
         }
     </script>
 
