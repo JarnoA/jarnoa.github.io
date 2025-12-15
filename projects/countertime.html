@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sheet Widget</title>
+    
+    <!-- PWA Settings -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* Neumorphic/Soft UI Shadows */
+        .widget-shadow {
+            box-shadow: 
+                -10px -10px 30px rgba(255, 255, 255, 0.05), 
+                10px 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .widget-pressed {
+            box-shadow: inset 5px 5px 20px rgba(0,0,0,0.5), inset -5px -5px 20px rgba(255,255,255,0.05);
+        }
+
+        /* Pulse Animations */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .pulse-active {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-white h-screen flex flex-col overflow-hidden relative selection:bg-transparent">
+
+    <!-- Settings Trigger (Subtle Top Right) -->
+    <button onclick="openSettings()" class="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-zinc-700 hover:text-zinc-500 active:text-white transition-colors z-50">
+        <i class="fa-solid fa-gear text-xl"></i>
+    </button>
+
+    <!-- Main Widget Container -->
+    <main class="flex-grow flex items-center justify-center w-full relative">
+        
+        <!-- The Widget Button -->
+        <button id="toggleBtn" onclick="handleButtonClick()" 
+            class="relative w-72 h-72 bg-zinc-900 rounded-[3rem] widget-shadow border border-zinc-800 flex flex-col items-center justify-center transition-all duration-200 active:scale-95 active:widget-pressed group">
+            
+            <!-- Glow/Status Ring (Animated) -->
+            <div id="statusRing" class="absolute inset-0 rounded-[3rem] border-4 border-transparent transition-all duration-500 opacity-50"></div>
+
+            <!-- Content -->
+            <div class="relative z-10 flex flex-col items-center justify-center space-y-4">
+                <!-- Icon -->
+                <div id="iconContainer" class="w-20 h-20 rounded-2xl bg-zinc-800 flex items-center justify-center shadow-inner transition-colors duration-300">
+                    <i id="btnIcon" class="fa-solid fa-play text-4xl text-emerald-500 ml-1 transition-all duration-300"></i>
+                </div>
+                
+                <!-- Text -->
+                <div class="text-center">
+                    <h1 id="btnText" class="text-3xl font-black tracking-wider text-zinc-300 transition-colors duration-300">START</h1>
+                    <p id="statusSubtext" class="text-xs font-bold text-zinc-600 uppercase tracking-widest mt-1">Ready to Track</p>
+                </div>
+            </div>
+
+            <!-- Last Sync (Very subtle at bottom of widget) -->
+            <div id="lastSyncContainer" class="absolute bottom-6 opacity-0 transition-opacity duration-500">
+                <span id="lastSyncText" class="text-[10px] text-zinc-600 font-mono">Sync: --:--</span>
+            </div>
+        </button>
+
+    </main>
+
+    <!-- Settings Modal (Overlay) -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-zinc-900 rounded-3xl w-full max-w-sm p-6 border border-zinc-800 shadow-2xl">
+            <h3 class="text-lg font-bold mb-1 text-white">Setup Connection</h3>
+            <p class="text-zinc-500 text-xs mb-6">Paste your Google Script Web App URL below.</p>
+            
+            <input type="text" id="webhookUrl" placeholder="https://script.google.com/..." 
+                class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 mb-4 transition-all placeholder-zinc-700">
+            
+            <div class="flex gap-3">
+                <button onclick="saveSettings()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-colors">
+                    Save
+                </button>
+                <button onclick="closeSettings()" class="px-6 py-3 text-zinc-400 hover:text-white transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimal Toast -->
+    <div id="toast" class="fixed top-10 left-1/2 -translate-x-1/2 bg-zinc-800/90 backdrop-blur text-white px-5 py-2 rounded-full border border-zinc-700 transform transition-all duration-300 -translate-y-24 opacity-0 flex items-center gap-2 z-40">
+        <div id="toastIcon" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+        <span id="toastMsg" class="font-medium text-xs tracking-wide">Saved</span>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const STATE_KEY = 'widget_tracker_state';
+        const URL_KEY = 'widget_tracker_url';
+        
+        let state = {
+            isWorking: false,
+            lastSync: null
+        };
+
+        // --- DOM Elements ---
+        const btn = document.getElementById('toggleBtn');
+        const iconContainer = document.getElementById('iconContainer');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+        const statusSubtext = document.getElementById('statusSubtext');
+        const statusRing = document.getElementById('statusRing');
+        const lastSyncContainer = document.getElementById('lastSyncContainer');
+        const lastSyncText = document.getElementById('lastSyncText');
+        const modal = document.getElementById('settingsModal');
+        const urlInput = document.getElementById('webhookUrl');
+
+        // --- Init ---
+        function init() {
+            const savedUrl = localStorage.getItem(URL_KEY);
+            if (savedUrl) urlInput.value = savedUrl;
+            
+            const savedState = localStorage.getItem(STATE_KEY);
+            if (savedState) state = JSON.parse(savedState);
+
+            if (!savedUrl) setTimeout(() => openSettings(), 600);
+
+            render();
+        }
+
+        // --- Rendering ---
+        function render() {
+            if (state.isWorking) {
+                // WORKING STATE (Red/Stop)
+                btn.classList.add('pulse-active');
+                
+                // Ring
+                statusRing.classList.remove('border-transparent');
+                statusRing.classList.add('border-rose-500/30');
+
+                // Icon Box
+                iconContainer.className = "w-20 h-20 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shadow-[0_0_15px_rgba(244,63,94,0.2)] transition-all duration-300";
+                
+                // Icon
+                btnIcon.className = "fa-solid fa-stop text-3xl text-rose-500 transition-all duration-300";
+
+                // Text
+                btnText.innerText = "STOP";
+                btnText.className = "text-3xl font-black tracking-wider text-white drop-shadow-[0_0_8px_rgba(244,63,94,0.5)] transition-colors duration-300";
+                
+                statusSubtext.innerText = "TRACKING TIME...";
+                statusSubtext.className = "text-xs font-bold text-rose-400 uppercase tracking-widest mt-1 animate-pulse";
+
+            } else {
+                // IDLE STATE (Green/Start)
+                btn.classList.remove('pulse-active');
+                
+                // Ring
+                statusRing.classList.remove('border-rose-500/30');
+                statusRing.classList.add('border-transparent');
+
+                // Icon Box
+                iconContainer.className = "w-20 h-20 rounded-2xl bg-zinc-800 flex items-center justify-center shadow-inner transition-all duration-300";
+
+                // Icon
+                btnIcon.className = "fa-solid fa-play text-4xl text-emerald-500 ml-1 transition-all duration-300";
+
+                // Text
+                btnText.innerText = "START";
+                btnText.className = "text-3xl font-black tracking-wider text-zinc-300 transition-colors duration-300";
+
+                statusSubtext.innerText = "READY TO TRACK";
+                statusSubtext.className = "text-xs font-bold text-zinc-600 uppercase tracking-widest mt-1";
+            }
+
+            if (state.lastSync) {
+                lastSyncContainer.classList.remove('opacity-0');
+                const date = new Date(state.lastSync);
+                lastSyncText.innerText = `Saved ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
+        }
+
+        // --- Logic ---
+        async function handleButtonClick() {
+            const url = localStorage.getItem(URL_KEY);
+            if (!url) { openSettings(); return; }
+
+            const action = state.isWorking ? 'STOP' : 'START';
+            
+            // Haptic Feedback (Visual)
+            btn.classList.add('scale-95', 'widget-pressed');
+            setTimeout(() => btn.classList.remove('scale-95', 'widget-pressed'), 150);
+
+            showToast("Syncing...", "loading");
+
+            try {
+                // Send to Google
+                await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        type: action,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                // Success
+                state.isWorking = !state.isWorking;
+                state.lastSync = new Date().toISOString();
+                saveState();
+                render();
+                showToast("Updated", "success");
+
+            } catch (error) {
+                console.error(error);
+                showToast("Error", "error");
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        }
+
+        // --- Settings & Utils ---
+        function openSettings() { modal.classList.remove('hidden'); }
+        function closeSettings() { modal.classList.add('hidden'); }
+        
+        function saveSettings() {
+            const url = urlInput.value.trim();
+            if (url) {
+                localStorage.setItem(URL_KEY, url);
+                closeSettings();
+                showToast("Connected", "success");
+            }
+        }
+
+        let toastTimeout;
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            
+            if (type === 'error') toastIcon.className = "w-1.5 h-1.5 rounded-full bg-rose-500";
+            else if (type === 'loading') toastIcon.className = "w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse";
+            else toastIcon.className = "w-1.5 h-1.5 rounded-full bg-emerald-500";
+
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 2000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
