@@ -40,7 +40,9 @@
         /* Uusi tausta poly.html-tiedostosta */
         background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
     }
-    .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%;}
+    /* MOBIILIKORJAUS: touch-action: pan-y sallii pystyskrollauksen kankaan päältä */
+    .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%; touch-action: pan-y;}
+    
     /* SÄÄDETTY: Hero-content päästää kaikki klikkaukset läpi oletuksena */
     .hero-content{position:relative; z-index:1; pointer-events:none; height: 100%;}
     /* Vain linkit ja napit ottavat klikkaukset vastaan */
