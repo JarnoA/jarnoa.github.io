@@ -180,10 +180,10 @@
         controls.autoRotateSpeed = 0.6;
         controls.enableZoom = false; 
         controls.enablePan = false; 
-        // RAJOITUS: Estetään pystysuuntainen pyöritys (polar angle), jotta mobiiliskrollaus ei häiriinny
-        // Tämä tekee kontrollista "karusellimaisen", mikä on usein parempi kokemus mobiilissa
-        // controls.minPolarAngle = Math.PI / 2; // Lukitse horisonttiin
-        // controls.maxPolarAngle = Math.PI / 2; 
+        // RAJOITUS: Estetään pystysuuntainen pyöritys (polar angle)
+        // Lukitaan horisonttiin (n. 90 astetta eli Math.PI / 2)
+        controls.minPolarAngle = Math.PI / 2 - 0.1; 
+        controls.maxPolarAngle = Math.PI / 2 + 0.1; 
 
         // --- 2. RESPONSIIVISUUS-FUNKTIO ---
         function adjustCameraDistance() {
