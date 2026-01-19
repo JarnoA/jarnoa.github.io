@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0a0a0a; --ink:#fffaeb; --accent:#ff8142; --accent2:#4fa8cc; --card:#121212; --highlight:#ffbe3c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:"Space Grotesk",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink);}
+    a{color:inherit}
+
+    /* Layout */
+    .container{max-width:1100px; margin:0 auto; padding:0 24px}
+    section{padding:96px 0; position:relative}
+
+    /* Hero */
+    .hero{min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
+    .hero-canvas{position:absolute; inset:0; z-index:0}
+    .hero-content{position:relative; z-index:1}
+
+    h1{font-family:"Abril+Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
+    .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
+    p.lead{max-width:62ch; margin:0 auto 8px; font-size:clamp(1.05rem,1.7vw,1.2rem); line-height:1.7}
+
+    /* Sections */
+    .section-dark{background:var(--card)}
+    .section-yellow{background:var(--highlight); color:#0a0a0a}
+    .section-yellow h2, .section-yellow h3{color:#0a0a0a}
+
+    h2{font-family:"Abril+Fatface",serif; font-size:clamp(2rem,4.5vw,3.2rem); margin:0 0 16px}
+    h3{font-weight:700; font-size:clamp(1.2rem,2.2vw,1.5rem); margin:20px 0 8px}
+    p{max-width:70ch; line-height:1.7}
+
+    /* Grid */
+    .grid{display:grid; gap:32px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){
+      .grid-2{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr}
+    }
+
+    .card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:24px}
+    .img-frame{border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08)}
+    .img{width:100%; display:block}
+    #explodeCanvas{display:block; width:100%; height:380px;}
+    .center{text-align:center}
+  </style>
+  <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="csy-scene" class="hero-canvas"></canvas>
+    <div class="hero-content container">
+      <h1>Computer Says Yes Lab</h1>
+      <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
+      <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
+      <p class="lead">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+    </div>
+  </section>
+
+  <!-- AJATUS -->
+  <section class="section-dark">
+    <div class="container grid grid-2">
+      <div>
+        <h2>Ajatus</h2>
+        <p>Tekoäly on enemmän kuin teknologia; se on kulttuurinen ja moraalinen ilmiö, joka heijastaa ja vahvistaa yhteiskuntamme vinoumia. Labimme tarjoaa organisaatioille välineet nähdä tekoäly peilinä, joka paljastaa omat sokeat pisteemme ja narsistisen taipumuksemme.</p>
+        <p>Autamme ymmärtämään, miten järjestelmät hyödyntävät kognitiivista sokerisiirappia muokatakseen valintojamme. Tavoitteena on auttaa organisaatioita kysymään oikeita kysymyksiä – ja välttämään olemasta älykkäiden koneiden tyhmiä käyttäjiä.</p>
+      </div>
+      <div class="img">
+        <img src="/images/robotdog.png" alt="Robot and Dog" class="img" />
+      </div>
+    </div>
+  </section>
+
+  <!-- MITÄ LAB TEKEE -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Mitä CSY Lab tekee</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Asiantuntijaluennot ja koulutukset</h3>
+          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta. Keskitymme ymmärtämään tekoälyjärjestelmien perusperiaatteita ja toimintalogiikkaa – emme vain yksittäisiä sovelluksia, kuten ChatGPT:n käyttöä.</p>
+        </div>
+        <div class="card">
+          <h3>Työpajat</h3>
+          <p>Käytännön harjoituksia ja sparrausta, jotka tukevat kriittisen hitaan ajattelun ja algoritmisen lukutaidon kehittämistä. Autamme organisaatioita sietämään monimutkaisuutta ja epäselvyyttä tekoälyyn liittyvässä päätöksenteossa.</p>
+        </div>
+        <div class="card">
+          <h3>Koulutus ja konsultointi</h3>
+          <p>Konsultoin organisaatioita tekoälyn strategisessa käyttöönotossa ja koulutan henkilöstöä hyödyntämään tekoälyä tehokkaasti arjessaan. Lähestyn tekoälyä sekä käytännön työkaluna että kulttuurisena ilmiönä – tuon kokemusta siitä, miten tekoäly todella tuottaa arvoa liiketoimintaprosesseissa ilman, että ulkoistamme ajattelun kokonaan koneille.</p>
+        </div>
+        <div class="card">
+          <h3>Tutkimus ja taide</h3>
+          <p>Toteutamme kokeellisia projekteja, joissa testaamme tekoälyn rajoja luovassa työssä. Tutkimme, miten algoritmit tulkitsevat merkityksiä, luovat sisältöä ja tekevät valintoja – ja mitä nämä prosessit paljastavat ihmisen ajattelusta. Tulokset näkyvät installaatioina, julkaisuina ja keskustelunavauksina, jotka laittavat sekä koneen että ihmisen uuteen valoon.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- TYÖKALUT -->
+  <section class="section-dark" id="tools" style="position:relative; overflow:hidden;">
+    <canvas id="tools-bg" class="hero-canvas"></canvas>
+    <div class="container" style="position:relative; z-index:1;">
+      <h2>Työkalut & Projektit</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3><a href="https://csy.fi/ai-energy-calculator/" target="_blank" rel="noopener noreferrer">AI Energy Calculator</a></h3>
+          <p>Arvioi ja vertaile, kuinka paljon energiaa ja vettä kuluu luovassa työssä – käsin tehden tai tekoälyn avulla.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://avain.net/tuote/jarno-alastalo/musta-laatikko-teko%C3%A4lytt%C3%B6myyden-ajan-alku/9789523046559" target="_blank" rel="noopener noreferrer">Musta laatikko</a></h3>
+          <p>Musta laatikko on tutkimusmatka maailmaan, jossa algoritmit, tekoäly ja näkymättömät järjestelmät muokkaavat tunteitamme, valintojamme ja yhteisöjämme.
+Olemme astuneet tekoälyttömyyden aikaan: joko tulemme älykkäiden koneiden tyhmiksi käyttäjiksi tai opimme käyttämään niitä viisaasti. Tekoäly toimii mustassa laatikossa, järjestelmässä, jonka toimintaa emme näe, mutta jonka vaikutukset tunnemme. Mitä tapahtuu, kun tekoälystä tulee opettaja, ystävä ja peili?
+
+Jos tekoäly valitsisi viisaasti, antaisitko sen päättää elämästäsi? Tai kuolemastasi? CSY Labin perustajan Jarno Alastalo kirja kutsuu sinut katsomaan pinnan alle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE.JS LIBRARY FIX: Moved the script here so it loads before any custom code -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+<!-- START: GLSL SHADER CODE INJECTION (Keep for potential future use) -->
+<script type="x-shader/x-fragment" id="background-fragment">
+    // This shader is unused but kept for reference
+    float hue2rgb(float f1, float f2, float hue) {
+    if (hue < 0.0)
+        hue += 1.0;
+    else if (hue > 1.0)
+        hue -= 1.0;
+    float res;
+    if ((6.0 * hue) < 1.0)
+        res = f1 + (f2 - f1) * 6.0 * hue;
+    else if ((2.0 * hue) < 1.0)
+        res = f2;
+    else if ((3.0 * hue) < 2.0)
+        res = f1 + (f2 - f1) * ((2.0 / 3.0) - hue) * 6.0;
+    else
+        res = f1;
+    return res;
+}
+
+vec3 hsl2rgb(vec3 hsl) {
+    vec3 rgb;
+    
+    if (hsl.y == 0.0) {
+        rgb = vec3(hsl.z); // Luminance
+    } else {
+        float f2;
+        
+        if (hsl.z < 0.5)
+            f2 = hsl.z * (1.0 + hsl.y);
+        else
+            f2 = hsl.z + hsl.y - hsl.y * hsl.z;
+            
+        float f1 = 2.0 * hsl.z - f2;
+        
+        rgb.r = hue2rgb(f1, f2, hsl.x + (1.0/3.0));
+        rgb.g = hue2rgb(f1, f2, hsl.x);
+        rgb.b = hue2rgb(f1, f2, hsl.x - (1.0/3.0));
+    }   
+    return rgb;
+}
+
+vec3 hsl2rgb(float h, float s, float l) {
+    return hsl2rgb(vec3(h, s, l));
+}
+
+vec3 random3(vec3 c) {
+	float j = 4096.0*sin(dot(c,vec3(17.0, 59.4, 15.0)));
+	vec3 r;
+	r.z = fract(512.0*j);
+	j *= .125;
+	r.x = fract(512.0*j);
+	j *= .125;
+	r.y = fract(512.0*j);
+	return r-0.5;
+}
+
+const float F3 =  0.3333333;
+const float G3 =  0.1666667;
+
+float simplex3d(vec3 p) {
+	 vec3 s = floor(p + dot(p, vec3(F3)));
+	 vec3 x = p - s + dot(s, vec3(G3));
+	 
+	 vec3 e = step(vec3(0.0), x - x.yzx);
+	 vec3 i1 = e*(1.0 - e.zxy);
+	 vec3 i2 = 1.0 - e.zxy*(1.0 - e);
+	 	
+	 vec3 x1 = x - i1 + G3;
+	 vec3 x2 = x - i2 + 2.0*G3;
+	 vec3 x3 = x - 1.0 + 3.0*G3;
+	 
+	 vec4 w, d;
+	 
+	 w.x = dot(x, x);
+	 w.y = dot(x1, x1);
+	 w.z = dot(x2, x2);
+	 w.w = dot(x3, x3);
+	 
+	 w = max(0.6 - w, 0.0);
+	 
+	 d.x = dot(random3(s), x);
+	 d.y = dot(random3(s + i1), x1);
+	 d.z = dot(random3(s + i2), x2);
+	 d.w = dot(random3(s + 1.0), x3);
+	 
+	 w *= w;
+	 w *= w;
+	 d *= w;
+	 
+	 return dot(d, vec4(52.0));
+}
+
+float hash(vec2 p) { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
+
+    
+    
+    varying vec2 vUv;
+    uniform float u_progress;
+    uniform float u_time;
+    
+    
+ 
+    
+    void main() {     
+
+        float n = simplex3d(vec3(vUv.xy, u_time * 1.0));
+        vec3 color = hsl2rgb(
+            0.0 + n * 0.1,
+            0.0,
+            0.03
+        );
+        
+        float val = hash(vUv + u_time);
+        
+        gl_FragColor = vec4(color + vec3(val / 20.), 1.0);
+    }
+</script>
+<script type="x-shader/x-vertex" id="background-vertex">
+    // This shader is unused but kept for reference
+    varying vec2 vUv;
+    uniform float u_time;
+    
+    void main() {
+        vec3 p = position;
+        
+        vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = 10.0 * (1.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+        
+        vUv = uv;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="particle-fragment">
+    // This shader is unused but kept for reference
+    uniform float u_progress;
+    void main() {
+        gl_FragColor = vec4(0.4, 0.4, 0.4, u_progress);
+    }
+</script>
+<script type="x-shader/x-vertex" id="particle-vertex">
+    // This shader is unused but kept for reference
+    uniform float u_time;
+    void main() {
+        vec3 p = position;
+        
+        p.y += 0.25*(sin(p.y * 5.0 + u_time) * 0.5 + 0.5);
+        p.z += 0.05*(sin(p.y * 10.0 + u_time) * 0.5 + 0.5);
+        
+        
+        vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = 10.0 * (1.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+    }
+</script>
+
+<script type="x-shader/x-fragment" id="fragment">
+    // Custom Fragment Shader for Robot
+    varying vec2 vUv;
+    varying vec3 v_color;
+    varying vec3 v_normal;
+
+    void main() {
+        
+        vec3 light = vec3(0.0);
+        vec3 skyColor = vec3(1.000, 1.000, 0.547);
+        vec3 groundColor = vec3(0.562, 0.275, 0.111);
+        
+        vec3 lightDirection = normalize(vec3(0.0, -1.0, -1.0));
+        // Use v_normal to calculate reflection/lighting for dynamic shine
+        float lightIntensity = max(0.0, dot(v_normal, lightDirection));
+        
+        // Use the vertex color data (v_color) as the base color
+        // And mix it with the lighting to give it a metallic, shiny look
+        vec3 finalColor = v_color * (0.8 + lightIntensity * 0.8);
+
+        // Add a highlight reflection point using light direction
+        // For simplicity, we use a basic reflection calculation
+        vec3 reflection = reflect(normalize(gl_FragCoord.xyz), v_normal);
+        float spec = pow(max(dot(v_normal, normalize(vec3(1.0, 1.0, 1.0))), 0.0), 32.0); // Specular highlight
+        finalColor += spec * 0.5; 
+        
+        gl_FragColor = vec4(finalColor, 1.0);
+    }
+</script>
+<script type="x-shader/x-vertex" id="vertex">
+    // Custom Vertex Shader for Robot
+    varying vec2 vUv;
+    varying vec3 v_color;
+    varying vec3 v_normal;
+    
+    uniform float u_time;
+    
+    // Shader noise functions copied from your provided script block
+    vec3 hsv2rgb(vec3 c)
+    {
+        vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+        vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+        return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+    }
+        
+    vec4 permute(vec4 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) {
+        const vec2 C = vec2(1.0 / 6.0, 1.0 / 3.0);
+        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+
+      // First corner
+      vec3 i = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+
+      // Other corners
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+
+      //  x0 = x0 - 0. + 0.0 * C
+      vec3 x1 = x0 - i1 + 1.0 * C.xxx;
+      vec3 x2 = x0 - i2 + 2.0 * C.xxx;
+      vec3 x3 = x0 - 1. + 3.0 * C.xxx;
+
+      // Permutations
+      i = mod(i, 289.0);
+      vec4 p = permute(permute(permute(
+            i.z + vec4(0.0, i1.z, i2.z, 1.0))
+          + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+        + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+
+      // Gradients
+      float n_ = 1.0 / 7.0; // N=7
+      vec3 ns = n_ * D.wyz - D.xzx;
+
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z); //  mod(p,N*N)
+
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_); // mod(j,N)
+
+      vec4 x = x_ * ns.x + ns.yyyy;
+      vec4 y = y_ * ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+
+      vec4 s0 = floor(b0) * 2.0 + 1.0;
+      vec4 s1 = floor(b1) * 2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+
+      vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+
+      vec3 p0 = vec3(a0.xy, h.x);
+      vec3 p1 = vec3(a0.zw, h.y);
+      vec3 p2 = vec3(a1.xy, h.z);
+      vec3 p3 = vec3(a1.zw, h.w);
+
+      //Normalise gradients
+      vec4 norm = taylorInvSqrt(vec4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));
+      p0 *= norm.x;
+      p1 *= norm.y;
+      p2 *= norm.z;
+      p3 *= norm.w;
+
+      // Mix final noise value
+      vec4 m = max(0.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m * m, vec4(dot(p0, x0), dot(p1, x1),
+          dot(p2, x2), dot(p3, x3)));
+    }
+    // End of shader noise functions
+
+    void main() {
+        vUv = uv;
+        
+        // --- Displacement / Morphing Effect ---
+        // Use noise to constantly warp the robot's shape
+        float noise = snoise(position * 2.0 + u_time * 0.5);
+        vec3 newPos = position * (noise * 0.1 + 1.0); // Subtle displacement
+
+        // --- Color Calculation in Vertex Shader ---
+        // Use noise and position to define V_COLOR (shimmering metallic effect)
+        float h = mod(u_time * 0.05 + position.x * 0.1, 1.0);
+        float s = 0.8;
+        float l = 0.5 + noise * 0.2; // Brightness based on noise/time
+        
+        v_color = hsv2rgb(vec3(h, s, l)); 
+        
+        v_normal = normal;
+        
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+    }
+</script>
+<!-- END: GLSL SHADER CODE INJECTION -->
+
+  <script>
+    // ================
+    // TOOLS BACKGROUND
+    // ================
+    (function(){
+      const canvas = document.getElementById('tools-bg');
+      if(!canvas) return;
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
+      camera.position.z = 5;
+
+      // Points geometry
+      const count = 800;
+      const positions = new Float32Array(count * 3);
+      for(let i=0;i<count;i++){
+        positions[i*3]   = (Math.random()-0.5)*10;
+        positions[i*3+1] = (Math.random()-0.5)*6;
+        positions[i*3+2] = (Math.random()-0.5)*8;
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+
+      const mat = new THREE.PointsMaterial({
+        color:0xff8142,
+        size:0.03,
+        transparent:true,
+        opacity:0.7,
+        blending:THREE.AdditiveBlending
+      });
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+
+      // Secondary layer (blue)
+      const geo2 = geo.clone();
+      const mat2 = new THREE.PointsMaterial({
+        color:0x4fa8cc,
+        size:0.02,
+        transparent:true,
+        opacity:0.6,
+        blending:THREE.AdditiveBlending
+      });
+      const points2 = new THREE.Points(geo2, mat2);
+      scene.add(points2);
+
+      // Resize
+      function resize(){
+        const rect = canvas.parentElement.getBoundingClientRect();
+        renderer.setSize(rect.width, rect.height, false);
+        camera.aspect = rect.width / rect.height;
+        camera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // RENAMED 't' to 'bg_t' to avoid conflict
+      let bg_t = 0;
+      function animate(){
+        requestAnimationFrame(animate);
+        bg_t += 0.001; // Using bg_t
+        points.rotation.y += 0.0008;
+        points2.rotation.y -= 0.001;
+        points.position.x = Math.sin(bg_t*4)*0.1; // Using bg_t
+        points2.position.y = Math.sin(bg_t*3)*0.1; // Using bg_t
+        renderer.render(scene, camera);
+      }
+      animate();
+    })();
+  </script>
+
+
+  <!-- ANIMAATIO: Purkautuva kone -->
+  <section class="section-yellow" style="padding:0; overflow:hidden;">
+    <canvas id="explodeCanvas"></canvas>
+  </section>
+
+  <!-- TAVOITE -->
+  <section class="section-dark">
+    <div class="container">
+      <h2>Tavoite</h2>
+      <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
+      <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen. Tavoitteenamme on kuroa umpeen digitaalinen kuilu ja palauttaa toimijuus organisaatioille, jotta voitte kehittää tekoälyä, joka tukee ihmisen kykyä ajatella.</em></p>
+    </div>
+  </section>
+
+  <!-- YHTEYS -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Ota yhteyttä</h2>
+      <p>Jarno Alastalo</p>
+      <p><strong>jarno@csy.fi</strong></p>
+      <p>Jarno Alastalo on tekno-filosofi, kirjailija, digitaalisten yhteisöjen rakentaja ja kissavideoiden asiantuntija, joka on suunnitellut mustia laatikoita. Hän tarkastelee teknologiaa inhimillisestä näkökulmasta: miten tekoäly, sosiaalinen media ja algoritmit muokkaavat ihmisyyttä, identiteettiä ja arvoja.</p>
+      <p><strong>CSY Lab, Y-tunnus 2578992-5 (osa MPH Making People Happy -yritystä)</strong></p>
+      <p></p>
+      <p><i>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</i></p>
+    </div>
+  </section>
+
+  <script>
+    // === HERO ANIMATION ===
+    // Encapsulate in IIFE to ensure local scope for 't' and other variables
+    (function(){ 
+        const canvas = document.getElementById('csy-scene');
+        const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+        
+        // Palautetaan kamera alkuperäiseen yläviistoon asentoon.
+        camera.position.set(0, 1.4, 3.2); 
+        camera.lookAt(0, 0, 0); 
+        camera.fov = 45; 
+        camera.updateProjectionMatrix();
+
+        function resize(){
+          const rect = document.getElementById('hero').getBoundingClientRect();
+          renderer.setSize(rect.width, rect.height, false);
+          camera.aspect = rect.width / rect.height; 
+          camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resize);
+
+        // [FIXED SCOPE] Määritellään muuttujat IIFE:n sisällä
+        let mx = 0, my = 0; 
+        
+        // Mouse parallax listener
+        window.addEventListener('mousemove', (e)=>{
+          const x = (e.clientX / window.innerWidth) * 2 - 1;
+          const y = (e.clientY / window.innerHeight) * 2 - 1;
+          mx = x*0.3; my = y*0.15;
+        });
+
+
+        // Lights
+        const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+        const key = new THREE.PointLight(0xff8142, 1.1); key.position.set(3, 3, 3);
+        const rim = new THREE.PointLight(0x4fa8cc, 0.8); rim.position.set(-3, 2, -2);
+        scene.add(ambient, key, rim);
+
+        // --- GLOBE LOGIC ---
+        const globeRadius = 1;
+        // Käytetään matalapoly-geometriaa
+        const geo = new THREE.SphereGeometry(globeRadius, 10, 10); 
+        
+        // Define colors
+        const colorGreen = new THREE.Color(0x76ff03); 
+        const colorBlue = new THREE.Color(0x00b0ff);  
+        const colorOrange = new THREE.Color(0xff8142); 
+
+        // Apply geometry attribute to hold colors
+        const colorsAttribute = new Float32Array(geo.attributes.position.count * 3);
+        geo.setAttribute('color', new THREE.BufferAttribute(colorsAttribute, 3));
+        const colorArray = geo.attributes.color.array;
+        const positionArray = geo.attributes.position.array;
+        const indexArray = geo.index.array;
+        
+        // --- Simple Pseudo-Random Noise (Deterministic) ---
+        function simpleNoise(x, y, z) {
+            let n = x + y * 57 + z * 131;
+            n = (n << 13) ^ n;
+            const res = (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+            return res * 0.5 + 0.5; // Scale to 0 to 1
+        }
+
+        // Assign colors to FACES using CENTROID for crisp patches
+        for (let i = 0; i < indexArray.length; i += 3) {
+            const indexA = indexArray[i];
+            const indexB = indexArray[i + 1];
+            const indexC = indexArray[i + 2];
+            
+            const a = indexA * 3;
+            const b = indexB * 3;
+            const c = indexC * 3;
+
+            // Calculate the Centroid (average position) of the face
+            const cx = (positionArray[a] + positionArray[b] + positionArray[c]) / 3;
+            const cy = (positionArray[a + 1] + positionArray[b + 1] + positionArray[c + 1]) / 3;
+            const cz = (positionArray[a + 2] + positionArray[b + 2] + positionArray[c + 2]) / 3;
+
+            const noiseVal = simpleNoise(cx * 4, cy * 4, cz * 4); 
+            
+            let finalColor;
+            if (noiseVal > 0.6) {
+                finalColor = colorGreen; 
+            } else {
+                finalColor = colorBlue;
+            }
+            
+            // Assign the exact same color to all three vertices of the face
+            colorArray[a] = finalColor.r;
+            colorArray[a + 1] = finalColor.g;
+            colorArray[a + 2] = finalColor.b;
+
+            colorArray[b] = finalColor.r;
+            colorArray[b + 1] = finalColor.g;
+            colorArray[b + 2] = finalColor.b;
+
+            colorArray[c] = finalColor.r;
+            colorArray[c + 1] = finalColor.g;
+            colorArray[c + 2] = finalColor.b;
+        }
+
+        const mat = new THREE.MeshStandardMaterial({
+            vertexColors: true, 
+            flatShading: true,  
+            metalness: 0.7, 
+            roughness: 0.2, 
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        scene.add(mesh);
+
+        // --- LOW-POLY TREES/BUSHES ---
+        const treeGroup = new THREE.Group();
+        const numFeatures = 60;
+        const treeColors = [0x558b2f, 0x81c784, 0xffa000, 0xff8142, 0xcccccc]; // Greens and Oranges/Accents
+        
+        for (let i = 0; i < numFeatures; i++) {
+            // Random position on sphere
+            const phi = Math.acos(2 * Math.random() - 1);
+            const theta = Math.random() * Math.PI * 2;
+            
+            const x = globeRadius * Math.sin(phi) * Math.cos(theta);
+            const y = globeRadius * Math.sin(phi) * Math.sin(theta);
+            const z = globeRadius * Math.cos(phi);
+            
+            // Use position coordinates for noise to ensure patches are related to landmasses
+            const noiseVal = simpleNoise(x * 4, y * 4, z * 4);
+            if (noiseVal > 0.55) { // Only place features on "land"
+                const featureGroup = new THREE.Group();
+                const featureHeight = 0.05 + Math.random() * 0.15;
+                const featureRadius = 0.05 + Math.random() * 0.05;
+                
+                // Choose between a cone (tree) or cube (bush/rock)
+                let featureGeo;
+                if (Math.random() > 0.5) {
+                    featureGeo = new THREE.ConeGeometry(featureRadius, featureHeight, 4); // Low poly cone
+                } else {
+                    featureGeo = new THREE.BoxGeometry(featureRadius * 1.5, featureHeight, featureRadius * 1.5); // Low poly bush
+                }
+
+                const colorIndex = Math.floor(Math.random() * treeColors.length);
+                const featureMat = new THREE.MeshStandardMaterial({
+                    color: treeColors[colorIndex],
+                    flatShading: true,
+                });
+                
+                const feature = new THREE.Mesh(featureGeo, featureMat);
+                
+                // Position and orient the feature correctly on the sphere's surface
+                feature.position.set(x, y, z);
+                
+                // Align feature's Y-axis with the normal vector (i.e., pointing away from the center)
+                const upVector = new THREE.Vector3(x, y, z).normalize();
+                feature.lookAt(upVector); // Rotate to align Z-axis with normal
+                feature.rotateX(Math.PI / 2); // Correct orientation: align Y-axis (height) with normal
+                
+                feature.position.multiplyScalar(1 + featureHeight / (2 * globeRadius)); // Move to surface
+                treeGroup.add(feature);
+            }
+        }
+        mesh.add(treeGroup); // Attach trees to the globe mesh
+
+        // --- RETRO OBSERVER ROBOT LOGIC REMOVED ---
+        // Robotti poistettu kokonaan, jotta saavutetaan haluttu puhdas sommittelu.
+        
+        // [FIXED SCOPE] Subtle star field must be defined before tick()
+        const starGeo = new THREE.BufferGeometry();
+        const count = 500; const arr = new Float32Array(count*3);
+        for(let i=0;i<count;i++){arr[i*3]=(Math.random()-0.5)*12; arr[i*3+1]=(Math.random()-0.5)*8; arr[i*3+2]=(Math.random()-0.5)*10;}
+        starGeo.setAttribute('position', new THREE.BufferAttribute(arr,3));
+        const starMat = new THREE.PointsMaterial({color:0x4fa8cc, size:0.02});
+        const stars = new THREE.Points(starGeo, starMat); scene.add(stars);
+
+
+        // [SOVITUS] Aseta maapallo alemmaksi Hero-osiossa (y-akseli)
+        mesh.position.y = -2.5;
+
+
+        let t=0; function tick(){
+          requestAnimationFrame(tick); t+=0.01;
+          
+          // GLOBE ANIMATION
+          mesh.rotation.x += 0.001; 
+          mesh.rotation.y += 0.0015;
+
+          const s = 1 + Math.sin(t*0.5)*0.03; 
+          mesh.scale.set(s,s,s);
+          
+          // Camera parallax
+          camera.position.x += (mx - camera.position.x)*0.02;
+          camera.position.y += (1.4 - my - camera.position.y)*0.02;
+          
+          // Stars rotation
+          stars.rotation.y += 0.0008;
+          
+          renderer.render(scene,camera);
+        }
+        resize(); tick();
+    })(); // End of HERO ANIMATION IIFE
+
+    // =========================
+    // EXPLODING CUBE - ANIMAATIO
+    // =========================
+    (function(){
+      const expCanvas = document.getElementById('explodeCanvas');
+      if(!expCanvas) return;
+
+      const expRenderer = new THREE.WebGLRenderer({canvas: expCanvas, antialias:true, alpha:true});
+      expRenderer.setPixelRatio(window.devicePixelRatio);
+      expRenderer.setClearColor(0x000000, 0);
+
+      const expScene = new THREE.Scene();
+      const expCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 50);
+      expCamera.position.set(0, 0.6, 4);
+
+      // Valot
+      const amb2 = new THREE.AmbientLight(0xffffff, 0.7);
+      const dir2 = new THREE.DirectionalLight(0xff8142, 1.1); dir2.position.set(2, 2, 3);
+      const rim2 = new THREE.PointLight(0x4fa8cc, 0.7); rim2.position.set(-2, 1.5, -2);
+      expScene.add(amb2, dir2, rim2);
+
+      // Pistepilvi
+      const step = 0.2, half = 1.2;
+      const pts = [];
+      for(let x=-half; x<=half; x+=step){
+        for(let y=-half; y<=half; y+=step){
+          for(let z=-half; z<=half; z+=step){
+            const onSurface = (
+              Math.abs(Math.abs(x)-half)<1e-6 ||
+              Math.abs(Math.abs(y)-half)<1e-6 ||
+              Math.abs(Math.abs(z)-half)<1e-6
+            );
+            if(onSurface) pts.push(x,y,z);
+          }
+        }
+      }
+
+      const basePositions = new Float32Array(pts);
+      const geom = new THREE.BufferGeometry();
+      geom.setAttribute('position', new THREE.BufferAttribute(basePositions.slice(), 3));
+
+      const colors = new Float32Array((basePositions.length/3)*3);
+      for(let i=0;i<colors.length/3;i++){
+        // 'color_t' is local to this loop scope
+        const color_t = (i % 60) / 60;
+        const c1 = new THREE.Color(0xff8142);
+        const c2 = new THREE.Color(0x4fa8cc);
+        const c = c1.clone().lerp(c2, color_t);
+        colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
+      }
+      geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const matPts = new THREE.PointsMaterial({vertexColors:true, size:0.06, sizeAttenuation:true});
+      const cloud = new THREE.Points(geom, matPts);
+      expScene.add(cloud);
+
+      const normals = new Float32Array(basePositions.length);
+      for(let i=0;i<basePositions.length;i+=3){
+        const vx=basePositions[i], vy=basePositions[i+1], vz=basePositions[i+2];
+        const len=Math.hypot(vx,vy,vz)||1;
+        normals[i]=vx/len; normals[i+1]=vy/len; normals[i+2]=vz/len;
+      }
+
+      function resizeExplode(){
+        const rect = expCanvas.parentElement.getBoundingClientRect();
+        const h = 380;
+        expRenderer.setSize(rect.width, h, false);
+        expCamera.aspect = rect.width / h;
+        expCamera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', resizeExplode);
+      resizeExplode();
+
+      let tt = 0;
+      function tickExplode(){
+        requestAnimationFrame(tickExplode);
+        tt += 0.016;
+        const explodeAmount = (Math.sin(tt*0.9)*0.5 + 0.5);
+        const wobble = Math.sin(tt*2.3)*0.06;
+        const pos = geom.getAttribute('position');
+        const arr = pos.array;
+
+        for(let i=0;i<arr.length;i+=3){
+          const bx=basePositions[i], by=basePositions[i+1], bz=basePositions[i+2];
+          const nx=normals[i], ny=normals[i+1], nz=normals[i+2];
+          const amp = 0.8*explodeAmount;
+          arr[i]   = bx + nx*amp + Math.sin(tt*1.7 + bx*1.3)*wobble;
+          arr[i+1] = by + ny*amp + Math.sin(tt*1.9 + by*1.1)*wobble;
+          arr[i+2] = bz + nz*amp + Math.sin(tt*2.1 + bz*1.5)*wobble;
+        }
+        pos.needsUpdate = true;
+        cloud.rotation.y += 0.003;
+        cloud.rotation.x = Math.sin(tt*0.2)*0.08;
+        expRenderer.render(expScene, expCamera);
+      }
+      tickExplode();
+    })();
+  </script>
+</body>
+</html>
