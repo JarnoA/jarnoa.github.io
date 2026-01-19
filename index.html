@@ -39,12 +39,16 @@
         overflow:hidden;
         background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
     }
-    /* MOBIILIKORJAUS: touch-action: pan-y sallii selaimen hoitaa pystyskrollauksen */
+    /* MOBIILIKORJAUS: touch-action: pan-y sallii pystyskrollauksen kankaan päältä */
     .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%; touch-action: pan-y;}
     
-    .hero-content{position:relative; z-index:1; pointer-events:none; height: 100%;}
-    .hero-content a, .hero-content button {pointer-events: auto;}
-    .hero-content h1, .hero-content p { pointer-events: none; }
+    /* Hero-sisällön asettelu */
+    .hero-content{position:relative; z-index:1; height: 100%; pointer-events: none;}
+    
+    /* Tekstielementit ottavat kosketukset vastaan -> mahdollistaa skrollauksen niiden päältä */
+    .hero-content h1, .hero-content p, .hero-content a, .hero-content button { 
+        pointer-events: auto; 
+    }
 
     h1{font-family:"Abril+Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
     .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
