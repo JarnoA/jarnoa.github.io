@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Import Map for Three.js Modules -->
+  <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+  </script>
+
   <style>
     :root{
       --bg:#0a0a0a; --ink:#fffaeb; --accent:#ff8142; --accent2:#4fa8cc; --card:#121212; --highlight:#ffbe3c;
@@ -19,9 +30,19 @@
     section{padding:96px 0; position:relative}
 
     /* Hero */
-    .hero{min-height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden;}
-    .hero-canvas{position:absolute; inset:0; z-index:0}
-    .hero-content{position:relative; z-index:1}
+    .hero{
+        min-height:100vh; 
+        display:flex; 
+        align-items:center; 
+        justify-content:center; 
+        text-align:center; 
+        overflow:hidden;
+        /* Uusi tausta poly.html-tiedostosta */
+        background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+    }
+    .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%;}
+    .hero-content{position:relative; z-index:1; pointer-events:none;}
+    .hero-content * {pointer-events: auto;}
 
     h1{font-family:"Abril+Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
     .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
@@ -56,12 +77,26 @@
 <body>
   <!-- HERO -->
   <section class="hero" id="hero">
-    <canvas id="csy-scene" class="hero-canvas"></canvas>
-    <div class="hero-content container">
-      <h1>Computer Says Yes Lab</h1>
-      <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
-      <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
-      <p class="lead">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+    <!-- Canvas container -->
+    <div id="canvas-container" class="hero-canvas"></div> 
+    
+    <div class="hero-content container" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between; padding-top: 2rem; padding-bottom: 2rem;">
+      
+      <!-- YLÄPUOLEN TEKSTIT -->
+      <div style="margin-bottom: auto;">
+        <h1>Computer Says Yes Lab</h1>
+        <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
+      </div>
+
+      <!-- VÄLITILA MAAPALLOLLE (Varmistetaan tilaa keskelle) -->
+      <div style="flex-grow: 1; min-height: 40vh;"></div>
+
+      <!-- ALAPUOLEN TEKSTIT -->
+      <div style="margin-top: auto;">
+        <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
+        <p class="lead" style="margin-top: 1rem; font-weight: 500; color: var(--highlight);">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+      </div>
+
     </div>
   </section>
 
@@ -70,7 +105,7 @@
     <div class="container grid grid-2">
       <div>
         <h2>Ajatus</h2>
-        <p>Tekoäly telakalla; se on kulttuurinen ja moraalinen ilmiö, joka heijastaa ja vahvistaa yhteiskuntamme vinoumia. Labimme tarjoaa organisaatioille välineet nähdä tekoäly peilinä, joka paljastaa omat sokeat pisteemme ja narsistisen taipumuksemme.</p>
+        <p>Tekoäly on enemmän kuin teknologia; se on kulttuurinen ja moraalinen ilmiö, joka heijastaa ja vahvistaa yhteiskuntamme vinoumia. Labimme tarjoaa organisaatioille välineet nähdä tekoäly peilinä, joka paljastaa omat sokeat pisteemme ja narsistisen taipumuksemme.</p>
         <p>Autamme ymmärtämään, miten järjestelmät hyödyntävät kognitiivista sokerisiirappia muokatakseen valintojamme. Tavoitteena on auttaa organisaatioita kysymään oikeita kysymyksiä – ja välttämään olemasta älykkäiden koneiden tyhmiä käyttäjiä.</p>
       </div>
       <div class="img">
@@ -86,25 +121,25 @@
       <div class="grid grid-2">
         <div class="card">
           <h3>Asiantuntijaluennot ja koulutukset</h3>
-          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta. Keskitymme ymmärtämään tekoälyjärjestelmien perusperiaatteita ja toimintalogiikkaa – emme vain yksittäisiä sovelluksia, kuten ChatGPT:n käyttöä.</p>
+          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta. Keskitymme ymmärtämään tekoälyjärjestelmien perusperiaatteita ja toimintalogiikkaa.</p>
         </div>
         <div class="card">
           <h3>Työpajat</h3>
-          <p>Käytännön harjoituksia ja sparrausta, jotka tukevat kriittisen hitaan ajattelun ja algoritmisen lukutaidon kehittämistä. Autamme organisaatioita sietämään monimutkaisuutta ja epäselvyyttä tekoälyyn liittyvässä päätöksenteossa.</p>
+          <p>Käytännön harjoituksia ja sparrausta, jotka tukevat kriittisen hitaan ajattelun ja algoritmisen lukutaidon kehittämistä.</p>
         </div>
         <div class="card">
           <h3>Koulutus ja konsultointi</h3>
-          <p>Konsultoin organisaatioita tekoälyn strategisessa käyttöönotossa ja koulutan henkilöstöä hyödyntämään tekoälyä tehokkaasti arjessaan. Lähestyn tekoälyä sekä käytännön työkaluna että kulttuurisena ilmiönä – tuon kokemusta siitä, miten tekoäly todella tuottaa arvoa liiketoimintaprosesseissa ilman, että ulkoistamme ajattelun kokonaan koneille.</p>
+          <p>Konsultoin organisaatioita tekoälyn strategisessa käyttöönotossa ja koulutan henkilöstöä hyödyntämään tekoälyä tehokkaasti arjessaan.</p>
         </div>
         <div class="card">
           <h3>Tutkimus ja taide</h3>
-          <p>Toteutamme kokeellisia projekteja, joissa testaamme tekoälyn rajoja luovassa työssä. Tutkimme, miten algoritmit tulkitsevat merkityksiä, luovat sisältöä ja tekevät valintoja – ja mitä nämä prosessit paljastavat ihmisen ajattelusta. Tulokset näkyvät installaatioina, julkaisuina ja keskustelunavauksina, jotka laittavat sekä koneen että ihmisen uuteen valoon.</p>
+          <p>Toteutamme kokeellisia projekteja, joissa testaamme tekoälyn rajoja luovassa työssä. Tutkimme, miten algoritmit tulkitsevat merkityksiä ja tekevät valintoja.</p>
         </div>
       </div>
     </div>
   </section>
 
-    <!-- TYÖKALUT -->
+  <!-- TYÖKALUT -->
   <section class="section-dark" id="tools" style="position:relative; overflow:hidden;">
     <canvas id="tools-bg" class="hero-canvas"></canvas>
     <div class="container" style="position:relative; z-index:1;">
@@ -116,17 +151,290 @@
         </div>
         <div class="card">
           <h3><a href="https://avain.net/tuote/jarno-alastalo/musta-laatikko-teko%C3%A4lytt%C3%B6myyden-ajan-alku/9789523046559" target="_blank" rel="noopener noreferrer">Musta laatikko -kirja</a></h3>
-          <p>Musta laatikko on tutkimusmatka maailmaan, jossa algoritmit, tekoäly ja näkymättömät järjestelmät muokkaavat tunteitamme, valintojamme ja yhteisöjämme. Olemme astuneet tekoälyttömyyden aikaan: joko tulemme älykkäiden koneiden tyhmiksi käyttäjiksi tai opimme käyttämään niitä viisaasti. Tekoäly toimii mustassa laatikossa, järjestelmässä, jonka toimintaa emme näe, mutta jonka vaikutukset tunnemme. Mitä tapahtuu, kun tekoälystä tulee opettaja, ystävä ja peili? Jos tekoäly valitsisi viisaasti, antaisitko sen päättää elämästäsi? Tai kuolemastasi? Tämä kirja kutsuu sinut katsomaan pinnan alle.</p>
+          <p>Musta laatikko on tutkimusmatka maailmaan, jossa algoritmit, tekoäly ja näkymättömät järjestelmät muokkaavat tunteitamme, valintojamme ja yhteisöjämme. Olemme astuneet tekoälyttömyyden aikaan: joko tulemme älykkäiden koneiden tyhmiksi käyttäjiksi tai opimme käyttämään niitä viisaasti. Tekoäly toimii mustassa laatikossa, järjestelmässä, jonka toimintaa emme näe, mutta jonka vaikutukset tunnemme. Tämä kirja kutsuu sinut katsomaan pinnan alle.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- THREE.JS LIBRARY FIX: Moved the script here so it loads before any custom code -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+  <!-- EXPLODING CUBE ANIMATION -->
+  <section class="section-yellow" style="padding:0; overflow:hidden;">
+    <canvas id="explodeCanvas"></canvas>
+  </section>
 
-  <!-- START: JS Scripts for Animations -->
-  <script>
+  <!-- HERO SCRIPT (MODIFIED TO FIT CONTAINER) -->
+  <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. SKEENE JA KAMERA ---
+        const scene = new THREE.Scene();
+        // Camera setup from poly.html
+        const container = document.getElementById('canvas-container'); // Target the container
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 0, 45); // Hieman kauemmas, jotta Tesla mahtuu kuvaan
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement); // Append to hero container
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        controls.enableZoom = false; // Disable zoom to not mess up scrolling
+
+        // --- 2. VALAISTUS ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        sunLight.position.set(-25, 15, 25);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048; sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+
+        // --- 3. VIRTUAALINEN KARTTAGENERAATTORI ---
+        function generateWorldMap() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512; canvas.height = 256; const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 512, 256);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath(); ctx.moveTo(100, 20); ctx.lineTo(160, 20); ctx.lineTo(180, 80);
+            ctx.lineTo(140, 120); ctx.lineTo(160, 140); ctx.lineTo(190, 180);
+            ctx.lineTo(170, 220); ctx.lineTo(130, 180); ctx.lineTo(120, 130); ctx.lineTo(80, 60); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(240, 30); ctx.lineTo(300, 30); ctx.lineTo(350, 50);
+            ctx.lineTo(400, 40); ctx.lineTo(420, 100); ctx.lineTo(360, 140);
+            ctx.lineTo(320, 120); ctx.lineTo(330, 150); ctx.lineTo(300, 200);
+            ctx.lineTo(250, 160); ctx.lineTo(230, 100); ctx.lineTo(220, 60); ctx.fill();
+            ctx.beginPath(); ctx.arc(400, 180, 15, 0, Math.PI*2); ctx.fill();
+            return ctx;
+        }
+
+        // --- 4. MAAPALLON RAKENNUS ---
+        const mapContext = generateWorldMap();
+        const mapData = mapContext.getImageData(0, 0, 512, 256).data;
+        let earthGeometry = new THREE.IcosahedronGeometry(11, 4);
+        earthGeometry = earthGeometry.toNonIndexed(); 
+        const pos = earthGeometry.attributes.position;
+        const colors = [];
+        const count = pos.count;
+        const cOcean = new THREE.Color(0x1e6091);
+        const cLand = new THREE.Color(0x5a8035);
+        const cForest = new THREE.Color(0x3e5e26);
+        const cSand = new THREE.Color(0xe0cd85);
+        const cMountain = new THREE.Color(0xffffff);
+        const _v = new THREE.Vector3();
+        for (let i = 0; i < count; i += 3) {
+            _v.set(pos.getX(i), pos.getY(i), pos.getZ(i)); _v.normalize();
+            const u = 0.5 + (Math.atan2(_v.z, _v.x) / (2 * Math.PI));
+            const v = 0.5 + (Math.asin(_v.y) / Math.PI);
+            const pxX = Math.floor(u * 512); const pxY = Math.floor((1 - v) * 256);
+            const index = (pxY * 512 + pxX) * 4;
+            const brightness = mapData[index];
+            let finalColor;
+            if (brightness > 100) {
+                const h = 1.03;
+                for(let j=0; j<3; j++) pos.setXYZ(i+j, pos.getX(i+j)*h, pos.getY(i+j)*h, pos.getZ(i+j)*h);
+                const r = Math.random();
+                if (Math.abs(_v.y) > 0.85) finalColor = cMountain;
+                else if (r > 0.7) finalColor = cForest;
+                else if (r < 0.1) finalColor = cSand;
+                else finalColor = cLand;
+            } else {
+                const deep = 1 - Math.random() * 0.15;
+                finalColor = cOcean.clone().multiplyScalar(deep);
+            }
+            colors.push(finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b);
+        }
+        earthGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        earthGeometry.computeVertexNormals();
+        const earthMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.8, metalness: 0.1 });
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.castShadow = true; earth.receiveShadow = true;
+        earth.rotation.y = -1.8; 
+        scene.add(earth);
+
+        // --- 5. PILVET (Kulmikkaat) ---
+        function createCloud() {
+            const group = new THREE.Group();
+            const blobs = 4 + Math.floor(Math.random() * 5);
+            const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, roughness: 0.5 });
+            for(let k=0; k<blobs; k++){
+                const geom = new THREE.DodecahedronGeometry(1.2 + Math.random() * 0.5, 0);
+                const mesh = new THREE.Mesh(geom, mat);
+                mesh.position.set((Math.random()-0.5)*5, (Math.random()-0.5)*2, (Math.random()-0.5)*3);
+                mesh.rotation.set(Math.random()*3, Math.random()*3, 0);
+                mesh.castShadow = true;
+                group.add(mesh);
+            }
+            return group;
+        }
+
+        // --- HAHMO 1: RETRO-ROBOTTI (KORJATTU POSITIO) ---
+        function createRetroRobot() {
+            const robotGroup = new THREE.Group();
+            const matBody = new THREE.MeshStandardMaterial({ color: 0x888899, flatShading: true, metalness: 0.6 });
+            const matEyes = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.8), matBody);
+            robotGroup.add(body);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), matBody);
+            head.position.y = 1.0; robotGroup.add(head);
+            const eyeGeom = new THREE.BoxGeometry(0.15, 0.15, 0.1);
+            const eyeL = new THREE.Mesh(eyeGeom, matEyes); eyeL.position.set(-0.2, 1.05, 0.41); robotGroup.add(eyeL);
+            const eyeR = eyeL.clone(); eyeR.position.x = 0.2; robotGroup.add(eyeR);
+            const legGeom = new THREE.BoxGeometry(0.3, 0.6, 0.3);
+            const legL = new THREE.Mesh(legGeom, matBody); legL.position.set(-0.3, -0.8, 0.2); legL.rotation.x = -Math.PI/6; robotGroup.add(legL);
+            const legR = legL.clone(); legR.position.x = 0.3; robotGroup.add(legR);
+            robotGroup.scale.set(0.6, 0.6, 0.6);
+            robotGroup.traverse(c => { if(c.isMesh) c.castShadow = true; });
+            return robotGroup;
+        }
+
+        // --- HAHMO 2: LOW-POLY KISSA ---
+        function createLowPolyCat() {
+            const catGroup = new THREE.Group();
+            const matOrange = new THREE.MeshStandardMaterial({ color: 0xd18e47, flatShading: true });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.5, 0.5), matOrange); catGroup.add(body);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), matOrange); head.position.set(0.7, 0.2, 0); catGroup.add(head);
+            const earGeom = new THREE.ConeGeometry(0.15, 0.3, 4);
+            const ear1 = new THREE.Mesh(earGeom, matOrange); ear1.position.set(0.7, 0.6, 0.2); ear1.rotation.y = Math.PI/4; catGroup.add(ear1);
+            const ear2 = ear1.clone(); ear2.position.z = -0.2; catGroup.add(ear2);
+            const tail = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.2), matOrange); tail.position.set(-0.7, 0.3, 0); tail.rotation.z = Math.PI/4; catGroup.add(tail);
+            catGroup.scale.set(0.5, 0.5, 0.5);
+            catGroup.traverse(c => { if(c.isMesh) c.castShadow = true; });
+            return catGroup;
+        }
+
+        // --- UUSI: LOW-POLY TESLA + OLIGARKKI AURINKOLASEILLA ---
+        function createTeslaWithOligarch() {
+            const carGroup = new THREE.Group();
+
+            // Materiaalit
+            const matCarGrey = new THREE.MeshStandardMaterial({ color: 0x777777, flatShading: true, metalness: 0.5 });
+            const matWindowDark = new THREE.MeshStandardMaterial({ color: 0x111111, flatShading: true, metalness: 0.9, roughness: 0.1 });
+            const matWheel = new THREE.MeshStandardMaterial({ color: 0x222222, flatShading: true });
+            
+            // Auton runko (yksinkertaistettu laatikko-Tesla)
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(4, 0.8, 1.8), matCarGrey);
+            carGroup.add(chassis);
+            // Ohjaamo (tumma lasilaatikko)
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.7, 1.6), matWindowDark);
+            cabin.position.set(-0.2, 0.75, 0);
+            carGroup.add(cabin);
+            // Pyörät (4 sylinteriä kyljellään)
+            const wheelGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 8);
+            wheelGeo.rotateX(Math.PI/2);
+            const w1 = new THREE.Mesh(wheelGeo, matWheel); w1.position.set(1.2, -0.2, 0.9); carGroup.add(w1);
+            const w2 = new THREE.Mesh(wheelGeo, matWheel); w2.position.set(-1.2, -0.2, 0.9); carGroup.add(w2);
+            const w3 = new THREE.Mesh(wheelGeo, matWheel); w3.position.set(1.2, -0.2, -0.9); carGroup.add(w3);
+            const w4 = new THREE.Mesh(wheelGeo, matWheel); w4.position.set(-1.2, -0.2, -0.9); carGroup.add(w4);
+
+            // Oligarkki istumaan auton sisään
+            const oligarchGroup = new THREE.Group();
+            const matSuit = new THREE.MeshStandardMaterial({ color: 0x223355, flatShading: true });
+            const matSkin = new THREE.MeshStandardMaterial({ color: 0xffdbac, flatShading: true });
+            const matSunglasses = new THREE.MeshStandardMaterial({ color: 0x000000, flatShading: true, metalness: 1.0, roughness: 0.0 });
+
+            // Vartalo (lyhennetty, koska istuu)
+            const torso = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.4), matSuit);
+            oligarchGroup.add(torso);
+            // Pää
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.5), matSkin);
+            head.position.y = 0.7;
+            oligarchGroup.add(head);
+            // Aurinkolasit (kiiltävä musta laatikko silmillä)
+            const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), matSunglasses);
+            glasses.position.set(0, 0.75, 0.28);
+            oligarchGroup.add(glasses);
+
+            // Sijoitetaan oligarkki autoon niin että pää näkyy ohjaamosta
+            oligarchGroup.position.set(-0.5, 0.5, 0);
+            oligarchGroup.scale.set(0.8, 0.8, 0.8);
+            carGroup.add(oligarchGroup);
+
+            carGroup.scale.set(0.6, 0.6, 0.6);
+            carGroup.traverse(c => { if(c.isMesh) c.castShadow = true; });
+            return carGroup;
+        }
+
+
+        // --- PILVIEN JA HAHMOJEN SIJOITTELU ---
+        for(let i=0; i<12; i++){
+            const cloud = createCloud();
+            
+            // Pilvi 3: Robotti (Korjattu korkeus)
+            if (i === 3) {
+                const robot = createRetroRobot();
+                // Laskettu alemmas (oli 1.8), nyt istuu paremmin pilvessä
+                robot.position.y = 1.2; 
+                robot.rotation.y = Math.PI; 
+                cloud.add(robot);
+            }
+
+            // Pilvi 6: Kissa (Siirretty omaan pilveen)
+            if (i === 6) {
+                const cat = createLowPolyCat();
+                cat.position.y = 1.3;
+                cat.rotation.y = Math.PI / 2;
+                cloud.add(cat);
+            }
+
+            const angle = (i / 12) * Math.PI * 2;
+            const dist = 22 + Math.random() * 3;
+            cloud.position.x = Math.cos(angle) * dist;
+            cloud.position.z = Math.sin(angle) * dist;
+            cloud.position.y = (Math.random()-0.5) * 6;
+            cloud.lookAt(0,0,0);
+            scene.add(cloud);
+        }
+
+        // --- LISÄTÄÄN AVARUUS-TESLA ERIKSEEN SKENEEN ---
+        const spaceTesla = createTeslaWithOligarch();
+        // Sijoitetaan kauemmas kuin pilvet
+        spaceTesla.position.set(35, 5, 0); 
+        // Käännetään hieman vinoon lentokulmaan
+        spaceTesla.rotation.set(0.2, Math.PI/2, 0.1);
+        scene.add(spaceTesla);
+
+
+        // --- 6. TÄHTITAIVAS ---
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for(let i=0; i<800; i++){ starPos.push((Math.random()-0.5)*400, (Math.random()-0.5)*400, (Math.random()-0.5)*400); }
+        starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffffff, size: 0.2}));
+        scene.add(stars);
+
+        // --- 7. ANIMAATIO ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            stars.rotation.y -= 0.0003; 
+            earth.rotation.y += 0.0005; 
+
+            // Anavoidaan Teslaa lentämään maapallon ympäri
+            const time = Date.now() * 0.0005;
+            spaceTesla.position.x = Math.cos(time) * 35;
+            spaceTesla.position.z = Math.sin(time) * 35;
+            // Käännetään autoa lentosuuntaan
+            spaceTesla.rotation.y = -time + Math.PI/2;
+
+            renderer.render(scene, camera);
+        }
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+        animate();
+  </script>
+
+  <!-- OLD NON-MODULE SCRIPTS FOR OTHER CANVASES -->
+  <script type="module">
+    import * as THREE from 'three';
+
     // ================
     // TOOLS BACKGROUND
     // ================
@@ -189,197 +497,6 @@
         renderer.render(scene, camera);
       }
       animate();
-    })();
-  </script>
-
-  <!-- ANIMAATIO: Purkautuva kone -->
-  <section class="section-yellow" style="padding:0; overflow:hidden;">
-    <canvas id="explodeCanvas"></canvas>
-  </section>
-
-  <!-- TAVOITE -->
-  <section class="section-dark">
-    <div class="container">
-      <h2>Tavoite</h2>
-      <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
-      <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen. Tavoitteenamme on kuroa umpeen digitaalinen kuilu ja palauttaa toimijuus organisaatioille, jotta voitte kehittää tekoälyä, joka tukee ihmisen kykyä ajatella.</em></p>
-    </div>
-  </section>
-
-  <!-- YHTEYS -->
-  <section class="section-yellow">
-    <div class="container">
-      <h2>Ota yhteyttä</h2>
-      <p>Jarno Alastalo</p>
-      <p><strong>jarno@csy.fi</strong></p>
-      <p>Jarno Alastalo on tekno-filosofi, kirjailija, digitaalisten yhteisöjen rakentaja ja kissavideoiden asiantuntija, joka on suunnitellut mustia laatikoita. Hän tarkastelee teknologiaa inhimillisestä näkökulmasta: miten tekoäly, sosiaalinen media ja algoritmit muokkaavat ihmisyyttä, identiteettiä ja arvoja.</p>
-      <p><strong>CSY Lab, Y-tunnus 2578992-5 (osa MPH Making People Happy -yritystä)</strong></p>
-      <p></p>
-      <p><i>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</i></p>
-    </div>
-  </section>
-
-  <script>
-    // === HERO ANIMATION: STYLIZED ANIMATION-STYLE EARTH WITH EXAGGERATED FEATURES ===
-    (function(){ 
-        const canvas = document.getElementById('csy-scene');
-        const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-        
-        camera.position.set(0, 1.2, 4.5); 
-        camera.lookAt(0, 0, 0); 
-
-        function resize(){
-          const rect = document.getElementById('hero').getBoundingClientRect();
-          renderer.setSize(rect.width, rect.height, false);
-          camera.aspect = rect.width / rect.height; 
-          camera.updateProjectionMatrix();
-        }
-        window.addEventListener('resize', resize);
-
-        let mx = 0, my = 0; 
-        window.addEventListener('mousemove', (e)=>{
-          const x = (e.clientX / window.innerWidth) * 2 - 1;
-          const y = (e.clientY / window.innerHeight) * 2 - 1;
-          mx = x*0.25; my = y*0.1;
-        });
-
-        // Bright, Cartoon-style lighting
-        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-        const sun = new THREE.DirectionalLight(0xffffff, 1.2);
-        sun.position.set(5, 10, 7);
-        scene.add(ambient, sun);
-
-        const worldGroup = new THREE.Group();
-        scene.add(worldGroup);
-
-        // --- PROCEDURAL LAND LOGIC ---
-        function getIsLand(x, y, z) {
-          // Simple noise-like function to determine continents
-          const n = Math.sin(x * 2.5) * Math.cos(y * 2.5) + Math.sin(z * 2.5 + 1);
-          return n > 0.15;
-        }
-
-        // --- THE PLANET CORE (WATER) ---
-        const globeRadius = 1.3;
-        const waterGeo = new THREE.SphereGeometry(globeRadius, 40, 40);
-        const waterMat = new THREE.MeshStandardMaterial({
-            color: 0x00aaff, 
-            roughness: 0.3,
-            metalness: 0.1
-        });
-        const ocean = new THREE.Mesh(waterGeo, waterMat);
-        worldGroup.add(ocean);
-
-        // --- MANTEREET (LANDMASSES) ---
-        const landGeo = new THREE.SphereGeometry(globeRadius * 1.01, 60, 60);
-        const colorsAttribute = new Float32Array(landGeo.attributes.position.count * 3);
-        const landPos = landGeo.attributes.position.array;
-        
-        for (let i = 0; i < landGeo.attributes.position.count; i++) {
-          const x = landPos[i*3], y = landPos[i*3+1], z = landPos[i*3+2];
-          const isLand = getIsLand(x, y, z);
-          const color = isLand ? new THREE.Color(0x44cc44) : new THREE.Color(0x00aaff);
-          colorsAttribute[i*3] = color.r;
-          colorsAttribute[i*3+1] = color.g;
-          colorsAttribute[i*3+2] = color.b;
-        }
-        landGeo.setAttribute('color', new THREE.BufferAttribute(colorsAttribute, 3));
-        const landMat = new THREE.MeshStandardMaterial({ 
-          vertexColors: true, 
-          flatShading: true,
-          roughness: 0.8
-        });
-        const land = new THREE.Mesh(landGeo, landMat);
-        worldGroup.add(land);
-
-        // --- EXAGGERATED FEATURES: BUILDINGS, TOWERS, TREES ---
-        const featureGroup = new THREE.Group();
-        worldGroup.add(featureGroup);
-
-        const houseMat = new THREE.MeshStandardMaterial({ color: 0xfffaeb });
-        const roofMat = new THREE.MeshStandardMaterial({ color: 0xff8142 });
-        const towerMat = new THREE.MeshStandardMaterial({ color: 0xcccccc });
-        const treeMat = new THREE.MeshStandardMaterial({ color: 0x22ee66 });
-        const trunkMat = new THREE.MeshStandardMaterial({ color: 0x5d4037 });
-
-        function createFeature() {
-          const phi = Math.random() * Math.PI * 2;
-          const theta = Math.random() * Math.PI * 2;
-          
-          const x = globeRadius * Math.sin(phi) * Math.cos(theta);
-          const y = globeRadius * Math.sin(phi) * Math.sin(theta);
-          const z = globeRadius * Math.cos(phi);
-
-          if (!getIsLand(x, y, z)) return; // Only place on land
-
-          const container = new THREE.Group();
-          const type = Math.random();
-          
-          if (type < 0.3) {
-            // House
-            const base = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.12), houseMat);
-            const roof = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.1, 4), roofMat);
-            roof.position.y = 0.11;
-            roof.rotation.y = Math.PI/4;
-            container.add(base, roof);
-          } else if (type < 0.5) {
-            // Tower
-            const tower = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), towerMat);
-            container.add(tower);
-          } else {
-            // Tree
-            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.05), trunkMat);
-            const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 5), treeMat);
-            leaves.position.y = 0.1;
-            container.add(trunk, leaves);
-          }
-
-          container.position.set(x, y, z);
-          container.lookAt(0,0,0);
-          container.rotateX(-Math.PI/2);
-          
-          // Exaggerated scale
-          const s = 1.0 + Math.random() * 0.8;
-          container.scale.set(s,s,s);
-          featureGroup.add(container);
-        }
-
-        for(let i=0; i<80; i++) createFeature();
-
-        // Position globe at the horizon line (bottom) - LOWERED to avoid text overlap
-        worldGroup.position.y = -1.7;
-
-        // --- STARS ---
-        const starGeo = new THREE.BufferGeometry();
-        const starCount = 500;
-        const starArr = new Float32Array(starCount * 3);
-        for(let i=0; i<starCount; i++){
-            starArr[i*3] = (Math.random()-0.5)*20;
-            starArr[i*3+1] = (Math.random()-0.5)*15;
-            starArr[i*3+2] = (Math.random()-0.5)*15;
-        }
-        starGeo.setAttribute('position', new THREE.BufferAttribute(starArr, 3));
-        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color: 0xffbe3c, size: 0.03}));
-        scene.add(stars);
-
-        let t = 0;
-        function tick(){
-          requestAnimationFrame(tick); t += 0.005;
-          worldGroup.rotation.y += 0.002;
-          worldGroup.rotation.x += 0.0003;
-          
-          // Subtle animation for features
-          featureGroup.scale.setScalar(1 + Math.sin(t*2)*0.015);
-          
-          camera.position.x += (mx - camera.position.x) * 0.05;
-          camera.position.y += (1.2 - my - camera.position.y) * 0.05;
-          
-          stars.rotation.y += 0.0001;
-          renderer.render(scene, camera);
-        }
-        resize(); tick();
     })();
 
     // =========================
