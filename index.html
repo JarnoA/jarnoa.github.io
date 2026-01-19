@@ -166,7 +166,7 @@
     <canvas id="explodeCanvas"></canvas>
   </section>
 
-  <!-- HERO SCRIPT (MODIFIED TO FIT CONTAINER + RESPONSIVE + SLOWDOWN) -->
+  <!-- HERO SCRIPT (MODIFIED TO FIT CONTAINER + RESPONSIVE + RIPPLE EFFECT) -->
   <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -188,7 +188,7 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.6; // Perusnopeus
+        controls.autoRotateSpeed = 0.6; // VAKIONOPEUS
         controls.enablePan = false; 
         controls.enableZoom = false;
 
@@ -346,30 +346,55 @@
         tesla.position.set(35, 5, 0); tesla.rotation.set(0.2, Math.PI/2, 0.1); scene.add(tesla);
         clickableObjects.push(tesla);
 
-        // KLIKKAUS (HYPPY)
+        // KLIKKAUS (HYPPY + RIPPLE)
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         
+        // RIPPLE EFFECT (Renkaat)
+        const ripples = [];
+        const rippleGeom = new THREE.RingGeometry(0.2, 0.4, 32);
+        const rippleMat = new THREE.MeshBasicMaterial({ color: 0xff8142, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+
+        function createRipple(pos) {
+            const ripple = new THREE.Mesh(rippleGeom, rippleMat.clone());
+            ripple.position.copy(pos);
+            ripple.lookAt(camera.position); // Katsoo kameraan päin
+            ripple.userData = { age: 0 };
+            scene.add(ripple);
+            ripples.push(ripple);
+        }
+
         function onPointerDown(event) {
+            // Hiiren paikka raycasterille
             const rect = renderer.domElement.getBoundingClientRect();
             mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
             mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
             
-            // Etsitään osumat interaktiivisiin objekteihin (Tesla, Kissa, Robotti)
-            // Koska ne ovat ryhmiä, tarkistamme, osuuko raycaster niiden lapsiin
+            // 1. Tarkista interaktiiviset hahmot (Tesla, Kissa, Robotti)
             const intersects = raycaster.intersectObjects(scene.children, true);
+            
+            let characterHit = false;
             
             if(intersects.length > 0) {
                 // Etsi osuiko johonkin hahmoon
                 let target = intersects[0].object;
+                let hitPoint = intersects[0].point;
+
                 // Kiipeä ylöspäin kunnes löydetään group, jolla on isCharacter = true
-                while(target.parent && !target.userData.isCharacter && target.parent !== scene) {
-                    target = target.parent;
+                let parent = target;
+                while(parent && !parent.userData.isCharacter && parent !== scene) {
+                    parent = parent.parent;
                 }
                 
-                if (target.userData.isCharacter) {
-                    triggerJump(target);
+                if (parent && parent.userData.isCharacter) {
+                    triggerJump(parent);
+                    createRipple(hitPoint); // Luo ripple osumakohtaan
+                    characterHit = true;
+                } else {
+                    // Jos ei osunut hahmoon, luo ripple silti osumakohtaan (esim. maapalloon tai tyhjään avaruuteen projisoituna)
+                    // Jos osui johonkin (esim. pilveen tai maahan), luo ripple siihen
+                    createRipple(hitPoint);
                 }
             }
         }
@@ -390,10 +415,8 @@
                     requestAnimationFrame(animateJump);
                 } else {
                     obj.position.y = startY;
-                    obj.rotation.z = 0; // Palauta asento
-                    // Pieni korjaus: Jos objekti oli kallellaan (kuten Tesla tai Kissa), palauta alkuperäinen
-                    if(obj === tesla) obj.rotation.z = 0.1; // Teslan alkuperäinen z-kallistus
-                    // (Yksinkertaistus: nollataan Z, toimii useimmille)
+                    obj.rotation.z = 0; 
+                    if(obj === tesla) obj.rotation.z = 0.1;
                     obj.userData.isJumping = false;
                 }
             };
@@ -412,35 +435,40 @@
         sG.setAttribute('position', new THREE.Float32BufferAttribute(sP, 3));
         const stars = new THREE.Points(sG, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})); scene.add(stars);
 
-        let isHovering = false;
-        renderer.domElement.addEventListener('mouseenter', () => { isHovering = true; });
-        renderer.domElement.addEventListener('mouseleave', () => { isHovering = false; });
-
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
             
-            // HIDASTUS: Jos hiiri on päällä, hidasta nopeutta
-            if (isHovering) {
-                controls.autoRotateSpeed = 0.1; // Hyvin hidas
-            } else {
-                controls.autoRotateSpeed = 0.6; // Normaali
-            }
+            // PÄIVITETTY: EI HIDASTUSTA, vakionopeus
+            // controls.autoRotateSpeed = 0.6; // Tämä on jo asetettu alustuksessa
 
             stars.rotation.y -= 0.0003; 
             earth.rotation.y += 0.0005;
             const t = Date.now()*0.0005;
-            // Tesla kiertää, paitsi jos hyppää (sallitaan x/z liike mutta y on hypyn hallinnassa)
+            
             if(!tesla.userData.isJumping) {
-                tesla.position.y = 5; // Pidetään korkeus vakiona kun ei hypi
+                tesla.position.y = 5; 
             }
             tesla.position.x = Math.cos(t)*35; tesla.position.z = Math.sin(t)*35; tesla.rotation.y = -t+Math.PI/2;
             
+            // PÄIVITÄ RIPPLES
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                r.userData.age += 0.05;
+                r.scale.setScalar(1 + r.userData.age * 5); // Laajenee
+                r.material.opacity = 0.8 - r.userData.age; // Himmenee
+                
+                if (r.userData.age >= 0.8) {
+                    scene.remove(r);
+                    ripples.splice(i, 1);
+                }
+            }
+
             renderer.render(scene, camera);
         }
         
         window.addEventListener('resize', () => {
-            adjustCameraDistance(); // Skaalautuvuus päivitys
+            adjustCameraDistance(); 
             renderer.setSize(container.clientWidth, container.clientHeight);
         });
         
