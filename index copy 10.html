@@ -38,11 +38,26 @@
         text-align:center; 
         overflow:hidden;
         background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+        /* Sallitaan sisällön venyminen yli 100vh mobiilissa, jos tarve */
+        height: auto; 
     }
     /* MOBIILIKORJAUS: touch-action: pan-y sallii pystyskrollauksen kankaan päältä */
     .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%; touch-action: pan-y;}
     
-    .hero-content{position:relative; z-index:1; pointer-events:none; height: 100%;}
+    /* Hero-sisällön asettelu: Poistettu kiinteä height 100%, käytetään min-height */
+    .hero-content{
+        position:relative; 
+        z-index:1; 
+        min-height: 100vh; 
+        pointer-events: none;
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between; 
+        padding-top: 4rem; 
+        padding-bottom: 4rem;
+    }
+    
+    /* Tekstielementit ottavat kosketukset vastaan -> mahdollistaa skrollauksen niiden päältä */
     .hero-content h1, .hero-content p, .hero-content a, .hero-content button { 
         pointer-events: auto; 
     }
@@ -82,12 +97,17 @@
   <section class="hero" id="hero">
     <div id="canvas-container" class="hero-canvas"></div> 
     
-    <div class="hero-content container" style="display: flex; flex-direction: column; height: 100%; justify-content: space-between; padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="hero-content container">
+      <!-- YLÄPUOLEN TEKSTIT -->
       <div style="margin-bottom: auto; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
         <h1>Computer Says Yes Lab</h1>
         <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
       </div>
-      <div style="flex-grow: 1; min-height: 40vh;"></div>
+
+      <!-- VÄLITILA MAAPALLOLLE (Varmistetaan tilaa keskelle) -->
+      <div style="flex-grow: 1; min-height: 30vh;"></div>
+
+      <!-- ALAPUOLEN TEKSTIT -->
       <div style="margin-top: auto; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
         <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
         <p class="lead" style="margin-top: 1rem; font-weight: 500; color: var(--highlight);">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
@@ -203,19 +223,27 @@
         controls.autoRotateSpeed = 0.6;
         controls.enableZoom = false; 
         controls.enablePan = false; 
-        // RAJOITUS: Lukitaan horisonttiin
+        // RAJOITUS: Estetään pystysuuntainen pyöritys (polar angle)
+        // Lukitaan horisonttiin (n. 90 astetta eli Math.PI / 2)
         controls.minPolarAngle = Math.PI / 2 - 0.1; 
         controls.maxPolarAngle = Math.PI / 2 + 0.1; 
 
-        // --- 2. RESPONSIIVISUUS ---
+        // --- 2. RESPONSIIVISUUS-FUNKTIO ---
         function adjustCameraDistance() {
             const aspect = container.clientWidth / container.clientHeight;
             let distance;
-            if (aspect < 1) distance = 110; else distance = 75; 
+
+            if (aspect < 1) {
+                distance = 110; 
+            } else {
+                distance = 75; 
+            }
+            
             camera.position.set(0, 0, distance);
             camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
         }
+
         adjustCameraDistance();
 
         // --- 3. VALAISTUS ---
@@ -227,7 +255,7 @@
         sunLight.shadow.mapSize.width = 2048; sunLight.shadow.mapSize.height = 2048;
         scene.add(sunLight);
 
-        // --- 4. MAAPALLO ---
+        // --- 4. MAAPALLO (KARTTAGENERAATTORI) ---
         function generateWorldMap() {
             const canvas = document.createElement('canvas');
             canvas.width = 512; canvas.height = 256; const ctx = canvas.getContext('2d');
@@ -328,79 +356,16 @@
             oG.position.set(-0.5, 0.5, 0); oG.scale.set(0.8, 0.8, 0.8); g.add(oG);
             g.scale.set(0.6, 0.6, 0.6); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
         }
-        
-        // --- UUSI: LURPPAKORVAINEN KULTAINEN NOUTAJA ---
-        function createFlyingDog() {
-            const dogGroup = new THREE.Group();
-            dogGroup.userData.isCharacter = true;
-            // VÄRI: Kultainen (#d4af37)
-            const matGold = new THREE.MeshStandardMaterial({ color: 0xd4af37, flatShading: true });
-            const matDark = new THREE.MeshStandardMaterial({ color: 0x333333, flatShading: true }); // Nenä/silmät
-            
-            // RUNKO (Tanakka)
-            const body = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 0.8), matGold);
-            dogGroup.add(body);
-            
-            // PÄÄ
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), matGold);
-            head.position.set(0.9, 0.5, 0);
-            dogGroup.add(head);
-            
-            // KUONO
-            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.4), matGold);
-            snout.position.set(1.3, 0.4, 0);
-            dogGroup.add(snout);
-            
-            // NENÄ
-            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.2), matDark);
-            nose.position.set(1.5, 0.5, 0);
-            dogGroup.add(nose);
 
-            // KORVAT (Lurpat / Roikkuvat)
-            const earGeo = new THREE.BoxGeometry(0.2, 0.6, 0.3); // Pitkät, litteät
-            const earL = new THREE.Mesh(earGeo, matGold); 
-            // Asetetaan pään sivuille ja käännetään alaspäin
-            earL.position.set(0.9, 0.4, 0.4); 
-            earL.rotation.z = 0.2; // Hieman irti päästä
-            earL.rotation.x = 0.2; // Hieman eteen
-            dogGroup.add(earL);
-            
-            const earR = earL.clone(); 
-            earR.position.set(0.9, 0.4, -0.4);
-            earR.rotation.z = 0.2;
-            earR.rotation.x = -0.2;
-            dogGroup.add(earR);
-            
-            // JALAT (Leijumisasento)
-            const legGeo = new THREE.BoxGeometry(0.25, 0.6, 0.25);
-            const legFL = new THREE.Mesh(legGeo, matGold); legFL.position.set(0.5, -0.4, 0.25); legFL.rotation.z = -0.4; dogGroup.add(legFL);
-            const legFR = legFL.clone(); legFR.position.z = -0.25; dogGroup.add(legFR);
-            const legBL = new THREE.Mesh(legGeo, matGold); legBL.position.set(-0.5, -0.4, 0.25); legBL.rotation.z = 0.4; dogGroup.add(legBL);
-            const legBR = legBL.clone(); legBR.position.z = -0.25; dogGroup.add(legBR);
-            
-            // HÄNTÄ (Tuuheampi)
-            const tail = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.3, 0.3), matGold);
-            tail.position.set(-1.0, 0.3, 0); 
-            tail.rotation.z = 0.5; // Heiluu ylös
-            dogGroup.add(tail);
-            
-            dogGroup.scale.set(0.6, 0.6, 0.6);
-            dogGroup.traverse(c => { if(c.isMesh) c.castShadow = true; });
-            return dogGroup;
-        }
-
-        // --- 6. SIJOITTELU ---
+        // --- 6. SIJOITTELU JA KLIKKAUSLOGIIKKA ---
         const clickableObjects = [];
 
-        // Pilvet ja hahmot
         for(let i=0; i<12; i++){
             const c = createCloud();
-            // Robotti pilveen 3
             if(i===3){ 
                 const r = createRetroRobot(); r.position.y = 1.2; r.rotation.y = Math.PI; c.add(r); 
                 clickableObjects.push(r);
             }
-            // Kissa pilveen 6
             if(i===6){ 
                 const k = createLowPolyCat(); k.position.y = 1.3; k.rotation.y = Math.PI/2; c.add(k); 
                 clickableObjects.push(k);
@@ -409,22 +374,15 @@
             c.position.set(Math.cos(a)*d, (Math.random()-0.5)*6, Math.sin(a)*d);
             c.lookAt(0,0,0); scene.add(c);
         }
-        
-        // Tesla omalle radalleen
         const tesla = createTesla();
         tesla.position.set(35, 5, 0); tesla.rotation.set(0.2, Math.PI/2, 0.1); scene.add(tesla);
         clickableObjects.push(tesla);
-        
-        // Koira omalle radalleen (vastakkaiseen suuntaan kuin Tesla)
-        const spaceDog = createFlyingDog();
-        spaceDog.position.set(-28, -4, 0); 
-        scene.add(spaceDog);
-        clickableObjects.push(spaceDog);
 
         // KLIKKAUS (HYPPY + RIPPLE)
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         
+        // RIPPLE EFFECT
         const ripples = [];
         const rippleGeom = new THREE.RingGeometry(0.2, 0.4, 32);
         const rippleMat = new THREE.MeshBasicMaterial({ color: 0xff8142, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
@@ -509,23 +467,18 @@
             earth.rotation.y += 0.0005;
             const t = Date.now()*0.0005;
             
-            // Tesla kiertää
-            if(!tesla.userData.isJumping) tesla.position.y = 5; 
+            if(!tesla.userData.isJumping) {
+                tesla.position.y = 5; 
+            }
             tesla.position.x = Math.cos(t)*35; tesla.position.z = Math.sin(t)*35; tesla.rotation.y = -t+Math.PI/2;
             
-            // Koira kiertää (vastapäivään, hitaammin)
-            const t2 = t * 0.7 + 2.0; 
-            if(!spaceDog.userData.isJumping) spaceDog.position.y = -4 + Math.sin(t*2)*0.5; 
-            spaceDog.position.x = Math.cos(-t2)*28; spaceDog.position.z = Math.sin(-t2)*28; 
-            spaceDog.rotation.y = t2 - Math.PI/2;
-            spaceDog.rotation.x = Math.sin(t*3)*0.1; // Uintiliike
-
             // PÄIVITÄ RIPPLES
             for (let i = ripples.length - 1; i >= 0; i--) {
                 const r = ripples[i];
                 r.userData.age += 0.05;
-                r.scale.setScalar(1 + r.userData.age * 5); 
-                r.material.opacity = 0.8 - r.userData.age; 
+                r.scale.setScalar(1 + r.userData.age * 5); // Laajenee
+                r.material.opacity = 0.8 - r.userData.age; // Himmenee
+                
                 if (r.userData.age >= 0.8) {
                     scene.remove(r);
                     ripples.splice(i, 1);
