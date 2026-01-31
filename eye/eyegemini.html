@@ -2,9 +2,8 @@
 <html lang="fi">
 <head>
     <meta charset="UTF-8">
-    <title>Huutomerkin Silmä - eye2.png</title>
+    <title>Huutomerkin Silmä - Viivat Korjattu</title>
     <style>
-        /* Määritellään huutomerkin punainen väri */
         :root {
             --main-color: #961c1c; 
         }
@@ -19,18 +18,20 @@
             overflow: hidden;
         }
 
-        /* Tämä laatikko on neliö, fyysinen seinä hoitaa pyöreän rajauksen */
         .eye-container {
             position: relative;
             width: 500px;
             height: 500px;
             background: var(--main-color);
             overflow: hidden; 
-            /* Sisävarjo luo syvyyttä reikään */
             box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
+            
+            /* KORJAUS 1: Lisätään "turvareunus" samalla värillä. 
+               Tämä syö mahdolliset valkoiset viivat reunoilta. */
+            border: 4px solid var(--main-color); 
+            box-sizing: border-box; /* Varmistaa että koko pysyy 500px */
         }
 
-        /* Valkuainen (Sclera) - Iso pallo taustalla */
         .sclera {
             position: absolute;
             top: 50%;
@@ -38,7 +39,6 @@
             transform: translate(-50%, -50%);
             width: 580px; 
             height: 580px;
-            /* Luodaan pallomainen varjostus valkoiseen osaan */
             background: radial-gradient(circle at 50% 50%, #fff 25%, #e0e0e0 60%, #cfcfcf 100%);
             border-radius: 50%;
             display: flex;
@@ -47,20 +47,16 @@
             box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
         }
 
-        /* IIRIS - Käyttää uutta eye2.png kuvaa */
         .iris {
             position: absolute;
-            width: 230px; /* Hieman isompi, koska uusi kuva on tarkempi */
+            width: 230px; 
             height: 230px;
-            /* 'contain' varmistaa että koko kuva näkyy, jos reunoilla on läpinäkyvyyttä */
             background: url('eye2.png') center/contain no-repeat;
             border-radius: 50%;
-            /* Varjo iiriksen ympärillä tekee siitä irrallisen pinnasta */
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
             transition: transform 0.5s cubic-bezier(0.2, 0, 0.2, 1);
         }
 
-        /* Kiilto - Tekee silmästä "märän" ja lasimaisen */
         .shine {
             position: absolute;
             top: 30%;
@@ -73,16 +69,17 @@
             z-index: 5;
         }
 
-        /* SVG-luomet - Samaa punaista kuin tausta */
+        /* KORJAUS 2: Tehdään luomista hieman ylisuuret */
         svg.lids {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            /* Siirretään -1% vasemmalle ja ylös... */
+            top: -1%;
+            left: -1%;
+            /* ...ja kasvatetaan 102%:iin. Nyt reunoille ei jää rakoja. */
+            width: 102%;
+            height: 102%;
             z-index: 10;
             pointer-events: none;
-            /* Varjo luomen reunaan, jotta se erottuu silmämunasta */
             filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
         }
 
@@ -128,8 +125,6 @@
 
         function random(min, max) { return Math.random() * (max - min) + min; }
 
-        // --- IIRIS VAELLUS ---
-        // Silmä katselee satunnaisesti ympärilleen
         function wander() {
             const x = random(-70, 70);
             const y = random(-40, 40);
@@ -155,24 +150,15 @@
                 function render() {
                     analyser.getByteFrequencyData(data);
                     let vol = data.reduce((a, b) => a + b) / data.length;
-
-                    // --- LOGIIKKA (Käänteinen) ---
-                    // Hiljaista = Silmä auki (maxOpen)
-                    // Ääntä = Silmä menee kiinni
                     
-                    const maxOpen = 230; // Pikseleitä keskustasta reunaan
-
-                    // Herkkyys (kuinka helposti menee kiinni)
+                    const maxOpen = 230; 
                     let soundSqueeze = vol * 3.0; 
                     if (soundSqueeze > maxOpen) soundSqueeze = maxOpen;
 
                     let currentOpenState = maxOpen - soundSqueeze;
-
-                    // Lasketaan käyrät
                     let topCurve = CENTER_Y - currentOpenState; 
                     let bottomCurve = CENTER_Y + (currentOpenState * 0.7);
 
-                    // Piirretään SVG
                     upperLid.setAttribute('d', 
                         `M 0,0 L 500,0 L 500,${CENTER_Y} Q 250,${topCurve} 0,${CENTER_Y} Z`
                     );
@@ -185,12 +171,9 @@
                 }
                 render();
 
-                // --- RÄPSYTYS (Blink) ---
                 function blink() {
                     upperLid.style.transition = "0.1s";
                     lowerLid.style.transition = "0.1s";
-                    
-                    // Silmät kiinni keskiviivalle (250)
                     upperLid.setAttribute('d', `M 0,0 L 500,0 L 500,250 Q 250,250 0,250 Z`);
                     lowerLid.setAttribute('d', `M 0,500 L 500,500 L 500,250 Q 250,250 0,250 Z`);
 
@@ -198,18 +181,15 @@
                         upperLid.style.transition = "none";
                         lowerLid.style.transition = "none";
                     }, 150);
-
-                    // Seuraava räpsytys satunnaisesti 3-8 sekunnin päästä
                     setTimeout(blink, random(3000, 8000));
                 }
                 blink();
 
             } catch (e) {
                 console.error(e);
-                alert("Mikrofoni tarvitaan silmän toimintaan.");
+                alert("Mikrofoni tarvitaan.");
             }
         }
-
         btn.onclick = init;
     </script>
 </body>
