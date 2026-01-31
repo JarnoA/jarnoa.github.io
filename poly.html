@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low Poly Earth - Responsive V13</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); }
+        canvas { display: block; width: 100vw; height: 100vh; } /* Varmistetaan, että canvas täyttää ruudun */
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. SKEENE JA KAMERA ---
+        const scene = new THREE.Scene();
+        
+        // Luodaan kamera, mutta sen Z-sijainti asetetaan myöhemmin responsiivisesti
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimointi mobiilille (ei renderöi liian raskaasti)
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+        controls.enablePan = false; // Estetään panorointi, jotta maapallo pysyy keskellä
+
+        // --- 2. RESPONSIIVISUUS-FUNKTIO ---
+        function adjustCameraDistance() {
+            const aspect = window.innerWidth / window.innerHeight;
+            let distance;
+
+            if (aspect < 1) {
+                // MOBIILI (Pystyruutu): Kamera kauemmas
+                // Lasketaan etäisyys niin, että leveä auto ja pilvet mahtuvat kapeaan ruutuun
+                distance = 110; 
+            } else {
+                // DESKTOP (Vaakaruutu): Kamera lähemmäs
+                distance = 75; 
+            }
+            
+            camera.position.set(0, 0, distance);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        }
+
+        // Kutsutaan heti alussa
+        adjustCameraDistance();
+
+        // --- 3. VALAISTUS ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        sunLight.position.set(-30, 20, 30);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048; sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+
+        // --- 4. MAAPALLO ---
+        function generateWorldMap() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512; canvas.height = 256; const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 512, 256);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath(); ctx.moveTo(100, 20); ctx.lineTo(160, 20); ctx.lineTo(180, 80); ctx.lineTo(140, 120); ctx.lineTo(160, 140); ctx.lineTo(190, 180); ctx.lineTo(170, 220); ctx.lineTo(130, 180); ctx.lineTo(120, 130); ctx.lineTo(80, 60); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(240, 30); ctx.lineTo(300, 30); ctx.lineTo(350, 50); ctx.lineTo(400, 40); ctx.lineTo(420, 100); ctx.lineTo(360, 140); ctx.lineTo(320, 120); ctx.lineTo(330, 150); ctx.lineTo(300, 200); ctx.lineTo(250, 160); ctx.lineTo(230, 100); ctx.lineTo(220, 60); ctx.fill();
+            ctx.beginPath(); ctx.arc(400, 180, 15, 0, Math.PI*2); ctx.fill();
+            return ctx;
+        }
+        const mapContext = generateWorldMap();
+        const mapData = mapContext.getImageData(0, 0, 512, 256).data;
+        let earthGeometry = new THREE.IcosahedronGeometry(11, 4);
+        earthGeometry = earthGeometry.toNonIndexed(); 
+        const pos = earthGeometry.attributes.position;
+        const colors = [];
+        const count = pos.count;
+        const cOcean = new THREE.Color(0x1e6091); const cLand = new THREE.Color(0x5a8035); const cForest = new THREE.Color(0x3e5e26); const cSand = new THREE.Color(0xe0cd85); const cMountain = new THREE.Color(0xffffff);
+        const _v = new THREE.Vector3();
+        for (let i = 0; i < count; i += 3) {
+            _v.set(pos.getX(i), pos.getY(i), pos.getZ(i)); _v.normalize();
+            const u = 0.5 + (Math.atan2(_v.z, _v.x) / (2 * Math.PI)); const v = 0.5 + (Math.asin(_v.y) / Math.PI);
+            const pxX = Math.floor(u * 512); const pxY = Math.floor((1 - v) * 256);
+            const index = (pxY * 512 + pxX) * 4;
+            let finalColor;
+            if (mapData[index] > 100) {
+                const h = 1.03; for(let j=0; j<3; j++) pos.setXYZ(i+j, pos.getX(i+j)*h, pos.getY(i+j)*h, pos.getZ(i+j)*h);
+                const r = Math.random();
+                if (Math.abs(_v.y) > 0.85) finalColor = cMountain; else if (r > 0.7) finalColor = cForest; else if (r < 0.1) finalColor = cSand; else finalColor = cLand;
+            } else {
+                const deep = 1 - Math.random() * 0.15; finalColor = cOcean.clone().multiplyScalar(deep);
+            }
+            colors.push(finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b);
+        }
+        earthGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        earthGeometry.computeVertexNormals();
+        const earthMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.8, metalness: 0.1 });
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.castShadow = true; earth.receiveShadow = true; earth.rotation.y = -1.8; 
+        scene.add(earth);
+
+        // --- 5. HAHMOT JA OBJEKTIT ---
+        // (Samat funktiot kuin V12)
+        function createCloud() {
+            const g = new THREE.Group();
+            const blobs = 4 + Math.floor(Math.random() * 5);
+            const m = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, roughness: 0.5 });
+            for(let k=0; k<blobs; k++){
+                const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(1.2+Math.random()*0.5, 0), m);
+                mesh.position.set((Math.random()-0.5)*5, (Math.random()-0.5)*2, (Math.random()-0.5)*3);
+                mesh.rotation.set(Math.random()*3, Math.random()*3, 0); mesh.castShadow = true; g.add(mesh);
+            }
+            return g;
+        }
+        function createRetroRobot() {
+            const g = new THREE.Group();
+            const mB = new THREE.MeshStandardMaterial({ color: 0x888899, flatShading: true, metalness: 0.6 });
+            const mE = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.8), mB));
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), mB); head.position.y = 1.0; g.add(head);
+            const eL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.1), mE); eL.position.set(-0.2, 1.05, 0.41); g.add(eL);
+            const eR = eL.clone(); eR.position.x = 0.2; g.add(eR);
+            const lL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.6, 0.3), mB); lL.position.set(-0.3, -0.8, 0.2); lL.rotation.x = -Math.PI/6; g.add(lL);
+            const lR = lL.clone(); lR.position.x = 0.3; g.add(lR);
+            g.scale.set(0.6, 0.6, 0.6); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+        function createLowPolyCat() {
+            const g = new THREE.Group();
+            const mO = new THREE.MeshStandardMaterial({ color: 0xd18e47, flatShading: true });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.5, 0.5), mO));
+            const h = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), mO); h.position.set(0.7, 0.2, 0); g.add(h);
+            const e1 = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), mO); e1.position.set(0.7, 0.6, 0.2); e1.rotation.y = Math.PI/4; g.add(e1);
+            const e2 = e1.clone(); e2.position.z = -0.2; g.add(e2);
+            const t = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.2), mO); t.position.set(-0.7, 0.3, 0); t.rotation.z = Math.PI/4; g.add(t);
+            g.scale.set(0.5, 0.5, 0.5); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+        function createTesla() {
+            const g = new THREE.Group();
+            const mR = new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, metalness: 0.7, roughness: 0.1 });
+            const mW = new THREE.MeshStandardMaterial({ color: 0x111111, flatShading: true, metalness: 0.9, roughness: 0.1 });
+            const mWh = new THREE.MeshStandardMaterial({ color: 0x222222, flatShading: true });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(4, 0.8, 1.8), mR));
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.7, 1.6), mW); cabin.position.set(-0.2, 0.75, 0); g.add(cabin);
+            const wg = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 8); wg.rotateX(Math.PI/2);
+            const w1 = new THREE.Mesh(wg, mWh); w1.position.set(1.2, -0.2, 0.9); g.add(w1);
+            const w2 = new THREE.Mesh(wg, mWh); w2.position.set(-1.2, -0.2, 0.9); g.add(w2);
+            const w3 = new THREE.Mesh(wg, mWh); w3.position.set(1.2, -0.2, -0.9); g.add(w3);
+            const w4 = new THREE.Mesh(wg, mWh); w4.position.set(-1.2, -0.2, -0.9); g.add(w4);
+            // Oligarch
+            const oG = new THREE.Group();
+            const mS = new THREE.MeshStandardMaterial({ color: 0x223355, flatShading: true });
+            const mSk = new THREE.MeshStandardMaterial({ color: 0xffdbac, flatShading: true });
+            const mGl = new THREE.MeshStandardMaterial({ color: 0x000000, flatShading: true, metalness: 1 });
+            oG.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.4), mS));
+            const oh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.5), mSk); oh.position.y = 0.7; oG.add(oh);
+            const og = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), mGl); og.position.set(0, 0.75, 0.28); oG.add(og);
+            oG.position.set(-0.5, 0.5, 0); oG.scale.set(0.8, 0.8, 0.8); g.add(oG);
+            g.scale.set(0.6, 0.6, 0.6); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+
+        // --- SIJOITTELU ---
+        for(let i=0; i<12; i++){
+            const c = createCloud();
+            if(i===3){ const r = createRetroRobot(); r.position.y = 1.2; r.rotation.y = Math.PI; c.add(r); }
+            if(i===6){ const k = createLowPolyCat(); k.position.y = 1.3; k.rotation.y = Math.PI/2; c.add(k); }
+            const a = (i/12)*Math.PI*2; const d = 22 + Math.random()*3;
+            c.position.set(Math.cos(a)*d, (Math.random()-0.5)*6, Math.sin(a)*d);
+            c.lookAt(0,0,0); scene.add(c);
+        }
+        const tesla = createTesla();
+        tesla.position.set(35, 5, 0); tesla.rotation.set(0.2, Math.PI/2, 0.1); scene.add(tesla);
+
+        // --- TÄHDET ---
+        const sG = new THREE.BufferGeometry(); const sP = [];
+        for(let i=0; i<800; i++) sP.push((Math.random()-0.5)*400, (Math.random()-0.5)*400, (Math.random()-0.5)*400);
+        sG.setAttribute('position', new THREE.Float32BufferAttribute(sP, 3));
+        const stars = new THREE.Points(sG, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})); scene.add(stars);
+
+        // --- ANIMAATIO & SKAALAUS ---
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            stars.rotation.y -= 0.0003; 
+            earth.rotation.y += 0.0005;
+            const t = Date.now()*0.0005;
+            tesla.position.x = Math.cos(t)*35; tesla.position.z = Math.sin(t)*35; tesla.rotation.y = -t+Math.PI/2;
+            renderer.render(scene, camera);
+        }
+        
+        // RESPONSIIVISUUS TAPAHTUMANKUUNTELIJA
+        window.addEventListener('resize', () => {
+            adjustCameraDistance(); // Lasketaan uusi etäisyys
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        animate();
+    </script>
+</body>
+</html>
