@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Says Yes Lab | Kutsu tekoälyttömyyteen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Righteous&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Import Map for Three.js Modules -->
+  <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+  </script>
+
+  <style>
+    :root{
+      --bg:#0a0a0a; --ink:#fffaeb; --accent:#ff8142; --accent2:#4fa8cc; --card:#121212; --highlight:#ffbe3c;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:"Space Grotesk",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink);}
+    a{color:inherit}
+
+    /* Layout */
+    .container{max-width:1100px; margin:0 auto; padding:0 24px}
+    section{padding:96px 0; position:relative}
+
+    /* Hero */
+    .hero{
+        min-height:100vh; 
+        display:flex; 
+        align-items:center; 
+        justify-content:center; 
+        text-align:center; 
+        overflow:hidden;
+        background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+        /* Sallitaan sisällön venyminen yli 100vh mobiilissa */
+        height: auto; 
+    }
+    /* touch-action: pan-y sallii pystyskrollauksen kankaan päältä */
+    .hero-canvas{position:absolute; inset:0; z-index:0; width: 100%; height: 100%; touch-action: pan-y;}
+    
+    /* Hero-sisällön asettelu */
+    .hero-content{
+        position:relative; 
+        z-index:1; 
+        min-height: 100vh; 
+        pointer-events: none;
+        display: flex; 
+        flex-direction: column; 
+        justify-content: space-between; 
+        padding-top: 4rem; 
+        padding-bottom: 4rem;
+    }
+    
+    /* Tekstielementit ottavat kosketukset vastaan -> mahdollistaa skrollauksen niiden päältä */
+    .hero-content h1, .hero-content p, .hero-content a, .hero-content button { 
+        pointer-events: auto; 
+    }
+
+    h1{font-family:"Abril+Fatface",serif; font-size:clamp(2.8rem,7vw,6rem); line-height:1.02; letter-spacing:.2px; margin:0 0 12px}
+    .subtitle{font-family:"Righteous",sans-serif; color:var(--highlight); font-size:clamp(1.1rem,2.2vw,1.5rem); margin:0 0 16px}
+    p.lead{max-width:62ch; margin:0 auto 8px; font-size:clamp(1.05rem,1.7vw,1.2rem); line-height:1.7}
+
+    /* Sections */
+    .section-dark{background:var(--card)}
+    .section-yellow{background:var(--highlight); color:#0a0a0a}
+    .section-yellow h2, .section-yellow h3{color:#0a0a0a}
+
+    h2{font-family:"Abril+Fatface",serif; font-size:clamp(2rem,4.5vw,3.2rem); margin:0 0 16px}
+    h3{font-weight:700; font-size:clamp(1.2rem,2.2vw,1.5rem); margin:20px 0 8px}
+    p{max-width:70ch; line-height:1.7}
+
+    /* Grid */
+    .grid{display:grid; gap:32px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:900px){
+      .grid-2{grid-template-columns:1fr}
+      .grid-4{grid-template-columns:1fr}
+    }
+
+    .card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:18px; padding:24px}
+    .img-frame{border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.08)}
+    .img{width:100%; display:block}
+    #explodeCanvas{display:block; width:100%; height:380px;}
+    .center{text-align:center}
+  </style>
+  <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div id="canvas-container" class="hero-canvas"></div> 
+    
+    <div class="hero-content container">
+      <!-- YLÄPUOLEN TEKSTIT -->
+      <div style="margin-bottom: auto; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
+        <h1>Computer Says Yes Lab</h1>
+        <p class="subtitle">Kutsu viisaaseen tekoälyttömyyteen.</p>
+      </div>
+
+      <!-- VÄLITILA MAAPALLOLLE -->
+      <div style="flex-grow: 1; min-height: 30vh;"></div>
+
+      <!-- ALAPUOLEN TEKSTIT -->
+      <div style="margin-top: auto; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
+        <p class="lead">CSY Lab on työskentelyalusta, joka pureutuu tekoälyn mustaan laatikkoon ja paljastaa ihmisyyden rajat. Tutkimme ja havainnollistamme, mitä tapahtuu, kun ulkoistamme ajattelun koneille – ja mitä inhimillistä meille silloin jää. Lähestymme tekoälyä kriittisesti, luovasti ja ennen kaikkea inhimillisestä näkökulmasta.</p>
+        <p class="lead" style="margin-top: 1rem; font-weight: 500; color: var(--highlight);">Maailmassa, jossa kone sanoo kyllä, meidän on kysyttävä miksi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AJATUS -->
+  <section class="section-dark">
+    <div class="container grid grid-2">
+      <div>
+        <h2>Ajatus</h2>
+        <p>Tekoäly on enemmän kuin teknologia; se on kulttuurinen ja moraalinen ilmiö, joka heijastaa ja vahvistaa yhteiskuntamme vinoumia. Labimme tarjoaa organisaatioille välineet nähdä tekoäly peilinä, joka paljastaa omat sokeat pisteemme ja narsistisen taipumuksemme.</p>
+        <p>Autamme ymmärtämään, miten järjestelmät hyödyntävät kognitiivista sokerisiirappia muokatakseen valintojamme. Tavoitteena on auttaa organisaatioita kysymään oikeita kysymyksiä – ja välttämään olemasta älykkäiden koneiden tyhmiä käyttäjiä.</p>
+      </div>
+      <!-- VAIHTOEHTO B: WIREFRAME-TYYLINEN KOHTAAMINEN -->
+      <div class="img-frame" style="position: relative; height: 400px; background: #000; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+        <canvas id="thought-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- MITÄ LAB TEKEE -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Mitä CSY Lab tekee</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Asiantuntijaluennot ja koulutukset</h3>
+          <p>Tekno-filosofisia puheenvuoroja tekoälystä, ihmisyydestä ja päätöksenteon tulevaisuudesta. Keskitymme ymmärtämään tekoälyjärjestelmien perusperiaatteita ja toimintalogiikkaa.</p>
+        </div>
+        <div class="card">
+          <h3>Työpajat</h3>
+          <p>Käytännön harjoituksia ja sparrausta, jotka tukevat kriittisen hitaan ajattelun ja algoritmisen lukutaidon kehittämistä.</p>
+        </div>
+        <div class="card">
+          <h3>Koulutus ja konsultointi</h3>
+          <p>Konsultoin organisaatioita tekoälyn strategisessa käyttöönotossa ja koulutan henkilöstöä hyödyntämään tekoälyä tehokkaasti arjessaan.</p>
+        </div>
+        <div class="card">
+          <h3>Tutkimus ja taide</h3>
+          <p>Toteutamme kokeellisia projekteja, joissa testaamme tekoälyn rajoja luovassa työssä. Tutkimme, miten algoritmit tulkitsevat merkityksiä ja tekevät valintoja.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYÖKALUT -->
+  <section class="section-dark" id="tools" style="position:relative; overflow:hidden;">
+    <canvas id="tools-bg" class="hero-canvas"></canvas>
+    <div class="container" style="position:relative; z-index:1;">
+      <h2>Työkalut & Projektit</h2>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3><a href="https://csy.fi/ai-energy-calculator/" target="_blank" rel="noopener noreferrer">AI Energy Calculator</a></h3>
+          <p>Arvioi ja vertaile, kuinka paljon energiaa ja vettä kuluu luovassa työssä – käsin tehden tai tekoälyn avulla.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://avain.net/tuote/jarno-alastalo/musta-laatikko-teko%C3%A4lytt%C3%B6myyden-ajan-alku/9789523046559" target="_blank" rel="noopener noreferrer">Musta laatikko -kirja</a></h3>
+          <p>Musta laatikko on tutkimusmatka maailmaan, jossa algoritmit, tekoäly ja näkymättömät järjestelmät muokkaavat tunteitamme, valintojamme ja yhteisöjämme. Olemme astuneet tekoälyttömyyden aikaan: joko tulemme älykkäiden koneiden tyhmiksi käyttäjiksi tai opimme käyttämään niitä viisaasti. Tekoäly toimii mustassa laatikossa, järjestelmässä, jonka toimintaa emme näe, mutta jonka vaikutukset tunnemme. Tämä kirja kutsuu sinut katsomaan pinnan alle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLODING CUBE ANIMATION -->
+  <section class="section-yellow" style="padding:0; overflow:hidden;">
+    <canvas id="explodeCanvas"></canvas>
+  </section>
+
+  <!-- TAVOITE -->
+  <section class="section-dark">
+    <div class="container">
+      <h2>Tavoite</h2>
+      <p>Auttaa organisaatioita kehittämään tekoälyä, joka ymmärtää ihmistä – ei korvaa häntä.</p>
+      <p><em>Tekoälyttömyys ei ole paluuta menneeseen, vaan muistutus siitä, että teknologia tarvitsee ihmisen rinnalleen – ei hänen tilalleen. Tavoitteenamme on kuroa umpeen digitaalinen kuilu ja palauttaa toimijuus organisaatioille, jotta voitte kehittää tekoälyä, joka tukee ihmisen kykyä ajatella.</em></p>
+    </div>
+  </section>
+
+  <!-- YHTEYS -->
+  <section class="section-yellow">
+    <div class="container">
+      <h2>Ota yhteyttä</h2>
+      <p>Jarno Alastalo</p>
+      <p><strong><a href="mailto:jarno@csy.fi">jarno@csy.fi</a></strong></p>
+      <p>Jarno Alastalo on tekno-filosofi, kirjailija, digitaalisten yhteisöjen rakentaja ja kissavideoiden asiantuntija, joka on suunnitellut mustia laatikoita. Hän tarkastelee teknologiaa inhimillisestä näkökulmasta: miten tekoäly, sosiaalinen media ja algoritmit muokkaavat ihmisyyttä, identiteettiä ja arvoja.</p>
+      <p><strong>CSY Lab, Y-tunnus 2578992-5 (osa MPH Making People Happy -yritystä)</strong></p>
+      <p><br></p>
+      <p style="font-size: 0.9rem; opacity: 0.8;"><i>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</i></p>
+    </div>
+  </section>
+
+  <!-- HERO SCRIPT (INTERAKTIIVINEN + GOLDEN DOG + RESIZE FIX) -->
+  <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. SKEENE JA KAMERA ---
+        const scene = new THREE.Scene();
+        const container = document.getElementById('canvas-container');
+        
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Kontrollit (Interaktiivisuus päällä)
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+        controls.enableZoom = false; 
+        controls.enablePan = false; 
+        // RAJOITUS: Lukitaan horisonttiin
+        controls.minPolarAngle = Math.PI / 2 - 0.1; 
+        controls.maxPolarAngle = Math.PI / 2 + 0.1; 
+        
+        // Varmistetaan, että touch-action sallii pystyskrollauksen
+        renderer.domElement.style.touchAction = 'pan-y';
+
+        // --- 2. RESPONSIIVISUUS ---
+        function adjustCameraDistance() {
+            const aspect = container.clientWidth / container.clientHeight;
+            let distance;
+            if (aspect < 1) distance = 110; else distance = 75; 
+            camera.position.set(0, 0, distance);
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+        adjustCameraDistance();
+
+        // --- 3. VALAISTUS ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        sunLight.position.set(-30, 20, 30);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048; sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+
+        // --- 4. MAAPALLO ---
+        function generateWorldMap() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512; canvas.height = 256; const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, 512, 256);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath(); ctx.moveTo(100, 20); ctx.lineTo(160, 20); ctx.lineTo(180, 80); ctx.lineTo(140, 120); ctx.lineTo(160, 140); ctx.lineTo(190, 180); ctx.lineTo(170, 220); ctx.lineTo(130, 180); ctx.lineTo(120, 130); ctx.lineTo(80, 60); ctx.fill();
+            ctx.beginPath(); ctx.moveTo(240, 30); ctx.lineTo(300, 30); ctx.lineTo(350, 50); ctx.lineTo(400, 40); ctx.lineTo(420, 100); ctx.lineTo(360, 140); ctx.lineTo(320, 120); ctx.lineTo(330, 150); ctx.lineTo(300, 200); ctx.lineTo(250, 160); ctx.lineTo(230, 100); ctx.lineTo(220, 60); ctx.fill();
+            ctx.beginPath(); ctx.arc(400, 180, 15, 0, Math.PI*2); ctx.fill();
+            return ctx;
+        }
+        const mapContext = generateWorldMap();
+        const mapData = mapContext.getImageData(0, 0, 512, 256).data;
+        let earthGeometry = new THREE.IcosahedronGeometry(11, 4);
+        earthGeometry = earthGeometry.toNonIndexed(); 
+        const pos = earthGeometry.attributes.position;
+        const colors = [];
+        const count = pos.count;
+        const cOcean = new THREE.Color(0x1e6091); const cLand = new THREE.Color(0x5a8035); const cForest = new THREE.Color(0x3e5e26); const cSand = new THREE.Color(0xe0cd85); const cMountain = new THREE.Color(0xffffff);
+        const _v = new THREE.Vector3();
+        for (let i = 0; i < count; i += 3) {
+            _v.set(pos.getX(i), pos.getY(i), pos.getZ(i)); _v.normalize();
+            const u = 0.5 + (Math.atan2(_v.z, _v.x) / (2 * Math.PI)); const v = 0.5 + (Math.asin(_v.y) / Math.PI);
+            const pxX = Math.floor(u * 512); const pxY = Math.floor((1 - v) * 256);
+            const index = (pxY * 512 + pxX) * 4;
+            let finalColor;
+            if (mapData[index] > 100) {
+                const h = 1.03; for(let j=0; j<3; j++) pos.setXYZ(i+j, pos.getX(i+j)*h, pos.getY(i+j)*h, pos.getZ(i+j)*h);
+                const r = Math.random();
+                if (Math.abs(_v.y) > 0.85) finalColor = cMountain; else if (r > 0.7) finalColor = cForest; else if (r < 0.1) finalColor = cSand; else finalColor = cLand;
+            } else {
+                const deep = 1 - Math.random() * 0.15; finalColor = cOcean.clone().multiplyScalar(deep);
+            }
+            colors.push(finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b, finalColor.r, finalColor.g, finalColor.b);
+        }
+        earthGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        earthGeometry.computeVertexNormals();
+        const earthMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.8, metalness: 0.1 });
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.castShadow = true; earth.receiveShadow = true; earth.rotation.y = -1.8; 
+        scene.add(earth);
+
+        // --- 5. HAHMOT JA OBJEKTIT ---
+        function createCloud() {
+            const g = new THREE.Group();
+            const blobs = 4 + Math.floor(Math.random() * 5);
+            const m = new THREE.MeshStandardMaterial({ color: 0xffffff, flatShading: true, roughness: 0.5 });
+            for(let k=0; k<blobs; k++){
+                const mesh = new THREE.Mesh(new THREE.DodecahedronGeometry(1.2+Math.random()*0.5, 0), m);
+                mesh.position.set((Math.random()-0.5)*5, (Math.random()-0.5)*2, (Math.random()-0.5)*3);
+                mesh.rotation.set(Math.random()*3, Math.random()*3, 0); mesh.castShadow = true; g.add(mesh);
+            }
+            return g;
+        }
+        function createRetroRobot() {
+            const g = new THREE.Group();
+            g.userData.isCharacter = true;
+            const mB = new THREE.MeshStandardMaterial({ color: 0x888899, flatShading: true, metalness: 0.6 });
+            const mE = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.8), mB));
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8), mB); head.position.y = 1.0; g.add(head);
+            const eL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.1), mE); eL.position.set(-0.2, 1.05, 0.41); g.add(eL);
+            const eR = eL.clone(); eR.position.x = 0.2; g.add(eR);
+            const lL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.6, 0.3), mB); lL.position.set(-0.3, -0.8, 0.2); lL.rotation.x = -Math.PI/6; g.add(lL);
+            const lR = lL.clone(); lR.position.x = 0.3; g.add(lR);
+            g.scale.set(0.6, 0.6, 0.6); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+        function createLowPolyCat() {
+            const g = new THREE.Group();
+            g.userData.isCharacter = true;
+            const mO = new THREE.MeshStandardMaterial({ color: 0xd18e47, flatShading: true });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.5, 0.5), mO));
+            const h = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), mO); h.position.set(0.7, 0.2, 0); g.add(h);
+            const e1 = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.3, 4), mO); e1.position.set(0.7, 0.6, 0.2); e1.rotation.y = Math.PI/4; g.add(e1);
+            const e2 = e1.clone(); e2.position.z = -0.2; g.add(e2);
+            const t = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.2), mO); t.position.set(-0.7, 0.3, 0); t.rotation.z = Math.PI/4; g.add(t);
+            g.scale.set(0.5, 0.5, 0.5); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+        function createTesla() {
+            const g = new THREE.Group();
+            g.userData.isCharacter = true;
+            const mR = new THREE.MeshStandardMaterial({ color: 0xff0000, flatShading: true, metalness: 0.7, roughness: 0.1 });
+            const mW = new THREE.MeshStandardMaterial({ color: 0x111111, flatShading: true, metalness: 0.9, roughness: 0.1 });
+            const mWh = new THREE.MeshStandardMaterial({ color: 0x222222, flatShading: true });
+            g.add(new THREE.Mesh(new THREE.BoxGeometry(4, 0.8, 1.8), mR));
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.7, 1.6), mW); cabin.position.set(-0.2, 0.75, 0); g.add(cabin);
+            const wg = new THREE.CylinderGeometry(0.4, 0.4, 0.3, 8); wg.rotateX(Math.PI/2);
+            const w1 = new THREE.Mesh(wg, mWh); w1.position.set(1.2, -0.2, 0.9); g.add(w1);
+            const w2 = new THREE.Mesh(wg, mWh); w2.position.set(-1.2, -0.2, 0.9); g.add(w2);
+            const w3 = new THREE.Mesh(wg, mWh); w3.position.set(1.2, -0.2, -0.9); g.add(w3);
+            const w4 = new THREE.Mesh(wg, mWh); w4.position.set(-1.2, -0.2, -0.9); g.add(w4);
+            const oG = new THREE.Group();
+            const mS = new THREE.MeshStandardMaterial({ color: 0x223355, flatShading: true });
+            const mSk = new THREE.MeshStandardMaterial({ color: 0xffdbac, flatShading: true });
+            const mGl = new THREE.MeshStandardMaterial({ color: 0x000000, flatShading: true, metalness: 1 });
+            oG.add(new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.4), mS));
+            const oh = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.5), mSk); oh.position.y = 0.7; oG.add(oh);
+            const og = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.15, 0.1), mGl); og.position.set(0, 0.75, 0.28); oG.add(og);
+            oG.position.set(-0.5, 0.5, 0); oG.scale.set(0.8, 0.8, 0.8); g.add(oG);
+            g.scale.set(0.6, 0.6, 0.6); g.traverse(c => { if(c.isMesh) c.castShadow = true; }); return g;
+        }
+        
+        function createFlyingDog() {
+            const dogGroup = new THREE.Group();
+            dogGroup.userData.isCharacter = true;
+            const matGold = new THREE.MeshStandardMaterial({ color: 0xd4af37, flatShading: true });
+            const matDark = new THREE.MeshStandardMaterial({ color: 0x333333, flatShading: true }); 
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.8, 0.8), matGold); dogGroup.add(body);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), matGold); head.position.set(0.9, 0.5, 0); dogGroup.add(head);
+            const snout = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.4), matGold); snout.position.set(1.3, 0.4, 0); dogGroup.add(snout);
+            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.2), matDark); nose.position.set(1.5, 0.5, 0); dogGroup.add(nose);
+            const earGeo = new THREE.BoxGeometry(0.2, 0.6, 0.3);
+            const earL = new THREE.Mesh(earGeo, matGold); earL.position.set(0.9, 0.4, 0.4); earL.rotation.z = 0.2; earL.rotation.x = 0.2; dogGroup.add(earL);
+            const earR = earL.clone(); earR.position.set(0.9, 0.4, -0.4); earR.rotation.z = 0.2; earR.rotation.x = -0.2; dogGroup.add(earR);
+            const legGeo = new THREE.BoxGeometry(0.25, 0.6, 0.25);
+            const legFL = new THREE.Mesh(legGeo, matGold); legFL.position.set(0.5, -0.4, 0.25); legFL.rotation.z = -0.4; dogGroup.add(legFL);
+            const legFR = legFL.clone(); legFR.position.z = -0.25; dogGroup.add(legFR);
+            const legBL = new THREE.Mesh(legGeo, matGold); legBL.position.set(-0.5, -0.4, 0.25); legBL.rotation.z = 0.4; dogGroup.add(legBL);
+            const legBR = legBL.clone(); legBR.position.z = -0.25; dogGroup.add(legBR);
+            const tail = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.3, 0.3), matGold); tail.position.set(-1.0, 0.3, 0); tail.rotation.z = 0.5; dogGroup.add(tail);
+            dogGroup.scale.set(0.6, 0.6, 0.6); dogGroup.traverse(c => { if(c.isMesh) c.castShadow = true; }); return dogGroup;
+        }
+
+        // --- 6. SIJOITTELU ---
+        const clickableObjects = [];
+
+        for(let i=0; i<12; i++){
+            const c = createCloud();
+            if(i===3){ const r = createRetroRobot(); r.position.y = 1.2; r.rotation.y = Math.PI; c.add(r); clickableObjects.push(r); }
+            if(i===6){ const k = createLowPolyCat(); k.position.y = 1.3; k.rotation.y = Math.PI/2; c.add(k); clickableObjects.push(k); }
+            const a = (i/12)*Math.PI*2; const d = 22 + Math.random()*3;
+            c.position.set(Math.cos(a)*d, (Math.random()-0.5)*6, Math.sin(a)*d);
+            c.lookAt(0,0,0); scene.add(c);
+        }
+        
+        const tesla = createTesla();
+        tesla.position.set(35, 5, 0); tesla.rotation.set(0.2, Math.PI/2, 0.1); scene.add(tesla);
+        clickableObjects.push(tesla);
+        
+        const spaceDog = createFlyingDog();
+        spaceDog.position.set(-28, -4, 0); scene.add(spaceDog);
+        clickableObjects.push(spaceDog);
+
+        // KLIKKAUSLOGIIKKA (Raycaster)
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        const ripples = [];
+        const rippleGeom = new THREE.RingGeometry(0.2, 0.4, 32);
+        const rippleMat = new THREE.MeshBasicMaterial({ color: 0xff8142, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+
+        function createRipple(pos) {
+            const ripple = new THREE.Mesh(rippleGeom, rippleMat.clone());
+            ripple.position.copy(pos);
+            ripple.lookAt(camera.position); 
+            ripple.userData = { age: 0 };
+            scene.add(ripple);
+            ripples.push(ripple);
+        }
+
+        function onPointerDown(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ( (event.clientX - rect.left) / rect.width ) * 2 - 1;
+            mouse.y = - ( (event.clientY - rect.top) / rect.height ) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObjects(scene.children, true);
+            
+            if(intersects.length > 0) {
+                let target = intersects[0].object;
+                let hitPoint = intersects[0].point;
+                let parent = target;
+                while(parent && !parent.userData.isCharacter && parent !== scene) {
+                    parent = parent.parent;
+                }
+                
+                if (parent && parent.userData.isCharacter) {
+                    triggerJump(parent);
+                    createRipple(hitPoint); 
+                } else {
+                    createRipple(hitPoint);
+                }
+            }
+        }
+        
+        function triggerJump(obj) {
+            if(obj.userData.isJumping) return;
+            obj.userData.isJumping = true;
+            const startY = obj.position.y;
+            let jumpT = 0;
+            const animateJump = () => {
+                jumpT += 0.15;
+                obj.position.y = startY + Math.sin(jumpT) * 2;
+                obj.rotation.z += 0.2; 
+                
+                if (jumpT < Math.PI) {
+                    requestAnimationFrame(animateJump);
+                } else {
+                    obj.position.y = startY;
+                    obj.rotation.z = 0; 
+                    if(obj === tesla) obj.rotation.z = 0.1;
+                    obj.userData.isJumping = false;
+                }
+            };
+            animateJump();
+        }
+        
+        window.addEventListener('mousedown', onPointerDown);
+        window.addEventListener('touchstart', (e) => {
+             const t = e.touches[0];
+             onPointerDown({clientX: t.clientX, clientY: t.clientY});
+        });
+
+        // --- 7. TÄHDET JA ANIMAATIO ---
+        const sG = new THREE.BufferGeometry(); const sP = [];
+        for(let i=0; i<800; i++) sP.push((Math.random()-0.5)*400, (Math.random()-0.5)*400, (Math.random()-0.5)*400);
+        sG.setAttribute('position', new THREE.Float32BufferAttribute(sP, 3));
+        const stars = new THREE.Points(sG, new THREE.PointsMaterial({color: 0xffffff, size: 0.2})); scene.add(stars);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            
+            stars.rotation.y -= 0.0003; 
+            earth.rotation.y += 0.0005;
+            const t = Date.now()*0.0005;
+            if(!tesla.userData.isJumping) tesla.position.y = 5; 
+            tesla.position.x = Math.cos(t)*35; tesla.position.z = Math.sin(t)*35; tesla.rotation.y = -t+Math.PI/2;
+            
+            const t2 = t * 0.7 + 2.0; 
+            if(!spaceDog.userData.isJumping) spaceDog.position.y = -4 + Math.sin(t*2)*0.5; 
+            spaceDog.position.x = Math.cos(-t2)*28; spaceDog.position.z = Math.sin(-t2)*28; 
+            spaceDog.rotation.y = t2 - Math.PI/2;
+            spaceDog.rotation.x = Math.sin(t*3)*0.1;
+
+            // RIPPLE PÄIVITYS
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                r.userData.age += 0.05;
+                r.scale.setScalar(1 + r.userData.age * 5); 
+                r.material.opacity = 0.8 - r.userData.age; 
+                if (r.userData.age >= 0.8) {
+                    scene.remove(r);
+                    ripples.splice(i, 1);
+  <!-- AJATUS-OSION SCRIPT (WIREFRAME STYLIZED) -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    (function() {
+      const cvs = document.getElementById('thought-canvas');
+      if(!cvs) return;
+      
+      const ren = new THREE.WebGLRenderer({canvas:cvs, antialias:true, alpha:true});
+      const scn = new THREE.Scene();
+      // Sumu syvyysvaikutelmaa varten
+      scn.fog = new THREE.FogExp2(0x000000, 0.15);
+      
+      const cam = new THREE.PerspectiveCamera(45, 1, 0.1, 50); 
+      cam.position.set(0, 0, 6); 
+
+      // Materiaalit: Wireframe on futuristinen ja antaa anteeksi yksinkertaiset muodot
+      const matRobot = new THREE.MeshBasicMaterial({color: 0x4fa8cc, wireframe: true, transparent: true, opacity: 0.6});
+      const matLife = new THREE.MeshBasicMaterial({color: 0xff8142, wireframe: true, transparent: true, opacity: 0.6});
+      const matSpark = new THREE.MeshBasicMaterial({color: 0xffffff});
+
+      // 1. ROBOTTIKÄSI (Abstrakti rakenne vasemmalla)
+      const robotGroup = new THREE.Group();
+      // Nivel
+      const joint = new THREE.Mesh(new THREE.IcosahedronGeometry(0.4, 1), matRobot);
+      robotGroup.add(joint);
+      // Sormet (kartiot)
+      const finger1 = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.8, 4), matRobot);
+      finger1.position.set(0.3, 0.2, 0); finger1.rotation.z = -0.5; robotGroup.add(finger1);
+      const finger2 = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.8, 4), matRobot);
+      finger2.position.set(0.3, -0.2, 0); finger2.rotation.z = 0.5; robotGroup.add(finger2);
+      
+      robotGroup.position.x = -2.5;
+      scn.add(robotGroup);
+
+      // 2. KOIRAN TASSU / ORGAANINEN (Oikealla)
+      const lifeGroup = new THREE.Group();
+      // Päämuoto (pehmeämpi pallo)
+      const pawMain = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), matLife);
+      lifeGroup.add(pawMain);
+      // "Varpaat"
+      const toe1 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 4, 4), matLife);
+      toe1.position.set(-0.3, 0.15, 0); lifeGroup.add(toe1);
+      const toe2 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 4, 4), matLife);
+      toe2.position.set(-0.3, -0.15, 0); lifeGroup.add(toe2);
+
+      lifeGroup.position.x = 2.5;
+      scn.add(lifeGroup);
+
+      // 3. YHTEYS (Partikkelivirta)
+      const particles = new THREE.Group();
+      const pGeo = new THREE.BufferGeometry();
+      const pCount = 40;
+      const pPos = new Float32Array(pCount * 3);
+      for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random()-0.5)*0.5;
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+      const pMat = new THREE.PointsMaterial({color: 0xffffff, size: 0.05, transparent:true, opacity:0.8});
+      
+      // Luodaan "silta" partikkeleista
+      for(let i=0; i<15; i++) {
+          const p = new THREE.Points(pGeo, pMat);
+          p.userData = { speed: 0.02 + Math.random()*0.02, offset: Math.random()*Math.PI*2 };
+          particles.add(p);
+      }
+      scn.add(particles);
+
+      // Mouse interaction
+      let mx = 0, my = 0;
+      window.addEventListener('mousemove', (e) => {
+         const r = cvs.getBoundingClientRect();
+         if(e.clientY >= r.top && e.clientY <= r.bottom) {
+             mx = (e.clientX - r.left - r.width/2) / (r.width/2);
+             my = (e.clientY - r.top - r.height/2) / (r.height/2);
+         }
+      });
+
+      function resize() {
+          const r = cvs.parentElement.getBoundingClientRect();
+          ren.setSize(r.width, r.height, false);
+          cam.aspect = r.width/r.height; 
+          cam.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', resize); resize();
+
+      let t = 0;
+      function tick() {
+          requestAnimationFrame(tick); t += 0.02;
+          
+          // Liike: Lähestyvät toisiaan keskellä
+          // Robot käsi leijuu
+          robotGroup.position.y = Math.sin(t)*0.1;
+          robotGroup.rotation.z = Math.sin(t*0.5)*0.1;
+          
+          // Tassu leijuu eri tahtiin
+          lifeGroup.position.y = Math.sin(t+1)*0.1;
+          
+          // Hiiri-interaktio: Tuo niitä lähemmäs toisiaan keskelle
+          // Perusasento: kaukana (-2.5 ja 2.5)
+          // Hiiri keskellä: lähempänä (-1.2 ja 1.2)
+          const targetDist = 2.5 - (1.0 - Math.abs(mx))*1.0; 
+          
+          robotGroup.position.x += (-targetDist - robotGroup.position.x) * 0.05;
+          lifeGroup.position.x += (targetDist - lifeGroup.position.x) * 0.05;
+          
+          // Partikkelit virtaavat välissä
+          particles.children.forEach((p, i) => {
+              p.rotation.x += 0.02;
+              p.rotation.y += 0.02;
+              const scale = (2.5 - Math.abs(robotGroup.position.x)) * 0.5; // Kasvaa kun lähellä
+              p.scale.setScalar(scale > 0 ? scale : 0.01);
+          });
+
+          // Pieni kierto koko skenelle hiiren mukaan
+          scn.rotation.y = mx * 0.2;
+          scn.rotation.x = -my * 0.2;
+
+          ren.render(scn, cam);
+      }
+      tick();
+    })();
+  </script>
+
+  <!-- OLD NON-MODULE SCRIPTS (Työkalut-tausta ja Explode) -->
+  <script type="module">
+    import * as THREE from 'three';
+
+    // TOOLS BACKGROUND
+    (function(){
+      const canvas = document.getElementById('tools-bg');
+      if(!canvas) return;
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 50);
+      camera.position.z = 5;
+      const count = 800; const pos = new Float32Array(count * 3);
+      for(let i=0;i<count;i++){ pos[i*3]=(Math.random()-0.5)*10; pos[i*3+1]=(Math.random()-0.5)*6; pos[i*3+2]=(Math.random()-0.5)*8; }
+      const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+      const mat = new THREE.PointsMaterial({ color:0xff8142, size:0.03, transparent:true, opacity:0.7, blending:THREE.AdditiveBlending });
+      const pts = new THREE.Points(geo, mat); scene.add(pts);
+      const pts2 = new THREE.Points(geo.clone(), new THREE.PointsMaterial({ color:0x4fa8cc, size:0.02, transparent:true, opacity:0.6, blending:THREE.AdditiveBlending })); scene.add(pts2);
+      function resize(){ const rect = canvas.parentElement.getBoundingClientRect(); renderer.setSize(rect.width, rect.height, false); camera.aspect = rect.width/rect.height; camera.updateProjectionMatrix(); }
+      window.addEventListener('resize', resize); resize();
+      let t = 0; function animate(){ requestAnimationFrame(animate); t+=0.001; pts.rotation.y+=0.0008; pts2.rotation.y-=0.001; pts.position.x=Math.sin(t*4)*0.1; pts2.position.y=Math.sin(t*3)*0.1; renderer.render(scene, camera); } animate();
+    })();
+
+    // EXPLODE ANIMATION
+    (function(){
+      const cvs = document.getElementById('explodeCanvas'); if(!cvs) return;
+      const ren = new THREE.WebGLRenderer({canvas:cvs, antialias:true, alpha:true});
+      const scn = new THREE.Scene();
+      const cam = new THREE.PerspectiveCamera(50, 1, 0.1, 50); cam.position.set(0, 0.6, 4);
+      scn.add(new THREE.AmbientLight(0xffffff, 0.7), new THREE.DirectionalLight(0xff8142, 1.1));
+      const pts=[]; const step=0.2; const half=1.2;
+      for(let x=-half;x<=half;x+=step) for(let y=-half;y<=half;y+=step) for(let z=-half;z<=half;z+=step) if(Math.abs(Math.abs(x)-half)<1e-6||Math.abs(Math.abs(y)-half)<1e-6||Math.abs(Math.abs(z)-half)<1e-6) pts.push(x,y,z);
+      const bPos = new Float32Array(pts); const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(bPos.slice(), 3));
+      const cols = new Float32Array((bPos.length/3)*3);
+      for(let i=0;i<cols.length/3;i++){ const c=new THREE.Color(0xff8142).lerp(new THREE.Color(0x4fa8cc), (i%60)/60); cols[i*3]=c.r; cols[i*3+1]=c.g; cols[i*3+2]=c.b; }
+      geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+      const cld = new THREE.Points(geo, new THREE.PointsMaterial({vertexColors:true, size:0.06})); scn.add(cld);
+      const norms = new Float32Array(bPos.length);
+      for(let i=0;i<bPos.length;i+=3){ const len=Math.hypot(bPos[i],bPos[i+1],bPos[i+2])||1; norms[i]=bPos[i]/len; norms[i+1]=bPos[i+1]/len; norms[i+2]=bPos[i+2]/len; }
+      function rsz(){ const r=cvs.parentElement.getBoundingClientRect(); ren.setSize(r.width, 380, false); cam.aspect=r.width/380; cam.updateProjectionMatrix(); }
+      window.addEventListener('resize', rsz); rsz();
+      let tt=0; function tick(){ requestAnimationFrame(tick); tt+=0.016; const ex=(Math.sin(tt*0.9)*0.5+0.5); const pos=geo.getAttribute('position'); const arr=pos.array;
+      for(let i=0;i<arr.length;i+=3){ arr[i]=bPos[i]+norms[i]*0.8*ex; arr[i+1]=bPos[i+1]+norms[i+1]*0.8*ex; arr[i+2]=bPos[i+2]+norms[i+2]*0.8*ex; }
+      pos.needsUpdate=true; cld.rotation.y+=0.003; ren.render(scn, cam); } tick();
+    })();
+  </script>
+</body>
+</html>
