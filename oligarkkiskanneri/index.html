@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Käyttöehto-skanneri: Musta Laatikko</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-color: #050510;
+            --card-bg: #0f0f23;
+            --primary: #d946ef; /* Magenta */
+            --secondary: #eab308; /* Kulta */
+            --accent: #06b6d4; /* Syaani */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .imperial-card {
+            background: linear-gradient(145deg, #0f0f23, #15152d);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(217, 70, 239, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+        }
+
+        .ai-loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(217, 70, 239, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            border: 8px solid var(--primary);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.3);
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(217, 70, 239, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <header class="py-16 px-6 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_#d946ef22_0%,_transparent_70%)]"></div>
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter mb-4 glow-text">
+            MUSTA <span class="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 to-amber-400">LAATIKKO</span>
+        </h1>
+        <p class="text-lg text-slate-400 max-w-2xl mx-auto font-light">
+            Käyttöehto-skanneri: Avaa algoritmien verho ja näe, miten digitaaliset oligarkit monetisoivat toimintasi.
+        </p>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 pb-24 space-y-12">
+
+        <!-- SYÖTE-ALUE -->
+        <section class="imperial-card p-8 md:p-12">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-amber-500 mb-2">Syötä Käyttöehdot</h2>
+                <p class="text-slate-400 text-sm italic">"Tieto on valtaa, mutta vain jos se on ymmärrettävissä."</p>
+            </div>
+            
+            <div class="space-y-6">
+                <textarea id="tos-input" rows="8" 
+                    class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-6 text-slate-300 focus:border-fuchsia-500 focus:ring-1 focus:ring-fuchsia-500 outline-none transition-all"
+                    placeholder="Kopioi ja liitä sovelluksen tai palvelun käyttöehdot tähän..."></textarea>
+                
+                <div class="flex justify-center">
+                    <button id="scan-btn" class="group relative px-10 py-4 bg-gradient-to-r from-fuchsia-600 to-amber-500 rounded-full font-bold text-lg hover:scale-105 transition-all shadow-lg active:scale-95">
+                        <span id="btn-text">Analysoi Digitaalinen Sielusi</span>
+                        <div id="loader" class="hidden items-center gap-3">
+                            <span class="ai-loading"></span>
+                            <span>Murentaa mustaa laatikkoa...</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TULOKSET (Piilotettu aluksi) -->
+        <section id="results" class="hidden space-y-12">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="imperial-card p-8 flex flex-col items-center justify-center text-center">
+                    <div class="text-xs uppercase font-bold text-slate-500 mb-4 tracking-widest">Oligarkia-indeksi</div>
+                    <div id="score-circle" class="score-circle">0</div>
+                    <p id="score-label" class="mt-4 text-sm font-semibold text-fuchsia-400"></p>
+                </div>
+                
+                <div class="md:col-span-2 imperial-card p-8 text-left">
+                    <h3 class="text-xl font-bold text-amber-500 mb-4">Analyysin Ydin</h3>
+                    <div id="ai-summary" class="text-slate-300 leading-relaxed space-y-4"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="imperial-card p-8">
+                    <h3 class="text-lg font-bold text-sky-400 mb-6 text-center">Vallan Ulottuvuudet</h3>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="imperial-card p-8 text-left">
+                    <h3 class="text-lg font-bold text-fuchsia-400 mb-6">Kriittiset löydökset</h3>
+                    <div id="findings-list" class="space-y-4"></div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-10 text-center border-primary/20">
+                <p id="ai-quote" class="text-xl italic text-slate-200 mb-4"></p>
+                <div class="text-xs uppercase text-slate-500 font-bold">— Sosiaalinen Insinööri</div>
+            </div>
+
+        </section>
+
+        <!-- VIRHEVIESTI -->
+        <div id="error-box" class="hidden p-6 bg-red-950/30 border border-red-500/50 rounded-2xl text-red-200 text-center">
+            Yhteys "Mustaan laatikkoon" katkesi. Tarkista teksti tai API-asetukset ja yritä uudelleen.
+        </div>
+
+    </main>
+
+    <footer class="py-12 px-6 border-t border-white/5 text-center text-slate-600">
+        <p class="text-sm italic mb-2">Innoittajana Jarno Alastalon ”Musta laatikko” – Tekoälyttömyyden ajan alku.</p>
+        <p class="text-xs">Visualisointi: Chart.js | Äly: Gemini 2.5 Flash | csy.fi</p>
+    </footer>
+
+    <script>
+        // --- ASETUKSET ---
+        // LIITÄ OMA API-AVAIN TÄHÄN:
+        const apiKey = "AIzaSyDObD1F_2RGhVVbWSW-CwaFZzzheqIgXyI"; 
+
+        let radarChartInstance = null;
+
+        // --- APUFUNKTIOT ---
+
+        function wrapLabel(str) {
+            if (str.length <= 16) return str;
+            const words = str.split(' ');
+            let lines = [];
+            let line = words[0];
+            for(let i=1; i<words.length; i++) {
+                if ((line + " " + words[i]).length <= 16) line += " " + words[i];
+                else { lines.push(line); line = words[i]; }
+            }
+            lines.push(line);
+            return lines;
+        }
+
+        async function callGemini(text) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const systemPrompt = `Olet Jarno Alastalon 'Musta laatikko' -teoksen innoittama kriittinen data-analyytikko ja Sosiaalinen insinööri. 
+            Analysoi annetut käyttöehdot ja paljasta digitaalisen oligarkian mekanismit. 
+            Palaa AINA puhtaana JSON-muotona seuraavalla skeemalla:
+            {
+                "score": 0-100,
+                "scoreLabel": "lyhyt nimi",
+                "summary": ["kappale 1", "kappale 2"],
+                "metrics": {
+                    "valvonta": 0-100,
+                    "rahastus": 0-100,
+                    "riippuvuus": 0-100,
+                    "läpinäkyvyys": 0-100,
+                    "toimijuus": 0-100
+                },
+                "findings": [
+                    {"title": "otsikko", "desc": "kuvaus", "impact": "high/med/low"}
+                ],
+                "quote": "Sitaatti tyyliin Alastalo"
+            }
+            Käytä suomea. Ole kriittinen, asiantunteva ja herättelevä.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: { responseMimeType: "application/json" }
+            };
+
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error('API Error');
+                    const data = await response.json();
+                    return JSON.parse(data.candidates[0].content.parts[0].text);
+                } catch (e) {
+                    if (i === 4) throw e;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        function renderRadar(metrics) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            const labels = Object.keys(metrics).map(k => k.charAt(0).toUpperCase() + k.slice(1));
+            const dataValues = Object.values(metrics);
+
+            if (radarChartInstance) radarChartInstance.destroy();
+
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels.map(wrapLabel),
+                    datasets: [{
+                        label: 'Oligarkia-profiili',
+                        data: dataValues,
+                        backgroundColor: 'rgba(217, 70, 239, 0.2)',
+                        borderColor: '#d946ef',
+                        pointBackgroundColor: '#d946ef',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#94a3b8', font: { size: 11, weight: 'bold' } },
+                            ticks: { display: false },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        document.getElementById('scan-btn').addEventListener('click', async () => {
+            const input = document.getElementById('tos-input').value;
+            if (!input || input.length < 20) return;
+
+            const btnText = document.getElementById('btn-text');
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('results');
+            const errorBox = document.getElementById('error-box');
+
+            btnText.classList.add('hidden');
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            errorBox.classList.add('hidden');
+
+            try {
+                const analysis = await callGemini(input);
+
+                document.getElementById('score-circle').innerText = analysis.score;
+                document.getElementById('score-label').innerText = analysis.scoreLabel;
+                document.getElementById('ai-summary').innerHTML = analysis.summary.map(p => `<p class="mb-3">${p}</p>`).join('');
+                document.getElementById('ai-quote').innerText = analysis.quote;
+
+                const list = document.getElementById('findings-list');
+                list.innerHTML = analysis.findings.map(f => `
+                    <div class="p-4 bg-slate-900/50 rounded-xl border border-white/5">
+                        <div class="flex items-center gap-2 mb-1">
+                            <div class="w-2 h-2 rounded-full ${f.impact === 'high' ? 'bg-red-500' : 'bg-amber-500'}"></div>
+                            <span class="font-bold text-sm text-slate-200">${f.title}</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed">${f.desc}</p>
+                    </div>
+                `).join('');
+
+                renderRadar(analysis.metrics);
+                results.classList.remove('hidden');
+                window.scrollTo({ top: results.offsetTop - 50, behavior: 'smooth' });
+
+            } catch (err) {
+                errorBox.classList.remove('hidden');
+                console.error(err);
+            } finally {
+                btnText.classList.remove('hidden');
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+            }
+        });
+    </script>
+</body>
+</html>
