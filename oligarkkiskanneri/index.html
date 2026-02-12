@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- TÄRKEÄ LISÄYS: Varmistaa, että Google tunnistaa sivuston osoitteen rajoituksia varten -->
+    <meta name="referrer" content="origin">
     <title>Käyttöehto-skanneri: Musta Laatikko</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -157,7 +159,7 @@
 
         <!-- VIRHEVIESTI -->
         <div id="error-box" class="hidden p-6 bg-red-950/30 border border-red-500/50 rounded-2xl text-red-200 text-center">
-            Yhteys "Mustaan laatikkoon" katkesi. Tarkista teksti tai API-asetukset ja yritä uudelleen.
+            <p id="error-message">Yhteys "Mustaan laatikkoon" katkesi. Tarkista teksti tai API-asetukset ja yritä uudelleen.</p>
         </div>
 
     </main>
@@ -169,9 +171,8 @@
 
     <script>
         // --- ASETUKSET ---
-        // ILMAISTASO: Sovellus käyttää Googlen ilmaista Gemini-tasoa.
-        // VARMISTA: Älä lisää luottokorttia Google Cloudiin, jos haluat välttää kulut 100% varmasti.
-        // RAJOITUKSET: Muista asettaa Google Cloudissa 'Website restriction' osoitteelle https://csy.fi/*
+        // 💰 TÄSSÄ NÄKYY APIN KÄYTTÖ:
+        // Aseta avain tähän muuttujaan. Rajoita avain Google Cloudissa csy.fi domainiin!
         const apiKey = "AIzaSyDObD1F_2RGhVVbWSW-CwaFZzzheqIgXyI"; 
 
         let radarChartInstance = null;
@@ -192,7 +193,8 @@
         }
 
         async function callGemini(text) {
-            // Käytössä gemini-2.5-flash-preview-09-2025: tehokas, nopea ja ilmainen kehittäjille.
+            // 💰 ILMAISUUDEN VARMISTUS:
+            // Käytössä gemini-2.5-flash-preview-09-2025 -malli kehittäjien ilmaisella kutsulla.
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             const systemPrompt = `Olet Jarno Alastalon 'Musta laatikko' -teoksen innoittama kriittinen data-analyytikko ja Sosiaalinen insinööri. 
@@ -231,8 +233,17 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (!response.ok) throw new Error('API Error');
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error("API Error details:", errorData);
+                        throw new Error(`API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+                    }
+                    
                     const data = await response.json();
+                    if (!data.candidates || !data.candidates[0].content) {
+                         throw new Error("Invalid API response format");
+                    }
                     return JSON.parse(data.candidates[0].content.parts[0].text);
                 } catch (e) {
                     if (i === 4) throw e;
@@ -298,6 +309,7 @@
             const loader = document.getElementById('loader');
             const results = document.getElementById('results');
             const errorBox = document.getElementById('error-box');
+            const errorMessage = document.getElementById('error-message');
 
             btnText.classList.add('hidden');
             loader.classList.remove('hidden');
@@ -328,8 +340,9 @@
                 window.scrollTo({ top: results.offsetTop - 50, behavior: 'smooth' });
 
             } catch (err) {
+                console.error("Scanning failed:", err);
+                errorMessage.innerText = `Virhe: ${err.message}. Tarkista konsoli (F12) lisätietoja varten.`;
                 errorBox.classList.remove('hidden');
-                console.error(err);
             } finally {
                 btnText.classList.remove('hidden');
                 loader.classList.add('hidden');
