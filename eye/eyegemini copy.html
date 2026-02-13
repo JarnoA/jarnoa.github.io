@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huutomerkin Silmä - Ultra Vakaa</title>
+    <style>
+        :root {
+            --main-color: #961c1c; 
+        }
+
+        body {
+            background-color: var(--main-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: transform 1s ease-in-out;
+        }
+
+        .eye-wrapper {
+            position: relative;
+            width: 500px;
+            height: 500px;
+        }
+
+        .eye-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            background: var(--main-color);
+            overflow: hidden; 
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
+            border: 4px solid var(--main-color); 
+            box-sizing: border-box;
+        }
+
+        .sclera {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 580px; 
+            height: 580px;
+            background: radial-gradient(circle at 50% 50%, #fff 25%, #e0e0e0 60%, #cfcfcf 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
+        }
+
+        .iris {
+            position: absolute;
+            width: 230px; 
+            height: 230px;
+            background: radial-gradient(circle at 40% 40%, #4a90e2, #2e5f8a 50%, #1a3a52 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.15s ease-out;
+        }
+
+        .pupil {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at 30% 30%, #1a1a1a, #000 70%);
+            border-radius: 50%;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        }
+
+        .highlight {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9), transparent);
+            border-radius: 50%;
+        }
+
+        svg.lids {
+            position: absolute;
+            top: -1%;
+            left: -1%;
+            width: 102%;
+            height: 102%;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+        }
+
+        path {
+            fill: var(--main-color);
+            stroke: none;
+        }
+
+        .exclamation {
+            position: absolute;
+            bottom: 60px;
+            width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ex-line {
+            width: 8px;
+            height: 24px;
+            background: #fff;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+
+        .ex-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        #startBtn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        #startBtn:hover {
+            background: #f0f0f0;
+        }
+
+        #status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 12px;
+            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <button id="startBtn">KÄYNNISTÄ</button>
+    <div id="status">Odottaa käynnistystä...</div>
+
+    <div class="eye-wrapper">
+        <div class="eye-container">
+            <div class="sclera">
+                <div class="iris" id="iris">
+                    <div class="pupil">
+                        <div class="highlight"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PUNAISET LUOMET SVG:nä -->
+            <svg class="lids" width="500" height="500">
+                <path id="upperLid" d="M 0,0 L 500,0 L 500,250 Q 250,20 0,250 Z"/>
+                <path id="lowerLid" d="M 0,500 L 500,500 L 500,250 Q 250,425 0,250 Z"/>
+            </svg>
+
+            <div class="exclamation">
+                <div class="ex-line"></div>
+                <div class="ex-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('startBtn');
+        const statusDiv = document.getElementById('status');
+        const iris = document.getElementById('iris');
+        const upperLid = document.getElementById('upperLid');
+        const lowerLid = document.getElementById('lowerLid');
+
+        const CENTER_Y = 250;
+        let currentOpenState = 230;
+        let isSleepy = false;
+        let positions = [];
+        const MAX_POSITIONS = 30;
+
+        let audioContext = null;
+        let analyser = null;
+        let microphone = null;
+        let mediaStream = null;
+        let animationFrameId = null;
+        let isRunning = false;
+        let startTime = Date.now();
+        let lastFrameTime = Date.now();
+        let frameCount = 0;
+        let wakeLock = null;
+
+        function random(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function updateStatus(msg) {
+            statusDiv.textContent = msg;
+            console.log('[STATUS]', msg);
+        }
+
+        function checkSleepiness() {
+            const now = Date.now();
+            const hoursSinceStart = (now - startTime) / (1000 * 60 * 60);
+            
+            if (hoursSinceStart > 12 && !isSleepy) {
+                isSleepy = true;
+                updateStatus('Unelias tila aktivoitu (12h+)');
+            }
+        }
+
+        // Tarkista joka minuutti
+        setInterval(checkSleepiness, 60000);
+
+        // WATCHDOG: Tarkista että animaatio todella pyörii
+        setInterval(() => {
+            const now = Date.now();
+            const timeSinceLastFrame = now - lastFrameTime;
+            
+            if (isRunning && timeSinceLastFrame > 5000) {
+                console.error('WATCHDOG: Animaatio jumissa! Uudelleenkäynnistys...');
+                updateStatus('WATCHDOG: Uudelleenkäynnistys...');
+                restartSystem();
+            }
+        }, 10000); // Tarkista 10 sekunnin välein
+
+        function applyMicro() {
+            if (!isRunning) return;
+            
+            const dx = (Math.random() - 0.5) * 1.5;
+            const dy = (Math.random() - 0.5) * 1.5;
+            document.body.style.transform = `translate(${dx}px, ${dy}px)`;
+            
+            setTimeout(() => {
+                if (isRunning) applyMicro();
+            }, random(800, 2000));
+        }
+
+        function moveIrisTowards(x, y) {
+            if (positions.length >= MAX_POSITIONS) {
+                positions.shift();
+            }
+            positions.push({ x, y, t: Date.now() });
+
+            const now = Date.now();
+            const recent = positions.filter(p => (now - p.t) < 800);
+            
+            if (recent.length === 0) return;
+
+            let avgX = 0, avgY = 0;
+            for (let p of recent) {
+                avgX += p.x;
+                avgY += p.y;
+            }
+            avgX /= recent.length;
+            avgY /= recent.length;
+
+            const limit = 90;
+            const clampedX = Math.max(-limit, Math.min(limit, avgX));
+            const clampedY = Math.max(-limit, Math.min(limit, avgY));
+
+            iris.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+        }
+
+        async function init() {
+            try {
+                if (isRunning) {
+                    cleanup();
+                }
+
+                isRunning = true;
+                btn.textContent = "KÄYNNISSÄ";
+                btn.style.background = "#90EE90";
+                updateStatus('Käynnistetään...');
+
+                startTime = Date.now();
+                lastFrameTime = Date.now();
+                frameCount = 0;
+
+                // Pyydä Wake Lock
+                if ('wakeLock' in navigator) {
+                    try {
+                        wakeLock = await navigator.wakeLock.request('screen');
+                        updateStatus('Wake Lock aktivoitu');
+                        
+                        wakeLock.addEventListener('release', () => {
+                            console.log('Wake Lock vapautettu');
+                            if (isRunning) {
+                                // Yritä uudelleen
+                                navigator.wakeLock.request('screen').then(wl => {
+                                    wakeLock = wl;
+                                }).catch(e => console.warn('Wake Lock uudelleenpyyntö epäonnistui'));
+                            }
+                        });
+                    } catch (err) {
+                        console.warn('Wake Lock epäonnistui:', err);
+                    }
+                }
+
+                // Pyydä mikrofoni
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false,
+                        sampleRate: 16000
+                    } 
+                });
+
+                updateStatus('Mikrofoni OK');
+
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                    sampleRate: 16000
+                });
+                
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 128;
+                analyser.smoothingTimeConstant = 0.8;
+                
+                microphone = audioContext.createMediaStreamSource(mediaStream);
+                microphone.connect(analyser);
+
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+
+                updateStatus('Audio OK - Käynnissä!');
+                applyMicro();
+
+                function render() {
+                    if (!isRunning) return;
+
+                    try {
+                        lastFrameTime = Date.now();
+                        frameCount++;
+
+                        // Päivitä status joka 100. frame
+                        if (frameCount % 100 === 0) {
+                            const fps = Math.round(100000 / (Date.now() - (lastFrameTime - 100)));
+                            const hours = ((Date.now() - startTime) / 3600000).toFixed(1);
+                            updateStatus(`FPS: ${fps} | Käynnissä: ${hours}h | ${isSleepy ? 'UNELIAS' : 'AKTIIVINEN'}`);
+                        }
+
+                        analyser.getByteFrequencyData(dataArray);
+                        
+                        let sum = 0;
+                        for (let i = 0; i < bufferLength; i++) {
+                            sum += dataArray[i];
+                        }
+                        const avg = sum / bufferLength;
+                        const vol = avg / 256.0;
+
+                        moveIrisTowards(0, 0);
+
+                        let targetOpen = 230;
+
+                        if (isSleepy) {
+                            const sleepBase = 15;
+                            let soundBump = vol * 40;
+                            if (soundBump > 50) soundBump = 50;
+                            targetOpen = sleepBase + soundBump;
+                        } else {
+                            const maxOpen = 230;
+                            let soundSqueeze = vol * 3.0;
+                            if (soundSqueeze > maxOpen) soundSqueeze = maxOpen;
+                            targetOpen = maxOpen - soundSqueeze;
+                        }
+
+                        let speed = isSleepy ? 0.02 : 0.1;
+                        currentOpenState += (targetOpen - currentOpenState) * speed;
+
+                        let topCurve = CENTER_Y - currentOpenState;
+                        let bottomCurve = CENTER_Y + (currentOpenState * 0.7);
+
+                        upperLid.setAttribute('d', 
+                            `M 0,0 L 500,0 L 500,${CENTER_Y} Q 250,${topCurve} 0,${CENTER_Y} Z`
+                        );
+
+                        lowerLid.setAttribute('d', 
+                            `M 0,500 L 500,500 L 500,${CENTER_Y} Q 250,${bottomCurve} 0,${CENTER_Y} Z`
+                        );
+
+                        animationFrameId = requestAnimationFrame(render);
+                    } catch (err) {
+                        console.error("Render error:", err);
+                        animationFrameId = requestAnimationFrame(render);
+                    }
+                }
+                render();
+
+                function blink() {
+                    if (!isRunning) return;
+
+                    try {
+                        if (!isSleepy) {
+                            upperLid.style.transition = "0.1s";
+                            lowerLid.style.transition = "0.1s";
+                            upperLid.setAttribute('d', `M 0,0 L 500,0 L 500,250 Q 250,250 0,250 Z`);
+                            lowerLid.setAttribute('d', `M 0,500 L 500,500 L 500,250 Q 250,250 0,250 Z`);
+
+                            setTimeout(() => {
+                                if (isRunning) {
+                                    upperLid.style.transition = "none";
+                                    lowerLid.style.transition = "none";
+                                }
+                            }, 150);
+                        }
+                        
+                        let nextBlink = isSleepy ? random(5000, 15000) : random(3000, 8000);
+                        setTimeout(() => {
+                            if (isRunning) blink();
+                        }, nextBlink);
+                    } catch (err) {
+                        console.error("Blink error:", err);
+                    }
+                }
+                blink();
+
+                // Varmista että AudioContext pysyy käynnissä
+                setInterval(() => {
+                    if (isRunning && audioContext) {
+                        if (audioContext.state === 'suspended') {
+                            console.warn('AudioContext suspended, herättäminen...');
+                            audioContext.resume().then(() => {
+                                updateStatus('AudioContext herätetty');
+                            });
+                        }
+                    }
+                }, 3000);
+
+            } catch (e) {
+                console.error("Init error:", e);
+                updateStatus('VIRHE: ' + e.message);
+                alert("Virhe käynnistyksessä:\n" + e.message + "\n\nTarkista mikrofonin oikeudet.");
+                cleanup();
+            }
+        }
+
+        function cleanup() {
+            console.log('Cleanup alkaa...');
+            isRunning = false;
+            
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            
+            if (microphone) {
+                try {
+                    microphone.disconnect();
+                } catch (e) {}
+                microphone = null;
+            }
+            
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            
+            if (audioContext) {
+                try {
+                    audioContext.close();
+                } catch (e) {}
+                audioContext = null;
+            }
+
+            if (wakeLock) {
+                try {
+                    wakeLock.release();
+                } catch (e) {}
+                wakeLock = null;
+            }
+            
+            btn.textContent = "KÄYNNISTÄ";
+            btn.style.background = "#fff";
+            updateStatus('Pysäytetty');
+        }
+
+        async function restartSystem() {
+            cleanup();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            init();
+        }
+
+        btn.onclick = () => {
+            if (isRunning) {
+                cleanup();
+            } else {
+                init();
+            }
+        };
+
+        // Virheenkäsittely
+        window.addEventListener('error', (e) => {
+            console.error('Global error:', e.error);
+            updateStatus('Virhe: ' + e.message);
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled promise:', e.reason);
+            updateStatus('Promise virhe');
+        });
+
+        // Jos sivu menee taustalle ja palaa
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && isRunning && audioContext) {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
