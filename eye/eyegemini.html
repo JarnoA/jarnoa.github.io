@@ -2,7 +2,8 @@
 <html lang="fi">
 <head>
     <meta charset="UTF-8">
-    <title>Huutomerkin Silmä - Viivat Korjattu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Asemic Eye</title>
     <style>
         :root {
             --main-color: #961c1c; 
@@ -16,45 +17,64 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .eye-wrapper {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            animation: microshift 60s infinite alternate ease-in-out;
+        }
+
+        @keyframes microshift {
+            from { transform: translate(-2px, -2px); }
+            to { transform: translate(2px, 2px); }
         }
 
         .eye-container {
             position: relative;
             width: 500px;
             height: 500px;
-            background: var(--main-color);
-            overflow: hidden; 
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
-            
-            /* KORJAUS 1: Lisätään "turvareunus" samalla värillä. 
-               Tämä syö mahdolliset valkoiset viivat reunoilta. */
-            border: 4px solid var(--main-color); 
-            box-sizing: border-box; /* Varmistaa että koko pysyy 500px */
+            background: transparent; 
+            border: none;
+            box-shadow: none;
+            overflow: visible; 
         }
 
         .sclera {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 580px; 
-            height: 580px;
+            top: 0;
+            left: 0;
+            width: 500px; 
+            height: 500px;
             background: radial-gradient(circle at 50% 50%, #fff 25%, #e0e0e0 60%, #cfcfcf 100%);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
+            overflow: hidden; 
+            z-index: 1;
         }
 
         .iris {
             position: absolute;
-            width: 230px; 
-            height: 230px;
-            background: url('eye2.png') center/contain no-repeat;
+            width: 240px; 
+            height: 240px;
+            
+            /* --- LIITÄ BASE64-KUVA TÄHÄN --- */
+            background: url('eye2.png');
+            
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
-            transition: transform 0.5s cubic-bezier(0.2, 0, 0.2, 1);
+            will-change: transform;
         }
 
         .shine {
@@ -69,128 +89,228 @@
             z-index: 5;
         }
 
-        /* KORJAUS 2: Tehdään luomista hieman ylisuuret */
         svg.lids {
             position: absolute;
-            /* Siirretään -1% vasemmalle ja ylös... */
-            top: -1%;
-            left: -1%;
-            /* ...ja kasvatetaan 102%:iin. Nyt reunoille ei jää rakoja. */
-            width: 102%;
-            height: 102%;
+            /* Varmistetaan, että viewBox täsmää leikkaantumisen estämiseksi (-10 -10 540 540) */
+            top: -10px;
+            left: -10px;
+            width: 540px;
+            height: 540px;
             z-index: 10;
             pointer-events: none;
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+            overflow: visible;
+            filter: drop-shadow(0 0 2px var(--main-color));
         }
 
         path {
             fill: var(--main-color);
-            stroke: none;
+            stroke: var(--main-color);
+            stroke-width: 5px;
+            transition: none;
         }
-
-        button {
-            position: absolute;
-            bottom: 20px;
-            padding: 15px 30px;
-            background: #222; color: #fff;
-            border: none; border-radius: 5px;
-            cursor: pointer;
-            z-index: 100;
-            opacity: 0.5;
-        }
-        button:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="eye-container">
-        <div class="sclera">
-            <div class="iris" id="iris"></div>
-            <div class="shine"></div>
-        </div>
+    <div class="eye-wrapper">
+        <div class="eye-container">
+            <div class="sclera">
+                <div class="iris" id="iris"></div>
+                <div class="shine"></div>
+            </div>
 
-        <svg class="lids" viewBox="0 0 500 500" preserveAspectRatio="none">
-            <path id="upper-lid" d="M 0,0 L 500,0 L 500,250 Q 250,20 0,250 Z" />
-            <path id="lower-lid" d="M 0,500 L 500,500 L 500,250 Q 250,480 0,250 Z" />
-        </svg>
+            <svg class="lids" viewBox="-10 -10 565 565" preserveAspectRatio="none">
+                <path id="upper-lid" d="M -10,-10 L 530,-10 L 530,250 Q 260,20 -10,250 Z" />
+                <path id="lower-lid" d="M -10,530 L 530,530 L 530,250 Q 260,480 -10,250 Z" />
+            </svg>
+        </div>
     </div>
 
-    <button id="btn">Käynnistä Mikrofoni</button>
+<script>
+(() => {
+  'use strict';
 
-    <script>
-        const upperLid = document.getElementById('upper-lid');
-        const lowerLid = document.getElementById('lower-lid');
-        const iris = document.getElementById('iris');
-        const btn = document.getElementById('btn');
+  const upperLid = document.getElementById('upper-lid');
+  const lowerLid = document.getElementById('lower-lid');
+  const iris = document.getElementById('iris');
 
-        function random(min, max) { return Math.random() * (max - min) + min; }
+  const CENTER_Y = 250;
 
-        function wander() {
-            const x = random(-70, 70);
-            const y = random(-40, 40);
-            iris.style.transform = `translate(${x}px, ${y}px)`;
-            setTimeout(wander, random(800, 3000));
+  const rand = (min, max) => Math.random() * (max - min) + min;
+
+  // --- TILA ---
+  let irisX = 0, irisY = 0;
+  let targetIrisX = 0, targetIrisY = 0;
+  let irisSpeed = 0.05;
+
+  let lidOpenness = 230;
+  let lidBase = 230;
+
+  let blinkPhase = 0; // 0=idle, 1=closing, 2=closed, 3=opening
+  let blinkTimer = 0;
+
+  // --- AJASTIMIEN HALLINTA (ei kasaannu / voidaan pysäyttää) ---
+  const timers = new Set();
+  const later = (fn, ms) => {
+    const id = setTimeout(() => {
+      timers.delete(id);
+      fn();
+    }, ms);
+    timers.add(id);
+    return id;
+  };
+  const clearAllTimers = () => {
+    for (const id of timers) clearTimeout(id);
+    timers.clear();
+  };
+
+  // --- 1. IIRISLIIKE ---
+  function planGaze() {
+    targetIrisX = Math.floor(rand(-60, 60));
+    targetIrisY = Math.floor(rand(-30, 30));
+    irisSpeed = rand(0.02, 0.2);
+    later(planGaze, rand(500, 4000));
+  }
+
+  // --- 2. VIREYSTILA ---
+  function changeMood() {
+    lidBase = rand(200, 245);
+    later(changeMood, rand(5000, 15000));
+  }
+
+  // --- 3. RÄPSYTYS ---
+  function triggerBlink() {
+    if (blinkPhase === 0) blinkPhase = 1;
+    later(triggerBlink, rand(15000, 25000));
+  }
+
+  function updateLids(openAmount) {
+    // KOORDINAATIT PIDETÄÄN TISMALLEEN SAMO
+    const topCurve = CENTER_Y - openAmount;
+    upperLid.setAttribute(
+      'd',
+      `M -10,-10 L 530,-10 L 530,${CENTER_Y} Q 260,${topCurve} -10,${CENTER_Y} Z`
+    );
+
+    const bottomCurve = CENTER_Y + (openAmount * 0.8);
+    lowerLid.setAttribute(
+      'd',
+      `M -10,530 L 530,530 L 530,${CENTER_Y} Q 260,${bottomCurve} -10,${CENTER_Y} Z`
+    );
+  }
+
+  // --- ANIMAATIO: rAF + FPS-RAJOITIN (stabiili ja kevyempi) ---
+  let rafId = 0;
+  let running = false;
+  let lastFrameTs = 0;
+
+  // 30 fps riittää “eläväksi” ja vähentää kuormaa pitkään ajoon
+  const FRAME_MS = 1000 / 30;
+
+  function tick(ts) {
+    if (!running) return;
+
+    try {
+      if (!lastFrameTs) lastFrameTs = ts;
+      const dt = ts - lastFrameTs;
+
+      if (dt >= FRAME_MS) {
+        lastFrameTs = ts;
+
+        // Iiris liukuu kohteeseen
+        irisX += (targetIrisX - irisX) * irisSpeed;
+        irisY += (targetIrisY - irisY) * irisSpeed;
+        iris.style.transform = `translate3d(${irisX}px, ${irisY}px, 0)`;
+
+        // Luomet
+        const breath = Math.sin(Date.now() / 2000) * 5;
+        let target = lidBase + breath;
+
+        if (blinkPhase === 1) {
+          target = 0;
+          if (lidOpenness < 10) {
+            blinkPhase = 2;
+            blinkTimer = Date.now();
+          }
+          lidOpenness += (target - lidOpenness) * 0.4;
+
+        } else if (blinkPhase === 2) {
+          target = 0;
+          lidOpenness = 0;
+          if (Date.now() - blinkTimer > 150) blinkPhase = 3;
+
+        } else if (blinkPhase === 3) {
+          lidOpenness += (target - lidOpenness) * 0.1;
+          if (Math.abs(target - lidOpenness) < 5) blinkPhase = 0;
+
+        } else {
+          lidOpenness += (target - lidOpenness) * 0.05;
         }
 
-        async function init() {
-            btn.style.display = 'none';
-            wander(); 
+        if (lidOpenness < 0) lidOpenness = 0;
+        updateLids(lidOpenness);
+      }
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const context = new AudioContext();
-                const analyser = context.createAnalyser();
-                const source = context.createMediaStreamSource(stream);
-                source.connect(analyser);
-                analyser.fftSize = 256;
-                const data = new Uint8Array(analyser.frequencyBinCount);
+      rafId = requestAnimationFrame(tick);
+    } catch (e) {
+      // Jos jokin menee pieleen kerran, käynnistetään looppi uudelleen
+      rafId = requestAnimationFrame(tick);
+    }
+  }
 
-                const CENTER_Y = 250; 
+  function start() {
+    if (running) return;
+    running = true;
+    lastFrameTs = 0;
 
-                function render() {
-                    analyser.getByteFrequencyData(data);
-                    let vol = data.reduce((a, b) => a + b) / data.length;
-                    
-                    const maxOpen = 230; 
-                    let soundSqueeze = vol * 3.0; 
-                    if (soundSqueeze > maxOpen) soundSqueeze = maxOpen;
+    // “Uudet” ajastimet puhtaalta pöydältä
+    clearAllTimers();
+    planGaze();
+    changeMood();
+    triggerBlink();
 
-                    let currentOpenState = maxOpen - soundSqueeze;
-                    let topCurve = CENTER_Y - currentOpenState; 
-                    let bottomCurve = CENTER_Y + (currentOpenState * 0.7);
+    rafId = requestAnimationFrame(tick);
+  }
 
-                    upperLid.setAttribute('d', 
-                        `M 0,0 L 500,0 L 500,${CENTER_Y} Q 250,${topCurve} 0,${CENTER_Y} Z`
-                    );
+  function stop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = 0;
+    clearAllTimers();
+  }
 
-                    lowerLid.setAttribute('d', 
-                        `M 0,500 L 500,500 L 500,${CENTER_Y} Q 250,${bottomCurve} 0,${CENTER_Y} Z`
-                    );
+  // --- TAUSTA/ETUALA: pysäytä siististi ---
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
 
-                    requestAnimationFrame(render);
-                }
-                render();
+  window.addEventListener('pagehide', stop, { passive: true });
 
-                function blink() {
-                    upperLid.style.transition = "0.1s";
-                    lowerLid.style.transition = "0.1s";
-                    upperLid.setAttribute('d', `M 0,0 L 500,0 L 500,250 Q 250,250 0,250 Z`);
-                    lowerLid.setAttribute('d', `M 0,500 L 500,500 L 500,250 Q 250,250 0,250 Z`);
+  // --- WATCHDOG: jos looppi kuolee, käynnistä uudelleen ---
+  let lastHeartbeat = Date.now();
+  const heartbeat = () => { lastHeartbeat = Date.now(); };
+  setInterval(() => {
+    // jos ollaan näkyvissä ja “sydän” ei lyö, restart
+    if (!document.hidden && running && (Date.now() - lastHeartbeat) > 5000) {
+      stop();
+      start();
+    }
+  }, 10000);
 
-                    setTimeout(() => {
-                        upperLid.style.transition = "none";
-                        lowerLid.style.transition = "none";
-                    }, 150);
-                    setTimeout(blink, random(3000, 8000));
-                }
-                blink();
+  // päivitä heartbeat joka framella (kevyesti)
+  const origTick = tick;
+  function tickWithHeartbeat(ts) { heartbeat(); origTick(ts); }
+  tick = tickWithHeartbeat; // override viite
 
-            } catch (e) {
-                console.error(e);
-                alert("Mikrofoni tarvitaan.");
-            }
-        }
-        btn.onclick = init;
-    </script>
+  // --- KÄYNNISTYS ---
+  start();
+
+  // --- OPTIONAL: varma “pitkän ajan siivous” (esim. 24h välein reload) ---
+  // later(() => location.reload(), 24 * 60 * 60 * 1000);
+
+})();
+</script>
+
 </body>
 </html>
