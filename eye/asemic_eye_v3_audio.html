@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Asemic Eye</title>
+    <title>The Asemic Eye - V3 Final (Audio)</title>
     <style>
         :root {
-            --main-color: #B72001; /* TAUSTA */
+            --main-color: #961c1c; 
         }
 
         body {
@@ -26,7 +26,6 @@
             position: relative;
             width: 500px;
             height: 500px;
-            margin-top: 0px; /* SILMAN SIIRTO */
             backface-visibility: hidden;
             perspective: 1000px;
             will-change: transform;
@@ -156,9 +155,34 @@
             stroke-width: 5px;
             transition: none;
         }
+
+        /* 0. Audio Hidden */
+        #bg-audio {
+            display: none;
+        }
+
+        /* 0. Optional Start Screen for standard browsers (invisible if Fully Kiosk settings allow autoplay) */
+        #start-prompt {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1); /* Very subtle to show it's ready */
+            z-index: 100;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: opacity 0.5s;
+        }
     </style>
 </head>
-<body>
+<body onclick="startAll()">
+
+    <div id="start-prompt">Touch to Start</div>
 
     <div class="eye-wrapper">
         <div class="eye-container">
@@ -180,13 +204,41 @@
         </div>
     </div>
 
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-audio" loop>
+        <!-- Place your mp3 file next to the HTML file and name it 'sound.mp3' -->
+        <source src="sound.mp3" type="audio/mpeg">
+    </audio>
+
 <script>
+  let isStarted = false;
+
+  function startAll() {
+      if (isStarted) return;
+      isStarted = true;
+      
+      const audio = document.getElementById('bg-audio');
+      const prompt = document.getElementById('start-prompt');
+      
+      // Start audio
+      audio.play().catch(e => console.log("Autoplay blocked, waiting for more interaction."));
+      
+      // Hide prompt
+      prompt.style.opacity = '0';
+      setTimeout(() => prompt.style.display = 'none', 500);
+      
+      // Start eye
+      if (!window.eyeStarted) {
+          window.eyeStart();
+          window.eyeStarted = true;
+      }
+  }
+
 (() => {
   'use strict';
 
-  // --- 0. SCALING LOGIC ---
   const updateScale = () => {
-      const scale = Math.min(window.innerWidth, window.innerHeight) / 850; // SILMÄN KOKO
+      const scale = Math.min(window.innerWidth, window.innerHeight) / 550;
       document.documentElement.style.setProperty('--eye-scale', scale);
   };
   window.addEventListener('resize', updateScale);
@@ -202,7 +254,6 @@
   const CENTER_Y = 250;
   const rand = (min, max) => Math.random() * (max - min) + min;
 
-  // --- TILA ---
   let irisX = 0, irisY = 0;
   let targetIrisX = 0, targetIrisY = 0;
   let irisSpeed = 0.05;
@@ -287,7 +338,7 @@
     }
   }
 
-  function start() {
+  window.eyeStart = function() {
     if (running) return;
     running = true;
     lastFrameTs = 0;
@@ -296,7 +347,7 @@
     rafId = requestAnimationFrame(tick);
   }
 
-  function stop() {
+  window.eyeStop = function() {
     running = false;
     if (rafId) cancelAnimationFrame(rafId);
     rafId = 0;
@@ -304,14 +355,13 @@
   }
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stop(); else start();
+    if (document.hidden) window.eyeStop(); else if (isStarted) window.eyeStart();
   });
 
-  // Watchdog
   let lastHeartbeat = Date.now();
   setInterval(() => {
     if (!document.hidden && running && (Date.now() - lastHeartbeat) > 5000) {
-      stop(); start();
+      window.eyeStop(); window.eyeStart();
     }
   }, 10000);
   const origTick = tick;
@@ -320,8 +370,17 @@
   // 24h Reload
   setInterval(() => location.reload(), 24 * 60 * 60 * 1000);
 
-  // START IMMEDIATELY
-  start();
+  // In Fully Kiosk with Autoplay enabled, we can try to auto-start
+  setTimeout(() => {
+      const audio = document.getElementById('bg-audio');
+      audio.play().then(() => {
+          // If autoplay works (Fully Kiosk setting), start everything automatically
+          startAll();
+      }).catch(e => {
+          // If blocked, wait for user to touch "Touch to Start"
+          console.log("Autoplay blocked, waiting for user.");
+      });
+  }, 1000);
 
 })();
 </script>

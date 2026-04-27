@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Asemic Eye</title>
+    <title>The Asemic Eye - V3 100% AUTOMATIC</title>
     <style>
         :root {
-            --main-color: #B72001; /* TAUSTA */
+            --main-color: #171616; 
         }
 
         body {
@@ -26,7 +26,6 @@
             position: relative;
             width: 500px;
             height: 500px;
-            margin-top: 0px; /* SILMAN SIIRTO */
             backface-visibility: hidden;
             perspective: 1000px;
             will-change: transform;
@@ -156,6 +155,11 @@
             stroke-width: 5px;
             transition: none;
         }
+
+        /* 0. Audio Hidden */
+        #bg-audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -180,13 +184,18 @@
         </div>
     </div>
 
+    <!-- AUDIO ELEMENT - MUST BE NAMED sound.mp3 -->
+    <audio id="bg-audio" loop autoplay>
+        <source src="sound.mp3" type="audio/mpeg">
+    </audio>
+
 <script>
 (() => {
   'use strict';
 
   // --- 0. SCALING LOGIC ---
   const updateScale = () => {
-      const scale = Math.min(window.innerWidth, window.innerHeight) / 850; // SILMÄN KOKO
+      const scale = Math.min(window.innerWidth, window.innerHeight) / 550;
       document.documentElement.style.setProperty('--eye-scale', scale);
   };
   window.addEventListener('resize', updateScale);
@@ -198,6 +207,7 @@
   const shine = document.getElementById('shine');
   const pupil = document.getElementById('pupil');
   const lidShadow = document.getElementById('lid-shadow');
+  const audio = document.getElementById('bg-audio');
 
   const CENTER_Y = 250;
   const rand = (min, max) => Math.random() * (max - min) + min;
@@ -294,6 +304,17 @@
     clearAllTimers();
     planGaze(); changeMood(); triggerBlink();
     rafId = requestAnimationFrame(tick);
+    
+    // Attempt audio with a retry loop (Critical for Hands-Off start)
+    const playAudio = () => {
+        audio.play().then(() => {
+            console.log("Audio started successfully.");
+        }).catch(e => {
+            console.log("Audio failed, retrying in 1s...");
+            setTimeout(playAudio, 1000);
+        });
+    };
+    playAudio();
   }
 
   function stop() {
@@ -301,6 +322,7 @@
     if (rafId) cancelAnimationFrame(rafId);
     rafId = 0;
     clearAllTimers();
+    audio.pause();
   }
 
   document.addEventListener('visibilitychange', () => {

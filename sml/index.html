@@ -1,0 +1,298 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+.page{font-family:'DM Sans',sans-serif;background:#0a0a0a;color:#e2ddd4;min-height:100vh;}
+.hero{padding:3rem 2rem 0;max-width:720px;margin:0 auto;}
+.mono{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;color:#555;text-transform:uppercase;}
+h1{font-family:'DM Serif Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:400;line-height:1.15;color:#e2ddd4;margin:1.2rem 0 1.2rem;}
+h1 em{font-style:italic;color:#a89878;}
+.lead{font-size:1rem;line-height:1.8;color:#999;font-weight:300;max-width:560px;}
+#canvas-wrap{width:100%;height:220px;position:relative;overflow:hidden;margin:0;}
+canvas{display:block;width:100%!important;height:220px!important;}
+.sec{max-width:720px;margin:0 auto;padding:2rem 2rem;border-bottom:.5px solid #1a1a1a;}
+.sec h2{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#555;margin-bottom:1.5rem;}
+.sec p{font-size:.9rem;line-height:1.8;color:#999;font-weight:300;margin-bottom:.8rem;}
+.sec p strong{color:#e2ddd4;font-weight:500;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:#1a1a1a;margin:1.5rem 0;}
+.stat{background:#0a0a0a;padding:1.25rem 1rem;}
+.stat .n{font-family:'DM Serif Display',serif;font-size:1.9rem;color:#a89878;line-height:1;margin-bottom:.4rem;}
+.stat .d{font-size:.75rem;color:#555;line-height:1.5;font-weight:300;}
+.stat .src{font-family:'DM Mono',monospace;font-size:.6rem;color:#333;margin-top:.3rem;letter-spacing:.05em;}
+.examples{margin:1.5rem 0;}
+.ex{border-left:1px solid #222;padding:.75rem 0 .75rem 1.25rem;margin-bottom:1rem;}
+.ex .who{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#a89878;margin-bottom:.35rem;}
+.ex .what{font-size:.85rem;line-height:1.6;color:#aaa;font-weight:300;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1a1a1a;margin:1.5rem 0;}
+.col{background:#0a0a0a;padding:1.25rem 1rem;}
+.col .ct{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#444;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:.5px solid #1a1a1a;}
+.col.hi .ct{color:#a89878;border-bottom-color:#222;}
+.ci{display:flex;gap:.6rem;margin-bottom:.6rem;align-items:flex-start;}
+.ci .dot{width:3px;height:3px;border-radius:50%;background:#333;margin-top:.45rem;flex-shrink:0;}
+.col.hi .dot{background:#a89878;}
+.ci .t{font-size:.78rem;line-height:1.5;color:#666;font-weight:300;}
+.col.hi .t{color:#bbb;}
+.usecases{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:#1a1a1a;margin:1.5rem 0;}
+.uc{background:#0a0a0a;padding:1.1rem 1rem;}
+.uc .ut{font-size:.8rem;font-weight:500;color:#e2ddd4;margin-bottom:.4rem;}
+.uc .ud{font-size:.73rem;line-height:1.5;color:#555;font-weight:300;}
+.qblock{border-left:1px solid #222;padding:.5rem 0 .5rem 1.25rem;margin:1.5rem 0;}
+.qblock p{font-family:'DM Serif Display',serif;font-size:1rem;color:#777;font-style:italic;line-height:1.6;font-weight:400;}
+.qblock .qs{font-family:'DM Mono',monospace;font-size:.65rem;color:#333;letter-spacing:.1em;text-transform:uppercase;margin-top:.5rem;}
+.footer{max-width:720px;margin:0 auto;padding:2rem 2rem 3.5rem;}
+.footer p{font-size:.8rem;color:#444;line-height:1.6;font-weight:300;}
+.footer a{color:#a89878;text-decoration:none;}
+.tags{margin:.8rem 0 0;}
+.tag{display:inline-block;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:#444;border:.5px solid #1e1e1e;padding:3px 7px;margin:0 4px 4px 0;}
+</style>
+
+<div class="page">
+<div class="hero">
+  <div class="mono">Tietoisku — Computer Says Yes Lab</div>
+  <h1>Tekoäly omissa<br>käsissä. <em>Vähemmällä<br>enemmän.</em></h1>
+  <p class="lead">Kalliit pilvipalvelut eivät ole ainoa vaihtoehto. Pienet kielimallit toimivat organisaation omalla koneella — ilman tietovuotoja, kuukausimaksuja tai riippuvuutta suurten teknologiayhtiöiden käyttöehdoista.</p>
+</div>
+
+<div id="canvas-wrap"><canvas id="c"></canvas></div>
+
+<div class="sec">
+  <h2>Miksi nyt</h2>
+  <p>Tekoälyn käyttöönotto on osoittautunut odotettua hankalammaksi lähes kaikkialla. Ongelma ei ole motivaatio vaan se, että tarjolla olevat työkalut ovat liian raskaita ja kalliita suhteessa todellisiin tarpeisiin. <strong>Gartner ennustaa, että 30 % generatiivisen tekoälyn projekteista hylätään vuoteen 2026 mennessä</strong> huonon kustannus-hyötysuhteen takia.</p>
+  <div class="stats">
+    <div class="stat"><div class="n">74%</div><div class="d">organisaatioista ei saa todellista arvoa tekoälyinvestoinneistaan</div><div class="src">BCG, 2024 — 1000 johtajaa, 59 maata</div></div>
+    <div class="stat"><div class="n">80%</div><div class="d">tavallisista tekoälytehtävistä sopii paikalliselle pienelle mallille</div><div class="src">Deloitte Tech Trends 2026</div></div>
+    <div class="stat"><div class="n">60–70%</div><div class="d">vähemmän energiaa per kysely verrattuna suuriin pilvipalveluihin</div><div class="src">ICAIR tutkimus, 2025</div></div>
+    <div class="stat"><div class="n">3×</div><div class="d">enemmän pieniä erikoismalleja käytössä kuin suuria yleismalleja vuoteen 2027 mennessä</div><div class="src">Gartner ennuste</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>Missä tätä jo käytetään</h2>
+  <p>Pienet kielimallit eivät ole tulevaisuuden teknologiaa. Niitä käytetään nyt aloilla, joilla tietosuoja ei ole valinnainen ominaisuus.</p>
+  <div class="examples">
+    <div class="ex">
+      <div class="who">Ison-Britannian ilmatieteen laitos</div>
+      <div class="what">Käänsi 1,3 miljoonaa vapaamuotoista rantakommenttia SQL-hakukyselyiksi käyttämällä vain 638 megatavun kokoista paikallista mallia. Kaikki data pysyi omissa järjestelmissä.</div>
+    </div>
+    <div class="ex">
+      <div class="who">Eurooppalainen terveydenhuollon tarjoaja</div>
+      <div class="what">Louhii potilasasiakirjoista rakenteellista dataa täysin paikallisesti GDPR-vaatimusten mukaisesti. Yhtään potilastietoa ei lähde organisaation ulkopuolelle.</div>
+    </div>
+    <div class="ex">
+      <div class="who">WWF, UNICEF ja kehitysyhteistyöjärjestöt</div>
+      <div class="what">Käyttävät paikallisia malleja sisäisessä analytiikassa ja pakolaisten monikielisissä chatboteissa. Arkaluonteiset asiakastiedot pysyvät omassa ympäristössä.</div>
+    </div>
+    <div class="ex">
+      <div class="who">Terveydenhuollon erikoismalli Meerkat-8B</div>
+      <div class="what">Hienosäädetty 8 miljardin parametrin malli päihitti GPT-3.5:n kliinisessä päättelyssä: 66,7 % vs. 54,8 % tarkkuus. Pienempi malli, parempi tulos omassa tehtävässään.</div>
+    </div>
+    <div class="ex">
+      <div class="who">Juridinen erikoismalli</div>
+      <div class="what">7 miljardin parametrin lakimalli koulutettuna sopimusdataan saavutti 94 % tarkkuuden compliance-tarkistuksissa. Suuri yleismalli ylsi vain 87 %:iin samassa tehtävässä.</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>Pilvi vai paikallinen</h2>
+  <div class="compare">
+    <div class="col">
+      <div class="ct">Pilvipalvelu (ChatGPT, Copilot)</div>
+      <div class="ci"><div class="dot"></div><div class="t">Data lähtee organisaation ulkopuolelle</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Kuukausimaksut, käyttöön sidottu hinta</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Yleismalli, ei tunne organisaatiotasi</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Amerikkalaisten yhtiöiden käyttöehdot</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Vaatii aina internet-yhteyden</div></div>
+    </div>
+    <div class="col hi">
+      <div class="ct">Paikallinen pieni malli</div>
+      <div class="ci"><div class="dot"></div><div class="t">Data pysyy omissa käsissä</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Käytännössä ilmainen käytön aikana</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Koulutettavissa omilla dokumenteilla</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Myös eurooppalaisia avoimia vaihtoehtoja (esim. Mistral)</div></div>
+      <div class="ci"><div class="dot"></div><div class="t">Toimii myös offline</div></div>
+    </div>
+  </div>
+  <div class="qblock">
+    <p>Sitran Megatrendit 2026 tunnistaa, että kansalaisten luottamus tekoälyyn rakentuu läpinäkyvyydestä ja siitä, että tieto pysyy omassa hallinnassa.</p>
+    <div class="qs">Sitra, Megatrendit 2026</div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>Järjestöjen käyttötapauksia</h2>
+  <div class="usecases">
+    <div class="uc"><div class="ut">Sote-palvelut</div><div class="ud">Asiakaskertomusten tiivistäminen omalla koneella. GDPR täyttyy, tieto ei poistu.</div></div>
+    <div class="uc"><div class="ut">Kriisityö</div><div class="ud">Chat-keskustelujen jäsentäminen päivystäjälle täysin luottamuksellisesti.</div></div>
+    <div class="uc"><div class="ut">Vanhus- ja vammaistyö</div><div class="ud">Asiakasviestintä selkokielelle. Henkilötiedot pysyvät omassa ympäristössä.</div></div>
+    <div class="uc"><div class="ut">Järjestöhallinto</div><div class="ud">Raporttien ja hakemusten luonnostelu omilla asiakirjapohjilla.</div></div>
+    <div class="uc"><div class="ut">Maahanmuuttajatyö</div><div class="ud">Monikielinen viestintä paikallisesti. Asiakkaiden tiedot eivät siirry ulkopuolelle.</div></div>
+    <div class="uc"><div class="ut">Nuorisotyö</div><div class="ud">Oppimateriaalit eri lukutasoille. Oppilaiden tiedot pysyvät omassa ympäristössä.</div></div>
+  </div>
+</div>
+
+<div class="sec">
+  <h2>Mitä tarvitaan</h2>
+  <p><strong>Laitteisto.</strong> Uudehko tietokone riittää usein. Vähintään 16 GB muistia suositellaan. Koko toimiston käyttöön voidaan pystyttää oma palvelin sisäverkkoon — turvallisesti ilman ulkopuolisia palveluita.</p>
+  <p><strong>Asennus.</strong> Ohjelmistot ovat nykyään selkeästi asennettavissa, mutta ensimmäinen käyttöönotto vaatii teknistä apua tai ulkopuolisen asiantuntijan.</p>
+  <p><strong>Osaaminen.</strong> Suurin haaste ei ole tekniikka vaan työtapojen muutos. Henkilöstö tarvitsee opastusta tekoälyn ohjeistamiseen, sen rajoitteisiin ja kriittiseen lukutaitoon.</p>
+  <p><strong>Verkosto.</strong> Mallit päivittyvät, tarpeet muuttuvat. Järjestöt hyötyvät yhteisestä oppimisesta — siksi hankerakenne on tärkeä.</p>
+  <p>Alkuinvestointi on kertaluonteinen. Sen jälkeen päivittäinen käyttö ei maksa mitään. Ilman ulkopuolista tukea kehitys jää yksittäisten ihmisten harteille — kun he lähtevät, osaaminen lähtee heidän mukanaan.</p>
+</div>
+
+<div class="footer">
+  <div class="tags">
+    <span class="tag">Tietosuoja</span><span class="tag">GDPR</span><span class="tag">Järjestöt</span><span class="tag">Sote</span><span class="tag">SLM</span><span class="tag">Paikallinen tekoäly</span>
+  </div>
+  <p style="margin-top:1rem;">Tietoisku on osa <a href="https://csy.fi">Computer Says Yes Labin</a> työtä pienten kielimallien käyttöönoton tueksi järjestökentällä.<br>Lisätietoja: <a href="mailto:jarno@csy.fi">jarno@csy.fi</a></p>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const wrap = document.getElementById('canvas-wrap');
+const canvas = document.getElementById('c');
+const W = wrap.clientWidth || 720;
+const H = 220;
+
+const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+renderer.setSize(W, H);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.shadowMap.enabled = true;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 100);
+camera.position.set(0, 2.5, 7);
+camera.lookAt(0, 1.2, 0);
+
+const amb = new THREE.AmbientLight(0x8888aa, 0.6);
+scene.add(amb);
+const sun = new THREE.DirectionalLight(0xffeedd, 1.2);
+sun.position.set(3, 6, 4);
+sun.castShadow = true;
+scene.add(sun);
+const fill = new THREE.PointLight(0x334466, 0.8, 20);
+fill.position.set(-4, 2, 2);
+scene.add(fill);
+
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshLambertMaterial({color:0x111111})
+);
+ground.rotation.x = -Math.PI/2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+function makeMesh(geo, color, cast=true, receive=false){
+  const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({color}));
+  m.castShadow = cast; m.receiveShadow = receive;
+  return m;
+}
+
+// Tree group
+const tree = new THREE.Group();
+tree.position.set(1.8, 0, 0);
+
+const trunk = makeMesh(new THREE.CylinderGeometry(0.12,0.18,1.4,8), 0x5c3d1e);
+trunk.position.y = 0.7;
+tree.add(trunk);
+
+const branch1 = makeMesh(new THREE.CylinderGeometry(0.06,0.1,0.9,6), 0x5c3d1e);
+branch1.position.set(0.35,1.5,0); branch1.rotation.z = -0.5;
+tree.add(branch1);
+
+[[0,2.4,0,1.1],[0.4,2.1,0,0.8],[-0.3,2.2,0.2,0.75],[0,1.85,0.1,0.7]].forEach(([x,y,z,r])=>{
+  const f = makeMesh(new THREE.SphereGeometry(r,7,5), 0x1a3d1a);
+  f.position.set(x,y,z);
+  tree.add(f);
+});
+
+[[0.7,1.6,0,0.55],[0.9,1.85,0,0.45]].forEach(([x,y,z,r])=>{
+  const f = makeMesh(new THREE.SphereGeometry(r,6,5), 0x1f4a1f);
+  f.position.set(x,y,z);
+  tree.add(f);
+});
+
+scene.add(tree);
+
+// Robot group
+const bot = new THREE.Group();
+bot.position.set(-1.6, 0, 0.3);
+
+const body = makeMesh(new THREE.BoxGeometry(0.55,0.65,0.38), 0x888899);
+body.position.y = 1.0;
+bot.add(body);
+
+const chest = makeMesh(new THREE.BoxGeometry(0.3,0.2,0.1), 0x5566aa);
+chest.position.set(0,1.02,0.24);
+bot.add(chest);
+
+const head = makeMesh(new THREE.BoxGeometry(0.42,0.38,0.36), 0x999aaa);
+head.position.y = 1.55;
+bot.add(head);
+
+const eyeL = makeMesh(new THREE.SphereGeometry(0.07,6,6), 0x44ddff);
+eyeL.position.set(-0.1,1.58,0.19);
+bot.add(eyeL);
+const eyeR = eyeL.clone();
+eyeR.position.set(0.1,1.58,0.19);
+bot.add(eyeR);
+
+const antenna = makeMesh(new THREE.CylinderGeometry(0.02,0.02,0.25,6), 0x777788);
+antenna.position.set(0,1.8,0);
+bot.add(antenna);
+const antTip = makeMesh(new THREE.SphereGeometry(0.045,6,6), 0xff6644);
+antTip.position.set(0,1.94,0);
+bot.add(antTip);
+
+const legL = makeMesh(new THREE.BoxGeometry(0.18,0.5,0.18), 0x777788);
+legL.position.set(-0.16,0.44,0);
+bot.add(legL);
+const legR = legL.clone();
+legR.position.set(0.16,0.44,0);
+bot.add(legR);
+
+const footL = makeMesh(new THREE.BoxGeometry(0.22,0.12,0.28), 0x666677);
+footL.position.set(-0.16,0.13,0.04);
+bot.add(footL);
+const footR = footL.clone();
+footR.position.set(0.16,0.13,0.04);
+bot.add(footR);
+
+const armL = makeMesh(new THREE.BoxGeometry(0.15,0.55,0.15), 0x777788);
+armL.position.set(-0.38,0.95,0);
+armL.rotation.z = 0.3;
+bot.add(armL);
+
+const armR = makeMesh(new THREE.BoxGeometry(0.15,0.55,0.15), 0x777788);
+armR.position.set(0.55,1.15,0);
+armR.rotation.z = -0.9;
+scene.add(bot);
+
+let t = 0;
+function animate(){
+  requestAnimationFrame(animate);
+  t += 0.016;
+
+  // Robot gentle hover + look toward tree
+  bot.position.y = Math.sin(t*0.9)*0.04;
+  bot.rotation.y = 0.2 + Math.sin(t*0.4)*0.05;
+
+  // Arm wave toward tree
+  armR.rotation.z = -0.9 + Math.sin(t*1.1)*0.15;
+
+  // Eye glow pulse
+  const g = 0.5 + Math.sin(t*2)*0.5;
+  eyeL.material.color.setRGB(0.26*g, 0.86*g, 1*g);
+  eyeR.material.color.setRGB(0.26*g, 0.86*g, 1*g);
+
+  // Antenna tip pulse
+  antTip.material.color.setRGB(1, 0.4+Math.sin(t*3)*0.2, 0.27);
+
+  // Tree gentle sway
+  tree.rotation.z = Math.sin(t*0.5)*0.015;
+
+  renderer.render(scene, camera);
+}
+animate();
+</script>
