@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä 4 – Mieliliike: yhteisö ja vaikuttajat</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .osio { background: var(--lav); padding: 16px 20px; border-radius: 10px; margin: 36px 0 20px; }
+  .osio h2 { color: var(--pd); font-size: 20px; font-weight: 700; }
+  .osio p { color: var(--pm); font-size: 14px; margin-top: 4px; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 36px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--sal); color: var(--pd); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 18px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 10px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 12px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .warning { background: #FFF5F5; border-left: 3px solid #DC2626; padding: 12px 16px; border-radius: 8px; margin: 12px 0 0 48px; font-size: 14px; color: #555; }
+  .warning strong { color: #DC2626; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .warning { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html">Etusivu</a>
+  <a href="ryhma1.html">Ryhmä 1</a>
+  <a href="ryhma2.html">Ryhmä 2</a>
+  <a href="ryhma3.html">Ryhmä 3</a>
+  <a href="ryhma4.html" class="active">Ryhmä 4</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä 4</div>
+  <h1>Mieliliike – yhteisö ja vaikuttajat</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Oppia analysoimaan muiden onnistuneiden kansanliikkeiden elementtejä tekoälyllä ja soveltaa niitä Mieliliikkeeseen. Löytää oikeat vaikuttajat ja rakentaa tapa lähestyä heitä tavalla, joka tuntuu aidolta.</p>
+</div>
+
+<!-- OSIO A -->
+<div class="osio">
+  <h2>A · Opitaan muiden kampanjoista</h2>
+  <p>Mikä tekee Roosanauhasta Roosanauhan? Ja miten sama "kaava" voisi toimia Mieliliikkeessä?</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Tähän osioon</strong>
+  <span class="chip">ChatGPT</span>
+  <span class="chip">Copilot</span>
+  <span class="chip">Google Gemini</span>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Analysoi onnistunut kampanja — erittele elementit</h3>
+  </div>
+  <p class="why">Miksi: Sen sijaan että keksimme pyörän uudestaan, tekoäly voi auttaa tunnistamaan mikä muissa kampanjoissa toimii — ja mikä siitä on siirrettävissä Mieliliikkeeseen.</p>
+  <p>Valitse yksi tai useampi vertailukampanja: Roosanauha, Sininen nauha, NAMI (USA), Time to Change (UK), tai muu kansanliike josta tiedät.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Kampanja-analyysi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Analysoi <span class="ph">[KAMPANJAN NIMI, esim. Roosanauha]</span> -kampanjaa ja tunnista sen rakentavat elementit.
+
+Analysoi seuraavat ulottuvuudet:
+
+1. IDENTITEETTI JA KUULUMINEN
+Mikä tekee kampanjasta yhteisön johon ihmiset haluavat kuulua? Mikä on se tunne jonka jäsenyys antaa?
+
+2. SYMBOLIIKKA
+Mikä konkreettinen elementti (nauha, merkki, ele, väri) yhdistää yhteisöä? Miksi se toimii?
+
+3. VAIKUTTAJIEN ROOLI
+Miten julkiset henkilöt ovat osana kampanjaa? Millaisella sitoutumisella — kertaluontoisesti vai pitkäjänteisesti?
+
+4. MATALAN KYNNYKSEN OSALLISTUMINEN
+Miten tavallinen ihminen osallistuu? Mikä on helpoin ensimmäinen askel?
+
+5. YHTEINEN HAASTE
+Mikä on se asia, jota kampanja yhdessä vastustaa tai puolustaa? Miten se on muotoiltu?
+
+6. JATKUVUUS
+Miten kampanja pitää yllä kiinnostusta vuodesta toiseen?
+
+Arvioi lopuksi jokaisen elementin kohdalla: toimiiko tämä suoraan Mieliliikkeessä? Jos ei — miksi ei, ja miten voisi soveltaa?</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit pyytää tekoälyä analysoimaan useamman kampanjan kerralla: "Vertaa Roosanauhaa ja Sinistä nauhaa — mitä yhteistä ja mikä eroaa?" Näin saat laajemman kuvan.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Rakenna Mieliliikkeen oma kaava</h3>
+  </div>
+  <p class="why">Miksi: Analyysin pohjalta voidaan rakentaa konkreettinen "resepti" — mitä elementtejä Mieliliikkeen tulee sisältää ollakseen yhtä voimakas.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Mieliliikkeen kaava</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet käynyt läpi muiden kampanjoiden elementit. Nyt rakennetaan Mieliliikkeelle oma toimintamalli.
+
+Mieliliike haluaa:
+- Kasvattaa Mielinauhan lahjoittajakantaa merkittävästi vuoteen 2030 mennessä
+- Luoda tunteen, että mielenterveyden tukeminen on koko kansan asia — kuten syövän torjuminen Roosanauhan kautta
+- Sitouttaa pitkäjänteisiä vaikuttajia, ei vain kertaesiintymisiä
+
+Laadi Mieliliikkeelle:
+1. Ehdotus identiteetille: mikä on se tunne ja yhteisöllisyys johon liitytään?
+2. Ehdotus symbolille tai konkreettiselle eleelle joka yhdistää
+3. Matalan kynnyksen osallistumispolku — miten kuka tahansa voi ottaa ensimmäisen askeleen?
+4. Kolme konkreettista tapaa, joilla vaikuttajat voisivat olla mukana pitkäjänteisesti
+5. Yksi villimpi idea — jotain mitä mielenterveysviestinnässä ei ole vielä tehty
+
+Muista: tämä on ideointiharjoitus. Villit ideat ovat tervetulleita!</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- OSIO B -->
+<div class="osio">
+  <h2>B · Vaikuttajien lähestyminen</h2>
+  <p>Kun tiedät kenet haluat — miten lähestyt tavalla, joka tuntuu aidolta eikä kopiopostilta?</p>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Kirjoita henkilökohtainen lähestymisviesti</h3>
+  </div>
+  <p class="why">Miksi: Vaikuttajat saavat paljon yhteistyöpyyntöjä. Geneerinen "Teillä olisi loistava mahdollisuus" ei erotu. Tekoäly auttaa rakentamaan viestin, joka osoittaa että olet perehtynyt juuri tähän henkilöön.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Henkilökohtainen lähestymisviesti</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Auta minua kirjoittamaan henkilökohtainen lähestymisviesti seuraavalle henkilölle, jonka haluamme kutsua Mieliliikkeen keulakuvaksi.
+
+Henkilö: <span class="ph">[NIMI]</span>
+
+Mitä tiedän tästä henkilöstä:
+<span class="ph">[KIRJOITA TÄHÄN: ala, tunnettu rooli, mahdolliset aiemmat kannanotot aiheeseen, yleisö, arvomaailma]</span>
+
+Lähestymisviesti:
+- On lyhyt ja henkilökohtainen (max 150 sanaa)
+- Osoittaa selvästi, että olemme perehtyneet juuri tähän henkilöön — ei kopiopostia
+- Ei tyrkyttävä: kutsuu keskustelemaan, ei vaadi heti vastausta tai sitoutumista
+- Kertoo selkeästi mikä Mieliliike on ja miksi juuri tämä henkilö sopii siihen
+- Sisältää konkreettisen seuraavan askeleen (esim. "Voisimmeko sopia lyhyen puhelun?")
+
+Älä käytä fraaseja kuten "Teillä olisi loistava mahdollisuus" tai "olemme vaikuttuneita urastanne".
+Tee siitä aito, suora ja ihmiseltä ihmiselle.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Pyydä tekoälyä tekemään kaksi tai kolme eri versiota eri sävyllä — esim. "virallisempi versio sähköpostiin" ja "rennompi versio DM:llä lähestymiseen". Valitse sitten se joka tuntuu luontevimmalta.</div>
+  <div class="warning"><strong>⚠️ Muista:</strong> Tekoäly voi keksiä tietoja henkilöstä tai tulkita niitä väärin. Tarkista aina viesti ennen lähetystä. Älä anna tekoälyn väittää faktoja joista et ole varma.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">4</div>
+    <h3>Suunnittele pitkäjänteinen yhteistyö</h3>
+  </div>
+  <p class="why">Miksi: Paras tulos syntyy kun vaikuttaja on mukana vuosia, ei vain kertaluontoisesti. Tämä vaatii suunnittelua.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Yhteistyösuunnitelma</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Suunnittele pitkäjänteinen yhteistyömalli vaikuttajalle, joka on lähtenyt mukaan Mieliliikkeeseen.
+
+Vaikuttajan profiili: <span class="ph">[KUVAA LYHYESTI: ala, yleisö, käytettävissä oleva aika arviolta]</span>
+
+Luo 12 kuukauden yhteistyörunko joka sisältää:
+1. Kolme matalan kynnyksen tapaa olla mukana (ei vie paljon aikaa)
+2. Kaksi tai kolme isompaa näkyvyystekoa vuoden aikana
+3. Miten pidämme vaikuttajan sitoutuneena — mitä tarjoamme hänelle vastineeksi?
+4. Miten mittaamme yhteistyön vaikutusta?
+
+Pidä suunnitelma realistisena — vaikuttajilla on kiireinen kalenteri.</div>
+  </div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä 4 · <a href="index.html" style="color:var(--pm);">Takaisin etusivulle</a> · <a href="ryhma1.html" style="color:var(--pm);">← Ryhmä 1</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

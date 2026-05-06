@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä 3 – Argumentointikone</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .osio { background: var(--lav); padding: 16px 20px; border-radius: 10px; margin: 36px 0 20px; }
+  .osio h2 { color: var(--pd); font-size: 20px; font-weight: 700; }
+  .osio p { color: var(--pm); font-size: 14px; margin-top: 4px; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 36px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pm); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 18px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 10px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .prompt-label .badge { background: var(--pm); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 8px; margin-left: 8px; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 12px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .save-box { background: var(--lav); border: 2px solid var(--pm); border-radius: 10px; padding: 18px 22px; margin: 20px 0 0 48px; }
+  .save-box h4 { color: var(--pd); font-size: 15px; margin-bottom: 8px; }
+  .save-box p { font-size: 14px; color: #444; }
+  .save-box ul { padding-left: 18px; font-size: 14px; color: #444; margin-top: 6px; }
+  .save-box li { margin-bottom: 4px; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  .data-links { margin: 14px 0 0 48px; display: flex; flex-direction: column; gap: 8px; }
+  .data-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--lav); border-radius: 8px; text-decoration: none; color: var(--pd); background: #FAFAFA; transition: all 0.2s; }
+  .data-link:hover { border-color: var(--pm); background: var(--lav); }
+  .data-link-featured { border-color: var(--pm); background: var(--lav); }
+  .dl-src { background: var(--pd); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; font-family: 'Merriweather', Georgia, serif; }
+  .dl-src.pdf { background: var(--pm); }
+  .dl-title { flex: 1; font-size: 14px; font-weight: 600; }
+  .dl-arrow { color: var(--pm); font-weight: 700; flex-shrink: 0; font-size: 14px; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .save-box, .data-links { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html">Etusivu</a>
+  <a href="ryhma1.html">Ryhmä 1</a>
+  <a href="ryhma2.html">Ryhmä 2</a>
+  <a href="ryhma3.html" class="active">Ryhmä 3</a>
+  <a href="ryhma4.html">Ryhmä 4</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä 3</div>
+  <h1>Argumentointikone – data lahjoittajatarinaksi</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Muuttaa tutkimusdata ja tilastot (Kela, THL, omat raportit) vakuuttaviksi lahjoittajatarinaksi — ja rakentaa oma "argumentointikone", jolla tiimi voi tuottaa kohdennettuja varainhankintatekstejä nopeasti.</p>
+</div>
+
+<!-- OSIO A -->
+<div class="osio">
+  <h2>A · Data tarinankerronnaksi</h2>
+  <p>Muutetaan kuivat tilastot tarinoiksi, jotka lahjoittaja ymmärtää ja tuntee.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Tähän osioon</strong>
+  <span class="chip">NotebookLM</span>
+  <span class="chip">Copilot</span>
+  <span class="chip">ChatGPT</span>
+  <span class="chip">Gemini</span>
+  <br><small style="color:#666; margin-top:6px; display:block;">NotebookLM sopii erityisesti jos sinulla on PDF-raportteja — lataa ne sinne lähteiksi.</small>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Kerää tiedot ensin</h3>
+  </div>
+  <p class="why">Miksi: Tekoäly ei keksi lukuja — sinä tuot datan, se kertoo siitä tarinan. Älä koskaan anna tekoälyn keksiä tilastoja.</p>
+  <p>Avaa yksi alla olevista lähteistä, tai hae oma aineisto, lataa/kopioi sopivat luvut ja vie ne vaiheeseen 2.</p>
+  <div class="data-links">
+    <a href="https://tietotarjotin.fi/tilastot-aiheittain" target="_blank" class="data-link">
+      <span class="dl-src">Kela.fi</span>
+      <span class="dl-title">Tilastot aiheittain – tietotarjotin</span>
+      <span class="dl-arrow">→</span>
+    </a>
+  
+    <a href="https://www.julkari.fi/server/api/core/bitstreams/09350f6e-fe62-4674-adaa-226365fbc1fd/content" target="_blank" class="data-link data-link-featured">
+      <span class="dl-src pdf">THL · PDF</span>
+      <span class="dl-title">Kouluterveyskysely 2025 – lasten ja nuorten hyvinvointi <em style="font-weight:400; font-size:12px; display:block; color:#555;">Latautuu suoraan – kattaa mielenterveyden, nukkumisen, liikunnan</em></span>
+      <span class="dl-arrow">↓ Lataa</span>
+    </a>
+    <a href="https://sotkanet.fi/sotkanet/fi/taulukko/?indicator=TY5LT8JAFIV_0aWZR1vNFzeSKmgIuhJXk0jAYIEy6YSa_nrv2A2787r3HFYO-ToEjzjszCDR0pugwCJDxB-5FP92MI7diJuZYCf7dR8OyD3Gx-l2PwaVFXzUuCWmfkfOj8QGadZse-bZbk-Y9jiB4SXnnx8Qf0Lu0u37H5cZdotc3nTRrmY1UOWiYs5mRBZr7dPm0OCXSHnWCZNCOSjXSF-QfF6VSlKlX8qoRlLuSN_K62swnc5UeO2wn7cLTLWh-9Vsy9PiDw==&region=s07MBAA=&year=sy5ztzbW0zUEAA==&gender=t&abs=f&color=f&buildVersion=3.1.5&buildTimestamp=202505220800" target="_blank" class="data-link">
+      <span class="dl-src">SOTKAnet</span>
+      <span class="dl-title">Mielenterveysindikaattorit – interaktiivinen tietokanta <em style="font-weight:400; font-size:12px; display:block; color:#555;">Lataa taulukko > CSV</em></span>
+      <span class="dl-arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Muuta data tarinaksi</h3>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Data tarinankerronnaksi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet vaikuttavan viestinnän asiantuntija. Sinulle annetaan tutkimusdataa suomalaisten mielenterveydestä. Tehtäväsi on muuttaa tämä data lahjoittajalle ymmärrettäväksi ja tunteisiin vetoavaksi viestiksi.
+
+Tässä on data:
+<span class="ph">[LIITÄ TILASTOT / TUTKIMUSTULOKSET TÄHÄN]</span>
+
+Luo tästä datasta:
+1. Kirjoita yksi koskettava aloitus (max 3 virkettä), joka tekee ongelman konkreettiseksi yhden ihmisen kautta — ei massana vaan yksilönä.
+2. Kolme keskeistä lukua esitettynä tavalla, joka on helppo ymmärtää: suhteuttamalla arkeen, käyttämällä vertauksia tai konkreettisia esimerkkejä.
+3. Lopetuskappale, joka kytkee datan Mieli ry:n työhön ja lahjoittajan mahdollisuuteen vaikuttaa.
+
+Ehdota myös: mikä yksittäinen luku tai fakta on kaikkein iskevimmät — se joka jää mieleen.
+
+Älä keksi lukuja. Käytä vain annettua dataa.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos käytät NotebookLM:ää ja olet ladannut raportteja sinne, voit pyytää: "Etsi tästä aineistosta kolme vakuuttavinta lukua kriisipuhelinresursseista." — se pysyy lähteissä.</div>
+</div>
+
+<hr>
+
+<!-- OSIO B -->
+<div class="osio">
+  <h2>B · Rakenna oma argumentointikone</h2>
+  <p>Tämä on järjestelmäprompt, jonka voit tallentaa omaksi assistentiksi. Se toimii kuin tiimisi sisäinen varainhankinnan copywriter.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Mihin tämä tallennetaan?</strong>
+  <span class="chip">Gemini Gem</span>
+  <span class="chip">Copilot-agentti</span>
+  <span class="chip">ChatGPT Project</span>
+  <br><small style="color:#666; margin-top:6px; display:block;">Kaikissa näissä voit luoda oman "botin" jolle annetaan ohjeistus etukäteen — ei tarvitse kirjoittaa joka kerta alusta.</small>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Kopioi ja tallenna tämä järjestelmäprompt</h3>
+  </div>
+  <p class="why">Miksi: Tämä on pidempi ohjeistus, joka kertoo tekoälylle kuka se on, mitä se tekee ja miten. Kun tallennat tämän, sinun ei tarvitse selittää kontekstia joka kerta uudestaan.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Järjestelmäprompt – Argumentointikone <span class="badge">TALLENNA TÄMÄ</span></span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet varainhankinnan viestinnän asiantuntija. Sinulla on syvällinen ymmärrys Mieli ry:n Mielinauha-kampanjasta ja suomalaisten mielenterveyspalveluiden tarpeesta.
+
+Autat Mieli ry:n viestintä- ja varainhankintatiimiä tuottamaan vakuuttavia, kohdennettuja lahjoittajatekstejä eri yleisöille ja tilanteisiin.
+
+TAUSTATIEDOT:
+- Mielinauha-kampanjan tavoite: kerätä riittävästi varoja, jotta jokaiseen kriisipuheluun voidaan vastata vuoteen 2030 mennessä
+- Tällä hetkellä osa kriisipuheluista jää vastaamatta resurssipulan takia
+- Mieli ry on Suomen johtava mielenterveysjärjestö
+
+AUTAT SEURAAVISSA TEHTÄVISSÄ:
+
+1. KOHDERYHMÄANALYYSI
+- Tunnistat mikä motivoi tiettyä kohderyhmää lahjoittamaan
+- Tunnistat mahdolliset esteet tai epäilyt lahjoittamista kohtaan
+- Ehdotat sopivaa sävyä ja viestintätapaa eri kohderyhmille (yritys, yksityishenkilö, nuori, seniori)
+
+2. ARGUMENTTIEN RAKENTAMINEN
+- Muutat tutkimusdatan ja tilastot ymmärrettäväksi tarinaksi
+- Rakennat loogisen perusteluketjun: tarve → vaikutus → lahjoittajan rooli
+- Autat löytämään yhden vakuuttavimman argumentin kullekin kohderyhmälle
+
+3. TEKSTIEN KIRJOITTAMINEN
+- Kirjoitat lahjoittajakirjeitä, somepäivityksiä, uutiskirjeen kappaleita tai kampanjatekstejä
+- Sopeuttaa sävyn kohderyhmälle
+- Sisällytät selkeän toimintakutsun (CTA) jokaiseen tekstiin
+
+4. TEKSTIEN TARKISTAMINEN
+- Arvioit olemassa olevan tekstin vakuuttavuuden ja selkeyden
+- Ehdotat konkreettisia parannuksia
+- Varmistat, että teksti puhuttelee oikeaa kohderyhmää
+
+TOIMINTAPERIAATTEET:
+
+1. Kysy ensin, kirjoita sitten
+- Jos et tiedä kohderyhmää, tekstin tarkoitusta tai kanavaa, kysy ennen kuin alat kirjoittaa
+
+2. Faktat kuntoon
+- Älä koskaan keksi lukuja, tilastoja tai faktoja
+- Jos sinulla ei ole dataa, sano se ja ehdota mistä sen voisi hakea (esim. Kela, THL, Mieli ry:n raportit)
+
+3. Säilytä Mieli ry:n ääni
+- Lämmin mutta asiantunteva
+- Toivoa antava, ei syyllistävä
+- Inhimillinen ja lähestyttävä, ei byrokraattinen
+
+4. Ole rehellinen
+- Huomauta jos argumentti on heikko tai epäuskottava
+- Ehdota vaihtoehtoisia kulmia
+- Jos teksti ei toimi, sano se
+
+Aloita aina kysymällä: "Kenelle kirjoitamme ja mitä haluamme heidän tekevän?"</div>
+  </div>
+  <div class="save-box">
+    <h4>📌 Näin tallennat tämän omaksi assistentiksi:</h4>
+    <ul>
+      <li><strong>Google Gemini:</strong> Avaa Gemini → "Gems" → "Create a Gem" → liitä prompti "Instructions"-kenttään → anna nimeksi "Mielinauha-argumentointikone"</li>
+      <li><strong>ChatGPT:</strong> Avaa ChatGPT → "Explore GPTs" → "Create" → liitä prompti "Instructions"-kenttään</li>
+      <li><strong>Microsoft Copilot:</strong> Käytä Copilot Studio -palvelua tai liitä prompti uuden Chat-ikkunan alussa "System message" -kenttään</li>
+    </ul>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Testaa assistenttia käytännössä</h3>
+  </div>
+  <p>Kun olet tallentanut järjestelmäpromptin, kokeile antaa sille tehtäviä. Esimerkiksi:</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Esimerkkitehtäviä assistentille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Kirjoita lyhyt (150 sanaa) lahjoittajaviesti 45-vuotiaalle yritysjohtajalle, joka harkitsee yritysyhteistyötä Mielinauhan kanssa. Hänelle on tärkeää konkreettinen vaikuttavuus ja näkyvyys.
+
+---
+
+Arvioi tämä teksti varainhankinnan näkökulmasta ja ehdota kolme konkreettista parannusta:
+<span class="ph">[LIITÄ TEKSTI TÄHÄN]</span>
+
+---
+
+Kirjoita Instagram-postaus Mielinauhan päätöspäivälle. Sävy: kiitollinen ja yhteisöllinen. Sisällytä selkeä toimintakutsu.</div>
+  </div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä 3 · <a href="index.html" style="color:var(--pm);">Takaisin etusivulle</a> · <a href="ryhma4.html" style="color:var(--pm);">Seuraava ryhmä →</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

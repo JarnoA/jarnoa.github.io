@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä 2 – Uudet sisällöt ja asiantuntijoiden ääni</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .osio { background: var(--lav); padding: 16px 20px; border-radius: 10px; margin: 36px 0 20px; }
+  .osio h2 { color: var(--pd); font-size: 20px; font-weight: 700; }
+  .osio p { color: var(--pm); font-size: 14px; margin-top: 4px; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 36px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--sal); color: var(--pd); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 18px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 10px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 12px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .warning { background: #FFF5F5; border-left: 3px solid #DC2626; padding: 12px 16px; border-radius: 8px; margin: 12px 0 0 48px; font-size: 14px; color: #555; }
+  .warning strong { color: #DC2626; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .warning { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html">Etusivu</a>
+  <a href="ryhma1.html">Ryhmä 1</a>
+  <a href="ryhma2.html" class="active">Ryhmä 2</a>
+  <a href="ryhma3.html">Ryhmä 3</a>
+  <a href="ryhma4.html">Ryhmä 4</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä 2</div>
+  <h1>Uudet sisällöt ja asiantuntijoiden ääni</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Tuottaa uutta sisältöä nopeasti asiantuntijoiden ja kokemusasiantuntijoiden äänellä — ilman että heidän täytyy itse kirjoittaa. Lisäksi ideoida sopivia julkisia kasvoja Mielinauhalle.</p>
+</div>
+
+<!-- OSIO A -->
+<div class="osio">
+  <h2>A · Kokemusasiantuntija äänestä tekstiksi</h2>
+  <p>Miten saamme arvokkaat kokemukset julkaisukelpoiseksi sisällöksi matalalla kynnyksellä?</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Työkalut tähän osioon</strong>
+  <span class="chip">Google NotebookLM</span>
+  <span class="chip">Copilot (Teams-litterointi)</span>
+  <span class="chip">ChatGPT / Gemini / Copilot</span>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Litteroi ääniosuus tekstiksi</h3>
+  </div>
+  <p class="why">Miksi: Kokemusasiantuntija voi lähettää vaikka WhatsApp-ääniviestinä kokemuksensa. Sinun ei tarvitse kirjoittaa se puhtaaksi käsin.</p>
+  <p><strong>Vaihtoehto A (tässä suositeltava):</strong> Lataa äänitiedosto tekoäylle, esim. <strong>Google NotebookLM</strong>-palveluun (notebooklm.google.com), <strong>Geminiin</strong>, <strong>Coplitottiin</strong> ja pyydä sitä litteroimaan puhe tekstiksi.</p>
+  
+<p><strong>Tässä malliäänitiedosto </strong> > <a href="Generated Audio May 06, 2026 - 11_27AM.wav" download style="color:var(--pm);">Lataa (oikealla hiirellä, valitse Tallanna linkki)</a></p>
+
+
+  <p><strong>Vaihtoehto B:</strong> Jos käytät Microsoft Teamsia tai Google Meetiä haastatteluun, ota kokouksen automaattinen litterointi päälle ennen aloitusta.</p>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Muokkaa litterointi julkaistavaksi sisällöksi</h3>
+  </div>
+  <p class="why">Miksi: Litteroitu puhe on harvoin sellaisenaan valmista — se on polveilevaa ja täynnä täytesanoja. Tekoäly muokkaa sen sujuvaksi säilyttäen henkilön oman äänen.</p>
+  <p>Kopioi litteroitu teksti tekoälytyökaluusi ja käytä alla olevaa promptia.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Äänestä julkaisuksi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Alla on litterointi puheesta / äänestä kokemusasiantuntijalta. Muokkaa tämä julkaistavaksi sisällöksi niin, että henkilön oma ääni ja kokemus säilyy.
+
+<span class="ph">[LIITÄ LITTEROINTI TÄHÄN]</span>
+
+Ohjeita:
+- Älä muuta faktoja, tunnetta tai henkilökohtaista kokemusta — muuta vain rakennetta
+- Kirjoita ensimmäisessä persoonassa kuin henkilö itse kirjoittaisi
+- Korjaa puhekielen toistot ja täytesanat, mutta älä liiaksi kirjallistuta
+- Säilytä murre tai ominainen puhetapa jos se kuuluu tekstistä läpi — se on vahvuus
+
+Tuota kaksi versiota:
+1. Pidempi versio (blogi tai artikkeli, 300–400 sanaa)
+2. Lyhyt some-versio (Instagram, 100–150 sanaa)
+
+Ehdota lopuksi kolme vaihtoehtoista otsikkoa.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit pyytää tekoälyä tekemään yhden lainauksen tai "nostokortin" tekstistä — sellaisen joka toimii kuvapostauksen päällä.</div>
+</div>
+
+<hr>
+
+<!-- OSIO B -->
+<div class="osio">
+  <h2>B · Julkisten vaikuttajien ideointi</h2>
+  <p>Keitä suomalaisia julkisia henkilöitä voisi lähestyä Mieliliikkeen keulakuviksi?</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Työkalut tähän osioon</strong>
+  <span class="chip">Google Gemini (Gem)</span>
+  <span class="chip">Google Trends</span>
+  <span class="chip">ChatGPT / Copilot</span>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Hae trendaavat nimet Google Trendsistä — seulo tekoälyllä</h3>
+  </div>
+  <p class="why">Miksi: Sen sijaan että arvaillaan nimiä, käytetään oikeaa dataa. Google Trends kertoo keistä suomalaiset etsivät tietoa juuri nyt — tekoäly seuloo listasta julkisuuden henkilöt ja arvioi sopivuuden Mielinauhalle.</p>
+
+  <p><strong>Askel 1:</strong> Mene osoitteeseen <a href="https://trends.google.com/trending?geo=FI" target="_blank" style="color:var(--pm); font-weight:700;">trends.google.com/trending?geo=FI</a> ja klikkaa sivulta <strong>Vie (Export)</strong> — lataa CSV-tiedosto koneellesi.</p>
+
+  <p><strong>Askel 2:</strong> 
+    <p>Mene valitsemaasi tekoälyyn ja käytä alla olevaa kehotetta.</p>
+    
+    <p>Voit myös kokeilla valmista Gemini-analysoijaa. Se pyytää sinua lataamaan myös CSV-tiedoston ja löytää siitä automaattisesti 20 suosituinta julkisuuden henkilöä arvioineen.</p>
+
+  <div style="margin: 14px 0 0 48px;">
+    <a href="https://gemini.google.com/gem/11rtGBxulBZDQi5sv2CCw3Qm8buzOaUd_?usp=sharing" target="_blank" style="display:inline-flex; align-items:center; gap:10px; background:var(--pd); color:#fff; text-decoration:none; padding:12px 22px; border-radius:10px; font-size:15px; font-weight:700; font-family:'Merriweather',Georgia,serif;">
+      🤖 Avaa Julkkisseuloja-Gem →
+    </a>
+    <p style="font-size:13px; color:#888; margin: 8px 0 0; margin-left:0;">Avautuu Google Gemini -palvelussa — vaatii Google-tilin.</p>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Järjestelmäprompt – käytä muissa tekoälyissä <span style="background:var(--pm); color:#fff; font-size:11px; padding:2px 8px; border-radius:8px; margin-left:8px;">TALLENNA TÄMÄ</span></span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet asiantunteva, viihdemaailman trendejä seuraava tekoälyavustaja. Tehtäväsi on auttaa käyttäjää löytämään Suomen sen hetken haetuimmat julkisuuden henkilöt Google Trends -datan avulla ja tarjota heistä lisätietoa.
+
+Lue CSV huolellisesti. Seulo esiin vain henkilöt/julkkikset (suomalaiset ja ulkomaalaiset). Jätä huomiotta brändit, tv-ohjelmat, urheilujoukkueet, uutisaiheet ja yleissanat.
+Valitse datasta 20 suosituinta henkilöä ja listaa ne numeroituna (1–20), kertoen kuka kukin on lyhyesti.
+
+Lopeta aina listaus tähän kysymykseen:
+"Tässä 20 tämän hetken haetuinta henkilöä! Kenestä näistä haluaisit kuulla lisää tai tietää, miksi hän on juuri nyt trendaamassa?"
+
+Syväsukellus: Kun käyttäjä valitsee henkilön, kerro olennaiset taustatiedot ja käytä verkkohakua selvittääksesi miksi kyseinen henkilö on juuri nyt uutisissa Suomessa.
+
+Hyvän kampanjakasvon kriteerit (käytä arvioinnissa):
+- Laaja ja arvostettu yleisö Suomessa
+- Arvomaailma, joka kohtaa mielenterveysteeman kanssa
+- Ei liian vahvasti yhteen puolueeseen leimautunut
+- Mieluusti omakohtainen suhde mielenterveyteen
+
+Sävy: innostunut, auttavainen ja asiantunteva. Selkeää suomea.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos käytät Copilotia tai ChatGPT:tä Geminin sijaan, kopioi yllä oleva järjestelmäprompt uuden chatin alkuun — lataa CSV-tiedosto liitteenä samaan viestiin.</div>
+  <div class="warning"><strong>⚠️ Muista:</strong> Tekoäly voi erehtyä. Tarkista aina ehdotetut henkilöt ennen päätöksiä tai yhteydenottoja.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Syventävä analyysi yksittäisestä henkilöstä</h3>
+  </div>
+  <p class="why">Miksi: Kun olet valinnut kiinnostavan nimen, voit pyytää tekoälyä auttamaan ymmärtämään paremmin miksi ja miten hän sopii — ja mitä erityistä lähestymistavassa kannattaa ottaa huomioon.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti – Henkilöanalyysi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Analysoi miksi <span class="ph">[NIMI]</span> voisi sopia Mieliliikkeen keulakuvaksi.
+
+Pohdi:
+1. Mikä hänen yleisössään resonoi mielenterveysteeman kanssa?
+2. Mitä riskejä tai huolia tähän henkilöön liittymisessä voisi olla?
+3. Mikä olisi paras tapa lähestyä häntä — mitä kannattaa korostaa Mieli ry:stä?
+4. Millä tavalla hänen panoksensa voisi näkyä käytännössä (julkaisut, tapahtumat, kampanja)?
+
+Muista: Perusta vastauksesi tiedossa oleviin faktoihin. Jos et tiedä jotain varmasti, sano se.</div>
+  </div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä 2 · <a href="index.html" style="color:var(--pm);">Takaisin etusivulle</a> · <a href="ryhma3.html" style="color:var(--pm);">Seuraava ryhmä →</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

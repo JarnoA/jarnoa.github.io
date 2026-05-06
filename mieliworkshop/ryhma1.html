@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä 1 – Vanhat sisällöt uudelleen käyttöön</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 36px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html">Etusivu</a>
+  <a href="ryhma1.html" class="active">Ryhmä 1</a>
+  <a href="ryhma2.html">Ryhmä 2</a>
+  <a href="ryhma3.html">Ryhmä 3</a>
+  <a href="ryhma4.html">Ryhmä 4</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä 1</div>
+  <h1>Vanhat sisällöt uudelleen käyttöön</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Löytää vanhoista blogeista, raporteista ja artikkeleista sisältöjä, jotka muokattuna kiinnostavat uusia yleisöjä — eri kanavissa. Tavoitteena useita julkaisuja per kuukausi ilman tyhjästä aloittamista.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Suositellut työkalut</strong>
+  <span class="chip">Microsoft Copilot</span>
+  <span class="chip">ChatGPT</span>
+  <span class="chip">Google Gemini</span>
+  <br><small style="color:#666; margin-top:6px; display:block;">Kaikki toimivat samalla tavalla — kopioi prompti, liitä työkaluun, muokkaa hakasulkeet.</small>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Löydä uusi yleisö ja luo heistä persona</h3>
+  </div>
+  <p class="why">Miksi ensin: Ennen kuin muokkaat sisältöä, pitää tietää <em>kenelle</em>. Tämä prompti auttaa ensin tunnistamaan keitä Mielinauha ei vielä tavoita — ja luo sitten tarkan henkilöprofiilin valitusta ryhmästä.</p>
+  <p>Kerro tekoälylle lyhyesti keitä nykyiset Mielinauhan seuraajat tai lahjoittajat ovat. Se ehdottaa uusia yleisöjä ja luo niistä personat.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 1 – Uusi yleisö + persona</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet markkinoinnin asiantuntija. Autat Mieli ry:n Mielinauha-kampanjaa tavoittamaan uusia yleisöjä.
+
+Nykyinen tilanne: Mielinauhan tyypillinen tukija on tällä hetkellä <span class="ph">[KUVAA LYHYESTI: esim. keski-ikäinen nainen, jolla on omakohtainen kokemus mielenterveyshaasteista]</span>
+
+Tehtäväsi:
+1. Ehdota 3–4 uutta kohderyhmää, joita Mielinauha ei vielä tavoita mutta voisi — perustele lyhyesti miksi juuri he
+2. Valitse yksi lupaavin näistä ryhmistä ja luo heistä tarkka henkilöprofiili (persona):
+   - Nimi, ikä ja elämäntilanne
+   - Miksi mielenterveys on heille merkityksellinen (omakohtaisesti tai läheisen kautta)
+   - Mitä he arvostavat — mikä saisi heidät lahjoittamaan tai jakamaan sisältöä
+   - Mikä kanava tavoittaa heidät parhaiten
+   - Millainen viesti tai tarina resonoi
+
+Lopuksi: mitä vanhaa Mieli ry:n sisältöä kannattaisi ensimmäiseksi testata tällä yleisöllä?</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos haluat vertailla useampaa uutta yleisöä, pyydä: "Tee sama persona myös kohderyhmälle 2." — tekoäly muistaa kontekstin saman keskustelun sisällä. Tallenna syntyneet profiilit, käytät niitä seuraavissa vaiheissa.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Tuo vanha sisältö ja muokkaa se uudelle yleisölle</h3>
+  </div>
+  <p class="why">Miksi: Hyvät sisällöt eivät vanhene — ne vain kaipaat uuden kulman. Sama tieto voidaan esittää täysin eri tavalla eri ihmiselle.</p>
+  <p>Kopioi vanha blogipostaus, artikkeli tai raporttikappale ja liitä se tekoälylle yhdessä persona-kuvauksen kanssa.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 2 – Uudelleenmuotoilu</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on vanha teksti Mieli ry:ltä:
+
+<span class="ph">[LIITÄ VANHA TEKSTI TÄHÄN]</span>
+
+Tässä on kuvaus kohdeyleisöstä, jolle haluan muokata sisällön:
+
+<span class="ph">[LIITÄ PERSONA-KUVAUS TÄHÄN]</span>
+
+Tehtäväsi:
+1. Etsi ensin tekstistä "kultajyvät": ajattomat viestit, koskettavat tarinat tai vahvat faktat, jotka yhä resonoivat tänään. Listaa ne lyhyesti.
+2. Kirjoita uusi versio tälle yleisölle sopivaksi kultajyvien pohjalta. Muuta sävy, esimerkit ja rakenne — mutta säilytä kaikki faktat tarkasti sellaisinaan.
+3. Ehdota kolme vaihtoehtoista otsikkoa.
+
+Äänensävy: toiveikas, ratkaisukeskeinen ja inhimillinen. Ei jäykkää kapulakieltä.
+
+Tärkeää: Älä keksi uusia faktoja tai tilastoja. Käytä alkuperäisen tekstin luvut sellaisinaan.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Copilot-käyttäjät voivat ladata suoraan Word- tai PDF-tiedoston keskusteluun — ei tarvitse kopioida tekstiä manuaalisesti.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Sovita eri kanaviin</h3>
+  </div>
+  <p class="why">Miksi: Instagram, LinkedIn ja sähköposti ovat täysin eri maailmoja. Sama teksti ei toimi sellaisenaan kaikissa — mutta tekoäly tekee sovituksen sekunneissa.</p>
+  <p>Ota edellisessä vaiheessa syntynyt uusi versio ja pyydä tekoälyä muokkaamaan se eri kanaville.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 3 – Kanavasovitus</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on teksti:
+
+<span class="ph">[LIITÄ TEKSTI TÄHÄN]</span>
+
+Muokkaa tämä kolmeen kanavaan. Jokaiseen oma versio ja muotoilu:
+
+a) Kolme lyhyttä, pysäyttävää some-julkaisua (Instagram/Facebook). Jokaisessa eri näkökulma samaan viestiin. Max 100 sanaa per julkaisu, lämmin ja lähestyttävä, voi sisältää emojeja.
+
+b) Ytimekäs uutiskirjenosto (max 80 sanaa), joka herättää kiinnostuksen ja johtaa verkkosivulle lahjoittamaan. Henkilökohtainen sävy, selkeä toimintakutsu.
+
+c) Asiantuntijavetoinen LinkedIn-postaus (max 200 sanaa). Vakavampi ja ajattelua herättävä sävy — kutsuu lukijaa pohtimaan tai jakamaan.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit jatkaa pyytämällä: "Tee Instagram-versiosta vielä lyhyempi Stories-muotoon" tai "Muuta LinkedIn-teksti englanniksi". Tekoäly seuraa kontekstia saman keskustelun sisällä.</div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä 1 · <a href="index.html" style="color:var(--pm);">Takaisin etusivulle</a> · <a href="ryhma2.html" style="color:var(--pm);">Seuraava ryhmä →</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

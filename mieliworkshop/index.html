@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoäly kampanjatyön tukena – MIELI Workshop 7.5.2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 56px 40px 44px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 12px; }
+  header h1 { font-size: 40px; color: var(--pd); font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+  header .date-tag { display: inline-block; background: var(--sal); color: var(--pd); padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 700; margin-top: 8px; }
+  main { max-width: 940px; margin: 0 auto; padding: 48px 28px 80px; }
+  .mission { background: var(--pd); color: #fff; padding: 28px 32px; border-radius: 14px; margin-bottom: 40px; }
+  .mission h2 { font-size: 13px; opacity: 0.7; font-weight: 500; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+  .mission blockquote { font-size: 21px; font-weight: 700; line-height: 1.4; border-left: 4px solid var(--sal); padding-left: 18px; }
+  .instructions { background: var(--sal-l); border: 2px solid var(--sal); border-radius: 12px; padding: 22px 26px; margin-bottom: 40px; }
+  .instructions h2 { color: var(--pd); font-size: 17px; margin-bottom: 12px; }
+  .instructions ol { padding-left: 20px; }
+  .instructions li { margin-bottom: 8px; font-size: 15px; color: #444; }
+  .instructions li strong { color: var(--pd); }
+  .section-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); margin-bottom: 16px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; }
+  .card { background: #fff; border: 2px solid var(--lav); border-radius: 14px; padding: 26px; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+  .card:hover { border-color: var(--pm); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(26,10,78,0.12); }
+  .card .num { font-size: 48px; font-weight: 900; color: var(--lav); line-height: 1; margin-bottom: 10px; -webkit-text-stroke: 2px var(--pd); }
+  .card h3 { color: var(--pd); font-size: 18px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .card p { color: #666; font-size: 14px; line-height: 1.55; }
+  .card .card-tag { display: inline-block; background: var(--lav); color: var(--pm); font-size: 12px; padding: 3px 10px; border-radius: 10px; margin-top: 12px; font-weight: 600; }
+  .tools-section { background: #F8F8FF; border-radius: 12px; padding: 24px 28px; }
+  .tools-section h2 { color: var(--pd); font-size: 17px; margin-bottom: 16px; }
+  .tool-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .tool-row label { font-size: 14px; color: #666; min-width: 180px; }
+  .tool-chip { background: #fff; border: 2px solid var(--pd); color: var(--pd); padding: 4px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+  .tool-chip.rec { background: var(--sal); border-color: var(--sal); }
+  .note { margin-top: 14px; font-size: 13px; color: #666; }
+  .pelot-intro { text-align: center; margin: 56px 0 32px; }
+  .pelot-intro h2 { font-size: 28px; color: var(--pd); font-weight: 900; margin-bottom: 12px; line-height: 1.3; }
+  .pelot-intro p { font-size: 16px; color: #555; max-width: 580px; margin: 0 auto; }
+  .hype-box { background: var(--pd); color: #fff; border-radius: 14px; padding: 28px 32px; margin-bottom: 44px; }
+  .hype-q { font-size: 19px; font-weight: 700; font-style: italic; color: var(--sal); margin-bottom: 14px; line-height: 1.4; }
+  .hype-a { font-size: 15px; line-height: 1.7; }
+  .hampurilainen { max-width: 560px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,10,78,0.20)); }
+  .hamp-layer { padding: 16px 24px; font-size: 14px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
+  .hamp-layer.human-top { background: var(--sal); color: var(--pd); border-radius: 70px 70px 5px 5px; padding-top: 26px; position: relative; animation-delay: 0.2s; }
+  .hamp-layer.human-top::before { content: '●  ●  ●  ●'; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 8px; letter-spacing: 6px; white-space: nowrap; }
+  .hamp-lettuce { height: 11px; background: linear-gradient(90deg, #5D9E5D 0%, #4CAF50 40%, #5D9E5D 100%); opacity: 0; animation: hampIn 0.4s 0.48s ease forwards; border-radius: 2px; margin: 0 4px; }
+  .hamp-layer.ai-mid { background: var(--pd); color: #fff; border-radius: 5px; animation-delay: 0.72s; }
+  .hamp-layer.human-bot { background: #E8956E; color: var(--pd); border-radius: 5px 5px 60px 60px; padding-bottom: 22px; animation-delay: 1.1s; }
+  .hamp-who { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; flex-shrink: 0; min-width: 80px; }
+  .hamp-text { flex: 1; line-height: 1.45; font-weight: 600; }
+  .hamp-text em { font-weight: 400; opacity: 0.8; display: block; font-size: 13px; margin-top: 2px; }
+  @keyframes hampIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+  .ulkoista-tag { text-align: center; font-size: 21px; font-weight: 900; color: var(--pm); margin: 18px 0 44px; letter-spacing: -0.3px; }
+  .prompt-merkitys { background: var(--lav); border-radius: 12px; padding: 24px 28px; margin-bottom: 36px; }
+  .prompt-merkitys h3 { color: var(--pd); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .prompt-merkitys p { color: #444; font-size: 15px; line-height: 1.65; }
+  .miten h3 { font-size: 20px; color: var(--pd); font-weight: 700; margin-bottom: 22px; }
+  .miten-askel { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+  .miten-num { background: var(--pd); color: #fff; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+  .miten-content strong { font-size: 16px; color: var(--pd); display: block; margin-bottom: 4px; }
+  .miten-content p { font-size: 14px; color: #555; margin: 0; line-height: 1.6; }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } header { padding: 32px 20px; } header h1 { font-size: 28px; } main { padding: 32px 16px 60px; } .hamp-layer { flex-direction: column; align-items: flex-start; gap: 4px; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html" class="active">Etusivu</a>
+  <a href="ryhma1.html">Ryhmä 1</a>
+  <a href="ryhma2.html">Ryhmä 2</a>
+  <a href="ryhma3.html">Ryhmä 3</a>
+  <a href="ryhma4.html">Ryhmä 4</a>
+</nav>
+<header>
+  <div class="kicker">Tekoäly kampanjatyön tukena</div>
+  <h1>Mielinauha-workshop</h1>
+  <div class="date-tag">7.5.2026 · ~15 osallistujaa</div>
+</header>
+<main>
+  <div class="mission">
+    <h2>Päivän missio</h2>
+    <blockquote>"Miten tekoäly voi auttaa saamaan lisää €, jotta useampaan pyyntöön voidaan vastata."</blockquote>
+  </div>
+  <div class="instructions">
+    <h2>📋 Näin käytät sivustoa</h2>
+    <ol>
+      <li>Siirry oman ryhmäsi sivulle yläreunan navigaatiosta.</li>
+      <li>Lue tavoite ja vaiheet läpi, sitten kokeile.</li>
+      <li><strong>Kopioi prompti</strong> painamalla "Kopioi"-nappia — liitä se suoraan tekoälytyökaluusi.</li>
+      <li>Muokkaa <strong>[HAKASULKEISSA]</strong> olevat kohdat omaan tilanteeseen sopiviksi.</li>
+      <li>Ei suunnitella — <strong>testataan</strong>. Villit ideat ovat tervetulleita!</li>
+    </ol>
+  </div>
+  <p class="section-title">Neljä ryhmää — valitse omasi</p>
+  <div class="cards">
+    <a href="ryhma1.html" class="card">
+      <div class="num">1</div>
+      <h3>Vanhat sisällöt uudelleen käyttöön</h3>
+      <p>Löydä vanhoista blogeista ja raporteista helmet. Muokkaa ne uusille kohderyhmille ja eri kanaviin — useita julkaisuja per kuukausi.</p>
+      <span class="card-tag">Persona · Uudelleenmuotoilu · Kanavasovitus</span>
+    </a>
+    <a href="ryhma2.html" class="card">
+      <div class="num">2</div>
+      <h3>Uudet sisällöt ja asiantuntijoiden ääni</h3>
+      <p>Tuota uutta sisältöä nopeasti: ääniviestin tekstiksi, asiantuntijablogiksi — ja löydä potentiaalisia julkisia kasvoja kampanjalle.</p>
+      <span class="card-tag">Litterointi · Julkkishaku · Äänien kuuluviin</span>
+    </a>
+    <a href="ryhma3.html" class="card">
+      <div class="num">3</div>
+      <h3>Argumentointikone – data lahjoittajatarinaksi</h3>
+      <p>Muuta tutkimusdata (Kela, THL) lahjoittajalle ymmärrettäväksi. Rakenna oma prompti, joka tuottaa kohdennettuja varainhankintatekstejä.</p>
+      <span class="card-tag">Data → tarina · Varainhankintaprompt</span>
+    </a>
+    <a href="ryhma4.html" class="card">
+      <div class="num">4</div>
+      <h3>Mieliliike – yhteisö ja vaikuttajat</h3>
+      <p>Analysoi muiden kampanjojen (Roosanauha ym.) elementit ja luo niistä kaava Mieliliikkeelle. Löydä ja lähesty potentiaalisia vaikuttajia.</p>
+      <span class="card-tag">Kampanja-analyysi · Vaikuttajahaku</span>
+    </a>
+  </div>
+  <div class="tools-section">
+    <h2>🛠️ Päivän työkalut</h2>
+    <div class="tool-row"><label>Sisällöntuotanto:</label><span class="tool-chip rec">Microsoft Copilot</span><span class="tool-chip">ChatGPT</span><span class="tool-chip">Google Gemini</span></div>
+    <div class="tool-row"><label>Litterointi:</label><span class="tool-chip rec">Google NotebookLM</span><span class="tool-chip">Copilot (Teams/Meet)</span></div>
+    <div class="tool-row"><label>Oma assistentti:</label><span class="tool-chip">Gemini Gem</span><span class="tool-chip">Copilot-agentti</span><span class="tool-chip">ChatGPT Project</span></div>
+       <div class="tool-row"><label>SaavutaÄly:</label><span class="tool-chip"><a href= "https://saavuta-aly.laurea.fi/" target="blank">Tietoiskut, julkaisut ja materiaalit</a></span></div>
+    <p class="note"><strong>Muista:</strong> Tekoäly voi erehtyä. Tarkista aina faktat ennen julkaisua. Älä syötä luottamuksellisia henkilötietoja.</p>
+  </div>
+
+  <hr style="border:none; border-top:3px solid var(--lav); margin: 48px 0;">
+
+  <!-- PELOT JA TYÖPAJA-RAKENNE -->
+  <div class="pelot-intro">
+    <h2>Tänään tärkeintä on kokeilu</h2>
+    <p>Tänään lähdetään liikkeelle yhdessä, omaan tahtiin. </p>
+  </div>
+
+  <div class="hype-box">
+    <div class="hype-q">"Kaikki puhuvat tekoälystä — tekoäly tekee kohta kaiken."</div>
+    <div class="hype-a">Ei tee. Tekoäly on kuin uusi harjoittelija: osaava, mutta täysin riippuvainen saamistaan ohjeista. Ilman selkeää kontekstia se tuottaa yleistä tekstiä yleisiin tarpeisiin. Tänään harjoitellaan juuri tätä — oikeiden ohjeiden antamista.</div>
+  </div>
+
+  <p class="section-title" style="text-align:center; margin-bottom:20px;">Kuka tekee mitä?</p>
+  <div class="hampurilainen">
+    <div class="hamp-layer human-top">
+      <span class="hamp-who">👤 Ihminen</span>
+      <span class="hamp-text">Määrittele tavoite, konteksti ja rajaus<em>"Mitä haluamme saavuttaa?"</em></span>
+    </div>
+    <div class="hamp-lettuce"></div>
+    <div class="hamp-layer ai-mid">
+      <span class="hamp-who">🤖 Tekoäly</span>
+      <span class="hamp-text">Luonnostelu, tiivistäminen, listaus, ideointi<em>Raakatyö</em></span>
+    </div>
+    <div class="hamp-layer human-bot">
+      <span class="hamp-who">👤 Ihminen</span>
+      <span class="hamp-text">Arviointi, tunneäly, päätöksenteko<em>"Onko tämä totta? Onko tämä viisasta?"</em></span>
+    </div>
+  </div>
+  <div class="ulkoista-tag">Ulkoista työvaihe — älä lopputulosta.</div>
+
+  <div class="prompt-merkitys">
+    <h3>💬 Miksi prompti ratkaisee?</h3>
+    <p>Tekoäly ei lue mieltäsi — se lukee ohjeesi. Mitä selkeämmin kerrot roolin, kontekstin ja tavoitteen, sitä käyttökelpoisempia tuloksia saat. Epämääräinen pyyntö tuottaa epämääräisen vastauksen. Tänään kaikki ohjeet ovat valmiina — sinun tehtäväsi on muokata hakasulkeet ja painaa Kopioi.</p>
+  </div>
+
+  <div class="miten">
+    <h3>Miten toimimme tänään?</h3>
+    <div class="miten-askel">
+      <div class="miten-num">1</div>
+      <div class="miten-content">
+        <strong>Roolita tekoäly</strong>
+        <p>Kopioi valmiit ohjeet ryhmäsivultasi. Muokkaa ne omaan tilanteeseen — tekoäly toimii aivan eri tavalla, kun sille antaa selkeän roolin ja kontekstin.</p>
+      </div>
+    </div>
+    <div class="miten-askel">
+      <div class="miten-num">2</div>
+      <div class="miten-content">
+        <strong>Syötä dataa</strong>
+        <p>Anna tekoälylle aineistoa: pitkä blogi, tutkimusraportti tai haastattelulitterointi. Se tarvitsee Mieli ry:n omia faktoja toimiakseen — muuten se puhuu yleisyyksiä.</p>
+      </div>
+    </div>
+    <div class="miten-askel">
+      <div class="miten-num">3</div>
+      <div class="miten-content">
+        <strong>Sparraa ja haasta</strong>
+        <p>Älä hyväksy ensimmäistä vastausta sellaisenaan. Kyseenalaista, pyydä parannuksia, vaadi perusteluja. Hyvä lopputulos syntyy dialogissa — ei yhdellä promptilla.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+</body>
+</html>
