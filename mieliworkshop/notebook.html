@@ -94,9 +94,25 @@
     <li>Mene osoitteeseen: <strong><a href="https://notebooklm.google.com" target="_blank" style="color:var(--pm);">notebooklm.google.com</a></strong></li>
     <li>Luo uusi muistikirja: klikkaa <strong>New Notebook</strong></li>
     <li>Valitse lähteeksi: <strong>Website</strong></li>
-    <li>Liitä lähteeksi tämä osoite: <code>https://csy.fi/mieliworkshop/</code></li>
+    <li>Liitä lähteeksi nämä osoitteet — lisää jokainen erikseen (yksi per kerta)</li>
   </ul>
-  <div class="tip"><strong>💡 Vinkki:</strong> NotebookLM lukee koko workshopsivuston — kaikki vaiheet, promptit ja ohjeet. Sen jälkeen voit kysyä siltä mitä tahansa päivän sisällöstä.</div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>🔗 Kaikki workshopsivut lähteiksi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">https://csy.fi/mieliworkshop/
+https://csy.fi/mieliworkshop/workshop1.html
+https://csy.fi/mieliworkshop/ryhma1.html
+https://csy.fi/mieliworkshop/ryhma2.html
+https://csy.fi/mieliworkshop/ryhma3.html
+https://csy.fi/mieliworkshop/ryhma4.html
+https://csy.fi/mieliworkshop/workshop2.html
+https://csy.fi/mieliworkshop/w2-ryhmaA.html
+https://csy.fi/mieliworkshop/w2-ryhmaB.html
+https://csy.fi/mieliworkshop/notebook.html</div>
+  </div>
+  <div class="tip"><strong>💡 Miksi kaikki sivut erikseen?</strong> NotebookLM ei aina osaa seurata linkkejä alasivuille automaattisesti — se lukee vain sen osoitteen, jonka sille annat. Lisäämällä jokainen sivu erikseen varmistat, että tekoäly tuntee koko workshopin sisällön.</div>
 </div>
 
 <!-- VAIHE 2 -->
