@@ -99,6 +99,12 @@
   .prompt-merkitys { background: var(--lav); border-radius: 12px; padding: 24px 28px; margin-bottom: 36px; }
   .prompt-merkitys h3 { color: var(--pd); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
   .prompt-merkitys p { color: #444; font-size: 15px; line-height: 1.65; }
+  /* Virittäytyminen */
+  .viritys { margin-bottom: 48px; }
+  .viritys-head { text-align: center; margin-bottom: 24px; }
+  .viritys-head .viritys-kicker { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); margin-bottom: 8px; }
+  .viritys-head h2 { font-size: 26px; font-weight: 900; color: var(--pd); line-height: 1.3; margin-bottom: 10px; }
+  .viritys-head p { font-size: 15px; color: #666; max-width: 520px; margin: 0 auto; line-height: 1.6; }
   @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } .agent-types { grid-template-columns: 1fr; } header { padding: 32px 20px; } header h1 { font-size: 28px; } main { padding: 32px 16px 60px; } .hamp-layer { flex-direction: column; align-items: flex-start; gap: 4px; } }
 </style>
 </head>
@@ -118,6 +124,13 @@
   <div class="date-tag">21.5.2026</div>
 </header>
 <main>
+
+  <!-- VIRITTÄYTYMINEN -->
+  <div class="viritys">
+    <img src="materials/art.png" alt="Mikä taideteos olet tänään? – 10 klassikkoteosta numeroituina" style="width:100%; border-radius:12px; display:block;">
+    <p style="font-size:12px; color:#aaa; margin-top:8px; line-height:1.6;">1. Munch: Huuto · 2. da Vinci: Mona Lisa · 3. Rodin: Ajattelija · 4. Hokusai: Suuri aalto · 5. Dalí: Muistin pysyvyys · 6. Van Gogh: Tähtikirkas yö · 7. Vermeer: Helmityttö · 8. Kirsi-Marja Moberg: Huomioarvoista! (yksityiskohta, Purkutaide-näyttely) · 9. Friedrich: Vaeltaja sumuisen meren yllä · 10. Botticelli: Venuksen syntymä</p>
+  </div>
+
   <div class="mission">
     <h2>Päivän missio</h2>
     <blockquote>"Miten rakennamme tekoälyagentin, joka puhuu Mieli ry:n äänellä — ja louhimme datasta kumppanuusmahdollisuuksia?"</blockquote>
