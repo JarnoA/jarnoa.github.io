@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM-demo – Työpajan älykäs opas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  header .subtitle { font-size: 16px; color: #555; margin-top: 10px; max-width: 560px; line-height: 1.6; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .intro-box { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 36px; }
+  .intro-box h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .intro-box p { font-size: 16px; line-height: 1.6; }
+  .intro-box strong { color: var(--sal); }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .how-steps { margin: 0 0 12px 48px; padding-left: 0; list-style: none; }
+  .how-steps li { font-size: 15px; color: #444; padding: 5px 0 5px 22px; position: relative; }
+  .how-steps li::before { content: '→'; position: absolute; left: 0; color: var(--pm); font-weight: 700; }
+  .how-steps li strong { color: var(--pd); }
+  .how-steps li code { background: var(--lav); color: var(--pm); padding: 1px 7px; border-radius: 4px; font-family: inherit; font-size: 14px; font-weight: 700; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 14px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .highlight-box { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 18px 22px; border-radius: 8px; margin: 0 0 14px 48px; }
+  .highlight-box p { margin: 0; font-size: 15px; color: #444; }
+  .highlight-box strong { color: var(--pd); }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 14px 0 0 48px; }
+  .why-card { background: #F8F8FF; border: 1.5px solid var(--lav); border-radius: 10px; padding: 14px 16px; }
+  .why-card .why-icon { font-size: 22px; margin-bottom: 6px; }
+  .why-card .why-title { font-size: 13px; font-weight: 700; color: var(--pd); margin-bottom: 4px; }
+  .why-card .why-desc { font-size: 13px; color: #555; line-height: 1.5; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  .bonus-badge { background: var(--pm); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
+  .bonus-note { font-size: 13px; color: #888; font-style: italic; margin: 0 0 20px; }
+  .bonus-item { margin-bottom: 28px; }
+  .bonus-item h4 { font-size: 16px; font-weight: 700; color: var(--pd); margin-bottom: 8px; }
+  .bonus-item p { font-size: 15px; color: #444; line-height: 1.6; }
+  .bonus-item ul { margin: 8px 0 0 20px; }
+  .bonus-item ul li { font-size: 15px; color: #444; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; }
+    .step .why, .step p, .tip, .how-steps, .prompt-wrap, .highlight-box, .why-grid, .bonus-badge { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html">Etusivu</a>
+  <a href="workshop1.html">Workshop 7.5.</a>
+  <a href="workshop2.html">Workshop 21.5.</a>
+  <a href="notebook.html" class="active">NotebookLM-demo</a>
+</nav>
+<header>
+  <div class="kicker">Työkalu · Workshop 21.5.2026</div>
+  <h1>NotebookLM — Työpajan älykäs opas</h1>
+  <p class="subtitle">Tekoälypohjainen tutkimusassistentti, joka perustaa vastauksensa vain sinun antamiisi lähteisiin.</p>
+</header>
+<main>
+
+<div class="intro-box">
+  <h2>Mikä on NotebookLM?</h2>
+  <p>NotebookLM on Googlen tekoälytyökalu, joka toimii kuin henkilökohtainen tutkimusassistentti. Toisin kuin tavallinen ChatGPT, se perustaa vastauksensa <strong>vain niihin lähteisiin, jotka sinä sille annat</strong>. Tänään käytämme sitä "workshop-navigaattorina", joka auttaa sinua sisäistämään päivän materiaalit ja tavoitteet nopeasti.</p>
+</div>
+
+<!-- VAIHE 1 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Käyttöönotto</h3>
+  </div>
+  <ul class="how-steps">
+    <li>Mene osoitteeseen: <strong><a href="https://notebooklm.google.com" target="_blank" style="color:var(--pm);">notebooklm.google.com</a></strong></li>
+    <li>Luo uusi muistikirja: klikkaa <strong>New Notebook</strong></li>
+    <li>Valitse lähteeksi: <strong>Website</strong></li>
+    <li>Liitä lähteeksi tämä osoite: <code>https://csy.fi/mieliworkshop/</code></li>
+  </ul>
+  <div class="tip"><strong>💡 Vinkki:</strong> NotebookLM lukee koko workshopsivuston — kaikki vaiheet, promptit ja ohjeet. Sen jälkeen voit kysyä siltä mitä tahansa päivän sisällöstä.</div>
+</div>
+
+<!-- VAIHE 2 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Kysy ja kokeile</h3>
+  </div>
+  <p class="why">Nyt tekoäly on lukenut koko työpajan ohjelman. Testaa sen kykyjä näillä kysymyksillä:</p>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Yleiskuva</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Mitkä ovat tämän päivän kolme tärkeintä tavoitetta Mieli ry:n varainhankinnan kannalta?</div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Ryhmätyö-tuki</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olen Ryhmässä A. Mitä minun pitää tehdä vaiheessa 2 ja mitä työkaluja tarvitsen?</div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Syvällinen ymmärrys</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Miten Fazer-case (Ryhmä B) auttaa saavuttamaan tavoitteen tuplata Mielinauha-kampanjan tulos?</div>
+  </div>
+
+  <div class="tip"><strong>💡 Vinkki:</strong> Muuta kysymyksissä "Ryhmässä A" kohtaan oman ryhmäsi kirjain. NotebookLM osaa etsiä juuri sinulle oleelliset ohjeet.</div>
+</div>
+
+<!-- VAIHE 3 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Päivän "wau-hetki" — Audio Overview</h3>
+  </div>
+  <p class="why">NotebookLM osaa muuttaa tekstin eläväksi podcastiksi. Tämä kestää noin 5 minuuttia.</p>
+  <ul class="how-steps">
+    <li>Etsi oikeasta reunasta kohta <strong>Notebook Guide</strong></li>
+    <li>Klikkaa <strong>Generate</strong> kohdasta <strong>Audio Overview</strong></li>
+    <li>Odota hetki (n. 2–4 min)</li>
+    <li>Laita kuulokkeet korville — tekoäly on luonut sinulle podcastin, jossa kaksi juontajaa keskustelee tästä workshopista, Mieli ry:n strategiasta ja päivän tehtävistä</li>
+  </ul>
+  <div class="highlight-box">
+    <p><strong>Mitä kuulet?</strong> Kaksi tekoäly-"juontajaa" käy läpi workshopin tavoitteet, selittää ryhmätehtävät ja antaa vinkkejä tekoälyagenttien rakentamiseen — kaiken sen, mitä sinun pitää tietää ennen kuin aloitatte.</p>
+  </div>
+</div>
+
+<!-- MIKSI -->
+<hr>
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--pm);">?</div>
+    <h3>Miksi käytämme tätä tänään?</h3>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🧠</div>
+      <div class="why-title">Informaatioähkyn hallinta</div>
+      <div class="why-desc">Sinun ei tarvitse lukea jokaista ohjetta sanasta sanaan — NotebookLM poimii olennaisen puolestasi.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📌</div>
+      <div class="why-title">Faktapohjaisuus</div>
+      <div class="why-desc">Tekoäly ei keksi omiaan, vaan näyttää aina viitteen (Citation) siihen kohtaan tekstiä, josta vastaus löytyi.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🎧</div>
+      <div class="why-title">Moniaistisuus</div>
+      <div class="why-desc">Voit "kuunnella" workshopin ohjeet podcastina samalla kun valmistaudut ryhmätöihin.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS -->
+<hr>
+<span class="bonus-badge">🎁 Bonus — Ota kaikki irti</span>
+<p class="bonus-note" style="margin-top:8px;">Kun workshop on ohi, NotebookLM toimii erinomaisena tiedonhallintatyökaluna jatkossakin.</p>
+
+<div class="bonus-item">
+  <h4>1. Tuo omat tiedostosi (PDF, Docs, Slides)</h4>
+  <p>NotebookLM ei rajoitu vain verkkosivuihin. Voit ladata sinne:</p>
+  <ul>
+    <li><strong>Vuosikertomukset ja strategiat (PDF)</strong> — anna tekoälyn analysoida 100-sivuinen raportti puolestasi</li>
+    <li><strong>Tutkimustieto</strong> — lataa useita artikkeleita yhteen muistikirjaan, NotebookLM yhdistelee tietoa kaikista yhtä aikaa</li>
+    <li><strong>Google Docs &amp; Slides</strong> — yhdistä suoraan Drive-tiedostosi</li>
+  </ul>
+</div>
+
+<div class="bonus-item">
+  <h4>2. Lähteet aina hallussa (Citations)</h4>
+  <p>Toisin kuin monet muut tekoälyt, NotebookLM ei "hallusinoi" niin herkästi. Aina kun se vastaa, se näyttää pienen numeron vastauksen perässä — klikkaamalla sitä näet suoraan lähdetiedostosta sen kohdan, josta tieto on peräisin. Tämä on korvaamatonta, kun kirjoitat virallisia raportteja tai rahoitushakemuksia.</p>
+</div>
+
+<div class="bonus-item">
+  <h4>3. Luo sisältöä aineistosi pohjalta</h4>
+  <p>NotebookLM ei vain tiivistä — se myös luo uutta. Kokeile pyytää:</p>
+  <ul>
+    <li>"Tee näiden PDF-tiedostojen pohjalta 10 kysymyksen FAQ-lista lahjoittajille."</li>
+    <li>"Luo opiskeluopas tai sanasto tämän vaikeaselkoisen strategian pohjalta."</li>
+    <li>"Kirjoita luonnos puheeksi, joka yhdistää nämä kolme eri asiantuntija-artikkelia."</li>
+  </ul>
+</div>
+
+<div class="bonus-item">
+  <h4>4. Ääni ja podcastit jatkokäytössä</h4>
+  <p>Voit jakaa Audio Overview -podcastin muillekin — esimerkiksi kollegallesi, joka ei ehtinyt lukea pitkää raporttia. Se on loistava tapa kerrata asioita vaikkapa työmatkalla.</p>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;"><a href="workshop2.html" style="color:var(--pm);">← Workshop 21.5.</a> · <a href="index.html" style="color:var(--pm);">Etusivu</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
