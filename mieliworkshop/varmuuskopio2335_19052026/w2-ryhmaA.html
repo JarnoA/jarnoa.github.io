@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä A – Äänensävy ja someagentti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  nav a.nav-back { opacity: 0.6; font-size: 13px; }
+  nav a.nav-back:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 36px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .tool-note { background: #F8F8FF; border-radius: 8px; padding: 12px 16px; margin: 0 0 12px 48px; font-size: 14px; color: #444; }
+  .tool-note strong { color: var(--pm); display: block; margin-bottom: 4px; }
+  .how-steps { margin: 0 0 12px 48px; padding-left: 0; list-style: none; }
+  .how-steps li { font-size: 14px; color: #444; padding: 5px 0 5px 22px; position: relative; }
+  .how-steps li::before { content: '→'; position: absolute; left: 0; color: var(--pm); font-weight: 700; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .warning { background: #FFF5F5; border-left: 3px solid #DC2626; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .warning strong { color: #DC2626; }
+  .bonus-badge { background: var(--pm); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; margin-left: 48px; }
+  .bonus-note { font-size: 13px; color: #888; font-style: italic; margin: 0 0 10px 48px; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .warning, .tool-note, .how-steps, .bonus-badge, .bonus-note { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html" class="nav-back">← Kaikki</a>
+  <a href="workshop2.html">Workshop 21.5.</a>
+  <a href="w2-ryhmaA.html" class="active">Ryhmä A</a>
+  <a href="w2-ryhmaB.html">Ryhmä B</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä A · Workshop 21.5.2026</div>
+  <h1>Äänensävy ja someagentti</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Rakentaa tekoälyagentti, joka kirjoittaa somepostauksia Mieli ry:n äänensävyllä — hyödyntäen organisaation omia tyyli- ja sisältöohjeita. Ensisijainen työkalu: Microsoft Copilot (M365). Vaihtoehto: Gemini Gem, joka tukee tiedostoja pysyvinä tietolähteinä.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Tämän ryhmän työkalut</strong>
+  <span class="chip"><a href="https://m365.cloud.microsoft" target="_blank" style="color:inherit;text-decoration:none;">Microsoft Copilot</a></span>
+  <span class="chip"><a href="https://gemini.google.com/gems" target="_blank" style="color:inherit;text-decoration:none;">Gemini Gem</a></span>
+  <br><small style="color:#666; margin-top:6px; display:block;">Copilot PDF-analyysin ja sisältötyön päätyökaluna. Gemini Gem agentin rakentamiseen — se tukee tiedostoja pysyvinä tietolähteinä, toisin kuin halvin Copilot-lisenssi.</small>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Louhinta — tutki mitä mieli.fi käsittelee</h3>
+  </div>
+  <p class="why">Miksi ensin: Ennen kuin kirjoitat sisältöä, kannattaa tietää mistä aiheista Mieli ry jo puhuu. Verkkosivuston sitemap-tiedosto paljastaa kaikki sivut ja aihealueet URL-rakenteen kautta — ilman että tarvitsee selata sivua käsin.</p>
+  <div class="tool-note">
+    <strong>🛠️ Työkalu: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot</a> tai <a href="https://gemini.google.com" target="_blank" style="color:var(--pm);">Google Gemini</a></strong>
+    Avaa selain. Siirry osoitteeseen <a href="https://mieli.fi/sitemap_index.xml" target="_blank" style="color:var(--pm);">mieli.fi/sitemap_index.xml</a> — sivu näyttää listan XML-tiedostoista.
+  </div>
+  <ul class="how-steps">
+    <li>Avaa <strong><a href="https://mieli.fi/sitemap_index.xml" target="_blank" style="color:var(--pm);">mieli.fi/sitemap_index.xml</a></strong> selaimessa</li>
+    <li>Tallenna tiedosto: <strong>Ctrl+S</strong> (Windows) tai <strong>Cmd+S</strong> (Mac) — valitse "Tallenna sivu nimellä" / "Save Page As"</li>
+    <li>Tallenna nimellä <strong>sitemap.xml</strong> — varmista, että tiedostotyyppi on "Webpage, XML Only" tai pelkkä XML</li>
+    <li>Avaa Copilot → liitä XML-tiedosto liitteenä tai kopioi sen sisältö</li>
+    <li>Kopioi alla oleva prompti ja lähetä</li>
+  </ul>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 1 – Sivuston rakenteen analyysi</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on Mieli ry:n verkkosivuston sitemap-tiedosto XML-muodossa.
+
+Analysoi URL-rakenne ja kerro:
+1. Mitä pääaihealueita mieli.fi käsittelee? Ryhmittele aiheet (esim. kriisiauttaminen, nuoret, varainhankinta, kampanjat).
+2. Mitkä tuntuvat olevan sivuston keskeisimmät sisältöalueet — eli missä on eniten sivuja?
+3. Löydätkö aiheita, jotka yllättävät tai joita et ehkä olisi odottanut?
+4. Ehdota 3 aihetta, joista voisi kirjoittaa uuden somepostauksen — perusteluineen.
+
+Tärkeää: Älä käy läpi jokaista URL:ia erikseen. Tiivistä kokonaisuus selkeiksi teemoiksi.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos XML on pitkä, voit kopioida sen suoraan Copilotiin tekstinä — tiedoston lataaminen ei ole välttämätöntä. Katso ensin miltä XML näyttää selaimessa ja kopioi se suoraan.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Äänensävy — luo tekoälylle tyyliopas</h3>
+  </div>
+  <p class="why">Miksi: Tekoäly ei tiedä automaattisesti, miten Mieli ry puhuu. Kun sille antaa organisaation omat tyyli- ja viestintäohjeet, tulokset muuttuvat dramaattisesti.</p>
+  <p>Mieli ry:llä on olemassa äänensävy-ohjeet: "Ajankohtaiset sisällöt verkkosivuilla" -ohjeistus ja Somekonseptit 2025 -käsikirja. Lataa PDF Copilotiin ja pyydä tiivistämään tekoälylle sopiva ohje.</p>
+  <div class="tool-note">
+    <strong>🛠️ Työkalu: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot</a></strong>
+    Pyydä fasilitaattorilta "Ajankohtaiset sisällöt verkkosivuilla" -PDF tai Somekonseptit 2025 -tiedosto. Lataa se Copilotiin liitteenä.
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 2 – Äänensävy-ohjeen tiivistäminen</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on Mieli ry:n viestintäohjeistus.
+
+Lue se huolellisesti ja luo siitä tiivis "tekoälyn tyyliopas" — lyhyt teksti, jonka voin liittää tekoälyagentin ohjeisiin niin, että se kirjoittaa Mieli ry:n tyylissä.
+
+Sisällytä tyylioppaaseen:
+1. Äänensävy: Miten Mieli ry puhuu? (asiantunteva, inhimillinen, toiveikas tms.)
+2. Mitä vältetään: Mitä sanoja, tyylejä tai sävyjä ei käytetä?
+3. Kohderyhmä: Kenelle kirjoitetaan?
+4. Rakenne: Onko ohjeita otsikoista, lausepituudesta tai muodosta?
+5. Somepostaukset erikseen: Mitä erityistä sosiaalisen median julkaisuihin?
+
+Muoto: kirjoita tyyliopas lyhyinä selkeinä pisteinä, max 200 sanaa. Se pitää olla helppo liittää agentin ohjeisiin sellaisenaan.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos Somekonseptit on PowerPoint-muodossa, voit ladata sen myös Copilotiin. Copilot lukee .pptx-tiedostot. Pyydä sitten tiivistämään molemmat yhteen tyylioppaaseen.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Rakenna oma someagentti</h3>
+  </div>
+  <p class="why">Miksi: Tekoälyagentti on assistentti, jolle voi antaa pysyvät ohjeet. Kun sille antaa äänensävy-ohjeet kerran, se kirjoittaa aina oikealla tyylillä — ilman että tarvitsee selittää joka kerta uudelleen.</p>
+  <div class="tool-note">
+    <strong>🛠️ Ensisijainen: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot</a> · Vaihtoehto: <a href="https://gemini.google.com/gems" target="_blank" style="color:var(--pm);">Gemini Gem</a></strong>
+    <br><br>
+    <strong>Copilot (M365):</strong> Avaa <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">m365.cloud.microsoft</a> → Copilot-chat → aloita uusi keskustelu → liitä alla oleva järjestelmäohje ensimmäisenä viestinä → lähetä. Copilot toimii agentin tavoin koko keskustelun ajan.
+    <br><br>
+    <strong>Vaihtoehto — Gemini Gem:</strong> Avaa <a href="https://gemini.google.com/gems" target="_blank" style="color:var(--pm);">gemini.google.com/gems</a> → "Luo uusi Gem" → liitä ohje "Ohje"-kenttään → voit lisätä myös PDF-tiedoston pysyväksi tietolähteeksi.
+  </div>
+  <ul class="how-steps">
+    <li>Avaa <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">m365.cloud.microsoft</a> ja kirjaudu M365-tilillä</li>
+    <li>Avaa <strong>Copilot-chat</strong> → aloita uusi keskustelu</li>
+    <li>Kopioi alla oleva järjestelmäohje (muokkaa äänensävy-osio vaiheen 2 tuloksella)</li>
+    <li>Lähetä ohje <strong>ensimmäisenä viestinä</strong> — Copilot omaksuu roolin</li>
+    <li>Testaa heti antamalla aihe: "Kirjoita postaus aiheesta X"</li>
+  </ul>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Järjestelmäohje – Someagentti (Copilot tai Gem)</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet Mieli ry:n some-toimittaja. Tehtäväsi on kirjoittaa somejulkaisuja, jotka vastaavat täysin Mieli ry:n viestintätyyliä ja arvoja.
+
+MIELI RY:N ÄÄNENSÄVY:
+<span class="ph">[LIITÄ TÄHÄN VAIHEEN 2 TYYLIOPAS]</span>
+
+MIELI RY LYHYESTI:
+Mieli ry on suomalainen mielenterveysjärjestö, joka edistää mielenterveyttä ja tarjoaa kriisitukea. Tunnettu Mielinauha-kampanjasta. Kriisipuhelin 09 2525 0111 on käytössä ympäri vuorokauden.
+
+TEHTÄVÄSI JOKAISESSA JULKAISUSSA:
+- Kirjoita Mieli ry:n äänensävyllä — asiantunteva mutta lähestyttävä, toiveikas, ei kliininen
+- Älä koskaan keksi faktoja tai tilastoja, joita ei ole annettu
+- Pyydä aina selkeä toimintakutsu tai herättelevä kysymys
+- Sovita pituus kanavalle: Instagram max 150 sanaa, LinkedIn max 250 sanaa, Facebook max 180 sanaa
+
+Kun käyttäjä antaa aiheen tai tiedot, kirjoita kolme eri versioita: Instagram, LinkedIn ja Facebook — ellei toisin pyydetä.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki Copilotiin:</strong> Järjestelmäohje täytyy liittää jokaisen uuden Copilot-keskustelun alkuun. Tallenna ohje tekstieditoriin tai muistiinpanoihin niin se on aina käden ulottuvilla.</div>
+  <div class="tip"><strong>💡 Vinkki Gemini Gemiin:</strong> Gemiin voi lisätä tiedostoja pysyviksi tietolähteiksi. Lisää Ajankohtaiset sisällöt -PDF tai Somekonseptit gems-asetuksista — Gem lukee ne automaattisesti jokaisessa vastauksessa ilman erillistä liittämistä.</div>
+  <div class="warning"><strong>⚠️ Huomio Geministä:</strong> Ilmainen Gemini voi hyödyntää syötteitä Googlen mallien kehittämiseen. Copilot M365-tilillä on turvallisempi organisaation aineistolle.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">4</div>
+    <h3>Kirjoita somepostaus agentilla</h3>
+  </div>
+  <p class="why">Miksi: Nyt testataan, toimiiko agentti oikeasti. Valitse aihe vaiheen 1 sitemap-analyysistä — ja anna agentille tehtävä.</p>
+  <p>Jatka samassa Copilot-keskustelussa (tai avaa luomasi Gem). Valitse jokin aihe tai ajankohtainen teema ja testaa, miten agentti kirjoittaa. Kokeile eri aiheita ja haasta tulosta.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 4 – Somepostauksen tilaus agentille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Kirjoita somepostaukset seuraavasta aiheesta:
+
+Aihe: <span class="ph">[KIRJOITA AIHE TÄHÄN — esim. "nuorten mielenterveys koulujen loppusuoralla" tai jokin sitemap-analyysistä löytämäsi aihe]</span>
+
+Lisätietoja / faktat joita voi käyttää:
+<span class="ph">[LISÄÄ TÄHÄN mahdolliset faktat, tilastot tai lainaukset — tai jätä tyhjäksi jos haluat testata ilman]</span>
+
+Tee versiot Instagram, LinkedIn ja Facebook.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Kokeile ensin ilman lisätietoja ja katso mitä syntyy. Sitten lisää faktoja tai tarkennuksia ja vertaa tuloksia. Pyydä tarvittaessa: "Tee Instagramista lyhyempi" tai "Muuta sävy enemmän toiveikkaaksi".</div>
+  <div class="tip"><strong>📐 Hyvän promptin peruskaava:</strong> Jos tulokset eivät miellytä, tarkenna pyyntöäsi viidellä elementillä:<br>
+  <strong>1. Rooli</strong> — "Olet järjestöviestinnän asiantuntija"<br>
+  <strong>2. Tavoite</strong> — mitä haluat saada aikaiseksi<br>
+  <strong>3. Konteksti</strong> — kenelle ja mihin tilanteeseen<br>
+  <strong>4. Rajaukset</strong> — pituus, tyyli, mitä vältetään<br>
+  <strong>5. Muoto</strong> — miten haluat vastauksen (lista, postaus, kolme vaihtoehtoa...)<br><br>
+  <em>Huom: Promptaus on dialogia — ensimmäinen versio on harvoin valmis. Pyydä muokkauksia: "Kirjoita lyhyempi versio", "Käytä innostuneempaa sävyä" tai "Anna 3 erilaista versiota".</em></div>
+</div>
+
+<span class="bonus-badge">⭐ Bonustehtävä</span>
+<p class="bonus-note">Jos aika loppuu, tähän voi palata jälkikäteen — päätehtävät ovat vaiheet 1–4.</p>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">5</div>
+    <h3>Räätälöi eri kohderyhmille ja kanaviin</h3>
+  </div>
+  <p class="why">Miksi: Sama viesti resonoi eri ihmisille eri tavalla. Agentti voi muokata saman sisällön nuorelle, yritykselle tai omaiselle — ilman että tarvitsee kirjoittaa alusta.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 5 – Räätälöinti eri kohderyhmille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Ota äsken kirjoitettu Instagram-postaus ja muokkaa se kolmelle eri kohderyhmälle:
+
+1. Nuoret (15–25 v) — kevyempi sävy, lähestyttävä, ei moralisoivaa
+2. Työnantajat / HR-ammattilaiset — hyötylähtöinen, konkreettinen, LinkedIniin sopiva
+3. Omaiset ja läheiset — empaattinen, käytännöllinen, mitä voi tehdä
+
+Säilytä kaikissa Mieli ry:n äänensävy. Muuta kohderyhmän mukainen kulma, esimerkit ja toimintakutsu.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit jatkaa kehittämällä yhden version eteenpäin: "Lisää konkreettinen toimintakutsu" tai "Lyhennä puoleen" tai "Muuta englanniksi kansainväliseen käyttöön".</div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä A · <a href="workshop2.html" style="color:var(--pm);">Takaisin workshop-etusivulle</a> · <a href="w2-ryhmaB.html" style="color:var(--pm);">Ryhmä B →</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

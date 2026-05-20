@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä A – Äänensävy ja sisältöagentti</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  nav a.nav-back { opacity: 0.6; font-size: 13px; }
+  nav a.nav-back:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 36px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .tool-note { background: #F8F8FF; border-radius: 8px; padding: 12px 16px; margin: 0 0 12px 48px; font-size: 14px; color: #444; }
+  .tool-note strong { color: var(--pm); display: block; margin-bottom: 4px; }
+  .how-steps { margin: 0 0 12px 48px; padding-left: 0; list-style: none; }
+  .how-steps li { font-size: 14px; color: #444; padding: 5px 0 5px 22px; position: relative; }
+  .how-steps li::before { content: '→'; position: absolute; left: 0; color: var(--pm); font-weight: 700; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 14px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .warning { background: #FFF5F5; border-left: 3px solid #DC2626; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .warning strong { color: #DC2626; }
+  .bonus-badge { background: var(--pm); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; margin-left: 48px; }
+  .bonus-note { font-size: 13px; color: #888; font-style: italic; margin: 0 0 10px 48px; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  /* Konseptikortti-grid */
+  .konsepti-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 14px 0 0 48px; }
+  .konsepti-card { background: #F8F8FF; border: 1.5px solid var(--lav); border-radius: 8px; padding: 10px 14px; }
+  .konsepti-card .k-num { font-size: 11px; font-weight: 800; color: var(--pm); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+  .konsepti-card .k-name { font-size: 14px; font-weight: 700; color: var(--pd); margin-bottom: 3px; }
+  .konsepti-card .k-ch { font-size: 12px; color: #888; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .warning, .tool-note, .how-steps, .bonus-badge, .bonus-note, .konsepti-grid { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html" class="nav-back">← Kaikki</a>
+  <a href="workshop2.html">Workshop 21.5.</a>
+  <a href="w2-ryhmaA.html" class="active">Ryhmä A</a>
+  <a href="w2-ryhmaB.html">Ryhmä B</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä A · Workshop 21.5.2026</div>
+  <h1>Äänensävy ja sisältöagentti</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Rakennetaan Mieli ry:n tekoälysisältöagentti, joka tuntee organisaation äänensävyn, kaikki 11 somekonseptia, juttukonseptit sekä varainhankintaräätälöinnin eri kohderyhmille — niin että se tuottaa oikeanlaista sisältöä yhdellä kehotteella.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Tämän ryhmän työkalut</strong>
+  <span class="chip"><a href="https://m365.cloud.microsoft" target="_blank" style="color:inherit;text-decoration:none;">Microsoft Copilot</a></span>
+  <span class="chip"><a href="https://gemini.google.com/gems" target="_blank" style="color:inherit;text-decoration:none;">Gemini Gem</a></span>
+  <br><small style="color:#666; margin-top:6px; display:block;">Copilot päätyökaluna (M365-tili, turvallinen). Gemini Gem vaihtoehtona — tukee tiedostoja pysyvinä tietolähteinä.</small>
+</div>
+
+<!-- VAIHE 1 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Tutki mieli.fi:n aihemaailma XML-sivukartalla</h3>
+  </div>
+  <p class="why">Miksi: Ennen kuin kirjoitetaan sisältöä, pitää tietää mistä Mieli ry jo puhuu. Verkkosivuston XML-sivukartta paljastaa kaikki sivut ja aihealueet URL-rakenteen kautta — ilman että tarvitsee selata sivua käsin.</p>
+  <div class="tool-note">
+    <strong>🛠️ Työkalu: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot</a></strong>
+    Avaa selaimessa <a href="https://mieli.fi/sitemap_index.xml" target="_blank" style="color:var(--pm);">mieli.fi/sitemap_index.xml</a> → tallenna tiedosto Ctrl+S / Cmd+S → lataa Copilotiin liitteenä. Vaihtoehtoisesti kopioi XML-teksti suoraan Copilotiin.
+  </div>
+  <ul class="how-steps">
+    <li>Avaa <strong><a href="https://mieli.fi/sitemap_index.xml" target="_blank" style="color:var(--pm);">mieli.fi/sitemap_index.xml</a></strong> selaimessa</li>
+    <li>Tallenna: <strong>Ctrl+S</strong> (Win) / <strong>Cmd+S</strong> (Mac) — tiedostotyyppi "XML Only"</li>
+    <li>Avaa Copilot → liitä tiedosto liitteenä tai kopioi sisältö tekstinä</li>
+    <li>Lähetä alla oleva prompti</li>
+  </ul>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 1 – Sivuston aihemaailman kartoitus</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on Mieli ry:n verkkosivuston XML-sivukartta.
+
+Analysoi URL-rakenne ja kerro:
+1. Mitä pääaihealueita mieli.fi käsittelee? Ryhmittele teemat (esim. kriisiauttaminen, nuoret, varainhankinta, kampanjat, koulutukset).
+2. Mitkä ovat sivuston keskeisimmät sisältöalueet — missä on eniten sivuja?
+3. Mitä löydät varainhankintaan ja kumppanuuksiin liittyvää?
+4. Ehdota 5 aihetta, joista voisi kirjoittaa uuden somejulkaisun — kerro myös mikä somekonsepti sopisi kuhunkin (artikkeli, sitaatti, mielen voimavarat, kriisiauttaminen jne.)
+
+Älä käy läpi jokaista URL:ia erikseen. Tiivistä kokonaisuus selkeiksi teemoiksi.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> XML voi olla pitkä — kopioi se suoraan Copilotiin tekstinä tai lataa tiedostona. Molemmat toimivat.</div>
+</div>
+
+<!-- VAIHE 2 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Luo Mieli ry:n viestinnällinen ilme tekoälyä varten</h3>
+  </div>
+  <p class="why">Miksi: Tämä on kokonaisuuden tärkein rakennuspalikka — ja se puuttui aiemmista koulutuksista. Tekoäly ei tiedä automaattisesti miten Mieli ry puhuu. Kun luodaan viestinnällisen ilmeen määritelmä, agentti oppii kirjoittamaan organisaation äänellä, ei geneerisellä tekoälykielellä. Prosessi kestää noin 10 minuuttia ja tulos menee suoraan agentin järjestelmäohjeisiin.</p>
+
+  <ul class="how-steps">
+    <li>Etsi mieli.fi:ltä tai Mieli ry:n somesta yksi hyvä esimerkkiteksti — esim. lyhyt some-kuvateksti, uutiskirjeen aloitus tai blogi-ingressi. Kopioi se muistiin.</li>
+    <li>Lähetä Prompti 2a Copilotiin. Täytä esimerkkiteksti-kohta löytämälläsi tekstillä.</li>
+    <li>Lue tulos ja muokkaa tarvittaessa — pyynnöt kuten "tee ääni ja sävy -osio konkreettisemmaksi" tai "lisää esimerkki kriisiviestinnästä" toimivat hyvin.</li>
+    <li>Lähetä Prompti 2b samassa keskustelussa — se tiivistää ilmeen agenttimuotoon.</li>
+    <li>Kopioi Prompti 2b:n tulos talteen — se korvaa vaiheen 3 järjestelmäohjeen ÄÄNENSÄVY-osion.</li>
+  </ul>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 2a – Viestinnällisen ilmeen luonti</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Toimi järjestöviestinnän asiantuntijana.
+
+Luo Mieli ry:n viestinnällisen ilmeen pohja, jota voidaan käyttää verkkosivuilla, sosiaalisessa mediassa, uutiskirjeissä ja tekoälyavusteisessa sisällöntuotannossa.
+
+Taustatiedot:
+- Järjestön tarkoitus: Mieli ry edistää mielenterveyttä ja tarjoaa kriisitukea — palveluita ovat mm. MIELI Kriisipuhelin (24/7), Kriisichat, Sekasin-chat nuorille sekä vapaaehtois- ja vertaistukitoiminta.
+- Ensisijainen kohderyhmä: Mielenterveyden haasteita kokevat ihmiset ja heidän läheisensä — erityisesti kriisitilanteessa olevat.
+- Toissijaiset kohderyhmät: Vapaaehtoiset ja vertaistukijat, yritykset (yhteistyö ja ESG), päättäjät ja media, terveydenhuollon ammattilaiset.
+- Järjestön arvot: Ihmisarvo, toivo, yhteisöllisyys, avoimuus, asiantuntijuus.
+- Viestinnän tavoite: Madaltaa kynnystä hakea apua, vähentää mielenterveyteen liittyvää stigmaa, ohjata ihmisiä palveluihin ja sitouttaa lahjoittajia sekä vapaaehtoisia.
+- Esimerkki aiemmasta tekstistä: [LIITÄ TÄHÄN — esim. lainaus mieli.fi:n kampanjatekstistä, uutiskirjeestä tai Instagram-kuvatekstistä]
+
+Tuota seuraavat osiot:
+1. Viestinnällinen ydin (1–2 kappaletta)
+2. Ääni ja sävy (tone of voice)
+3. Kielelliset periaatteet (miten kirjoitamme)
+4. Mitä korostamme viestinnässä
+5. Mitä vältämme viestinnässä
+6. Esimerkki lyhyestä tekstistä, joka edustaa tätä ilmettä</div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 2b – Tiivistä agenttimuotoon (lähetä heti 2a:n perään)</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tiivistä oheinen viestinnällinen ilme tekoälyä varten.
+
+Kirjoita enintään 200 sanaa. Kirjoita suoraan puhutteluna — aloita lauseet muodossa "Toimit...", "Kirjoitat...", "Vältä...". Tulos liitetään suoraan tekoälyagentin järjestelmäohjeisiin.</div>
+  </div>
+
+  <div class="tip"><strong>💡 Vinkki:</strong> Mitä paremman esimerkkitekstin annat Prompti 2a:ssa, sitä tarkemmin ilme vastaa todellista Mieli ry:n ääntä. Hyvä lähde: mieli.fi:n blogiartikkelien aloitukset tai Mieli ry:n Instagramin kuvatekstit.</div>
+  <div class="tip"><strong>🗄️ Tulos talteen:</strong> Kopioi Prompti 2b:n antama tiivistys — noin 150–200 sanaa — ja liitä se vaiheen 3 järjestelmäohjeen ÄÄNENSÄVY-kohdan tilalle. Näin agentti puhuu Mieli ry:n omalla äänellä.</div>
+</div>
+
+<!-- VAIHE 3 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Rakenna Mieli ry:n sisältöagentti</h3>
+  </div>
+  <p class="why">Miksi: Agentti, johon on sisäänleivottu äänensävy, kaikki 11 somekonseptia, juttukonseptit ja varainhankintaräätälöinnit, tuottaa oikeantyylistä sisältöä välittömästi. Ei tarvitse selittää joka kerta uudelleen mistä on kyse.</p>
+  <div class="tool-note">
+    <strong>🛠️ Ensisijainen: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot</a> · Vaihtoehto: <a href="https://gemini.google.com/gems" target="_blank" style="color:var(--pm);">Gemini Gem</a></strong><br><br>
+    <strong>Copilot Agent Builder:</strong> <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">m365.cloud.microsoft</a> → <strong>Agentit</strong> → <strong>Uusi agentti</strong> → <strong>Siirry määritykseen</strong> → liitä alla oleva järjestelmäohje <strong>Ohjeet</strong>-kenttään → tallenna.<br><br>
+    <strong>Gemini Gem (vaihtoehto):</strong> <a href="https://gemini.google.com/gems" target="_blank" style="color:var(--pm);">gemini.google.com/gems</a> → Luo uusi Gem → liitä järjestelmäohje → voit lisätä myös Somekonseptit-PDF pysyväksi tietolähteeksi.
+  </div>
+  <p>Alla on valmis järjestelmäohje, johon on sisäänleivottuna kaikki 11 somekonseptia, juttukonseptit ja varainhankintaräätälöinti. Voit päivittää äänensävy-osion vaiheen 2 tuloksella.</p>
+
+  <!-- Konseptit pikaopas -->
+  <p style="font-size:13px; font-weight:700; color:var(--pm); margin: 16px 0 8px 48px; letter-spacing:1px; text-transform:uppercase;">11 somekonseptia lyhyesti</p>
+  <div class="konsepti-grid">
+    <div class="konsepti-card"><div class="k-num">1</div><div class="k-name">Yleinen julkaisu</div><div class="k-ch">FB · IG · LI · BS</div></div>
+    <div class="konsepti-card"><div class="k-num">2</div><div class="k-name">Artikkeli / tietosisältö</div><div class="k-ch">FB · IG · LI · BS</div></div>
+    <div class="konsepti-card"><div class="k-num">3</div><div class="k-name">Sitaattijulkaisu</div><div class="k-ch">IG · FB · LI · BS</div></div>
+    <div class="konsepti-card"><div class="k-num">4</div><div class="k-name">Mielen voimavarat</div><div class="k-ch">FB · IG · (LI)</div></div>
+    <div class="konsepti-card"><div class="k-num">5</div><div class="k-name">Mielenterveyden ensiapu</div><div class="k-ch">FB · IG · (LI)</div></div>
+    <div class="konsepti-card"><div class="k-num">6</div><div class="k-name">Kriisiauttaminen</div><div class="k-ch">FB · IG · BS</div></div>
+    <div class="konsepti-card"><div class="k-num">7</div><div class="k-name">Vertaistukiryhmät</div><div class="k-ch">FB · IG</div></div>
+    <div class="konsepti-card"><div class="k-num">8</div><div class="k-name">Kampanjat</div><div class="k-ch">FB · IG · LI</div></div>
+    <div class="konsepti-card"><div class="k-num">9</div><div class="k-name">Varainhankinta</div><div class="k-ch">FB · IG · LI</div></div>
+    <div class="konsepti-card"><div class="k-num">10</div><div class="k-name">Vapaaehtoisuus</div><div class="k-ch">IG · FB</div></div>
+    <div class="konsepti-card"><div class="k-num">11</div><div class="k-name">Tapahtumat</div><div class="k-ch">FB · IG · LI · X</div></div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Järjestelmäohje – Mieli ry:n sisältöagentti</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet Mieli ry:n viestintäasiantuntija. Tuotat some- ja verkkosisältöjä Mieli ry:n äänensävyn, somekonseptien ja juttukonseptien mukaisesti.
+
+MIELI RY — ÄÄNENSÄVY:
+<span class="ph">[LIITÄ TÄHÄN VAIHEEN 2 PROMPTI 2B:N TULOS — noin 150–200 sanaa muodossa "Toimit..., Kirjoitat..., Vältä..."]</span>
+
+SOMEKONSEPTIT — 11 JULKAISUTYYPPIÄ:
+
+1. YLEINEN JULKAISU (FB, IG, LI, Bluesky)
+Lyhyt itsenäinen tekstijulkaisu. 1–4 virkettä. Voi olla toteamus, kysymys tai lyhyt näkökulma. Vakavampi aihe = asiantuntevampi, rauhallisempi sävy. Kevyempi aihe = rennompi, kannustava.
+
+2. ARTIKKELI / TIETOSISÄLTÖ (FB, IG, LI, Bluesky)
+Johdattelee lukijan mieli.fi:n artikkeliin, tiedotteeseen tai yhteistyösisältöön. Tekstissä kerrotaan artikkelin tärkein pointti tai herättelevä kysymys — lopussa CTA "Lue lisää" tai linkki. Ei tiivistelmä vaan houkutin.
+
+3. SITAATTIJULKAISU (IG, FB, LI, Bluesky)
+Rakennetaan oikean ihmisen lainauksen ympärille. Sitaatti on julkaisun ydin — kuvateksti kontekstualisoi lyhyesti mistä tilanteesta tai palvelusta lainaus on. Lähde: esim. "Palaute MIELI Kriisipuhelimesta", "MIELI Tukisuhteesta", tai asiantuntijan nimi ja titteli.
+
+4. MIELEN VOIMAVARAT (FB, IG; LI jos sopii)
+Kehotus, kysymys tai väite mielenterveyden arjen voimavaroista. Positiivinen, kannustava, konkreettinen. Esim. "Muista rentoutuminen", "Miten ylläpitää ystävyyssuhdetta?", "Mielenterveyttä voi vahvistaa." Lyhyessä lisätekstissä avataan aihetta parilla virkkeellä.
+
+5. MIELENTERVEYDEN ENSIAPU (FB, IG; LI jos sopii)
+Tietoa ja ohjeita siitä, miten tunnistaa tai kohdata mielenterveyden haasteita — omassa tai läheisen tilanteessa. Kysymysmuoto toimii hyvin: "Miten auttaa itseään vahingoittavaa henkilöä?" Ohjaava, ei pelotteleva. Ohjaa MTEA2-koulutukseen.
+
+6. KRIISIAUTTAMINEN (FB, IG, Bluesky)
+Tiedotetaan MIELI ry:n kriisipalveluista selkeästi ja helposti hahmotettavasti. Sisältää aina palveluiden nimet ja yhteystiedot: Kriisipuhelin 09 2525 0111 (24/7), Kriisichat aikuisille (mieli.fi/kriisichat), Sekasin-chat 12–29-v (sekasin.fi). Otsikko ja painotus vaihtelevat tilanteen mukaan ("Apua onnettomuusuutisten käsittelyyn", "Älä jää yksin surun kanssa").
+
+7. VERTAISTUKIRYHMÄT (FB, IG)
+Mainostetaan tiettyä MIELI ry:n vertaistukiryhmää. Teksti kertoo: ryhmän nimi, kenelle se on tarkoitettu, milloin ja missä kokoontuu. Lämmin ja kutsuva sävy — matalalla kynnyksellä mukaan.
+
+8. KAMPANJAT (FB, IG, LI)
+Tukee käynnissä olevaa kampanjaa (esim. Mielinauhakampanja). Teksti kantaa kampanjan sanomaa ja kutsuu osallistumaan — lahjoittamaan, jakamaan, ilmoittautumaan tai ostamaan.
+
+9. VARAINHANKINTA (FB, IG, LI)
+Kampanjoiden ulkopuolinen varainhankinta. Rakenne: valitse jokin muu konsepti pohjaksi (esim. sitaattijulkaisu tai yleinen julkaisu) → kirjoita sen mukaisesti → lisää loppuun selkeä lahjoituskehotus räätälöitynä kohderyhmälle. Ei kampanjahuutoa vaan osa tavallista someviestintää.
+
+10. VAPAAEHTOISUUS (IG, FB)
+Kertoo mitä MIELI ry:n vapaaehtoiset tekevät ja miksi se on merkityksellistä. Lämmin, innostava. Lopussa selkeä kehotus hakea vapaaehtoiseksi tai ilmoittautua tehtävään.
+
+11. TAPAHTUMAT (FB, IG, LI, X)
+Tiedotetaan tulevasta tapahtumasta tai tilaisuudesta. Teksti sisältää: tapahtuman nimi, aihe, ajankohta, paikka tai formaatti (live/verkko), puhujat tai ohjelma lyhyesti, ilmoittautumislinkki tai lisätietolinkki.
+
+JUTTUKONSEPTIT VERKKOSIVUILLE:
+• BLOGI: väite, pohdinta, mielipide tai neuvon antaminen. Kirjoittaja edustaa Mieli ry:tä asiantuntijana. Omakohtaisuus lisää tarttumapintaa. 6–10 kertaa vuodessa.
+• HENKILÖTARINA: omakohtainen kasvutarina henkilökohtaisesta elämästä. Inhimillinen, lähestyttävä. 5 kertaa vuodessa.
+• ASIANTUNTIJAHAASTATTELU: ammattikokemukset, tutkittu tieto, omat näkemykset, yhteiskunnalliset asiat.
+• REPORTAASI: havainnointi tilanteessa, journalistinen ote. Uusi kategoria.
+
+VARAINHANKINTARÄÄTÄLÖINTI — SAMA VIESTI ERI YLEISÖILLE:
+Varainhankinnassa käytä sopivaa somekonseptia pohjarakenteena ja lisää räätälöity lahjoituskehotus:
+• YRITYS: painota henkilöstöhyvinvointia, ESG-tavoitteita, brändinäkyvyyttä ja konkreettisia yhteistyömuotoja. Sävy: asiantunteva, dataan pohjautuva, strateginen.
+• KUUKAUSILAHJOITTAJA: jatkuvan tuen merkitys, henkilökohtainen yhteys missioon. "Pienelläkin panoksella vaikutat joka kuukausi." Sävy: lämmin, henkilökohtainen.
+• PERINNÖNANTAJA / TESTAMENTTIDONORI: arvot, pitkäkestoinen vaikutus, hiljainen tapa jättää jälki. Sävy: rauhallinen, arvokas, ei kiirehtivä.
+• YLEISÖ / KAMPANJA: akuutti tarve, tunnetarinat, selkeä lahjoituslinkki. Sävy: liikuttava, konkreettinen toimintakutsu.
+
+TOIMINTAOHJEET:
+1. Kysy aina: mikä konsepti, mikä kanava, mikä kohderyhmä — onko varainhankintakulma?
+2. Tuota teksti aina valitun konseptin rakenteen mukaisesti
+3. Varainhankintajulkaisussa: valitse ensin sopiva konsepti pohjaksi → lisää räätälöity lahjoituskehotus
+4. Älä koskaan keksi faktoja tai tilastoja — käytä vain käyttäjän antamia tietoja
+5. Muistuta käyttäjää tarkistamaan faktat ennen julkaisua</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Järjestelmäohje on pitkä mutta kattava — juuri siksi se toimii. Copilot-chatissa liitä se ensimmäisenä viestinä. Agent Builderissa se menee Ohjeet-kenttään. Koko keskustelun ajan agentti muistaa ohjeet.</div>
+  <div class="tip"><strong>🔄 Päivitä äänensävy vaiheen 2 tuloksella:</strong> Korvaa alla olevan järjestelmäohjeen <strong>MIELI RY — ÄÄNENSÄVY</strong> -osio kokonaan Prompti 2b:n antamalla tiivistelmällä. Näin agentti käyttää Mieli ry:n oikeaa ääntä — ei tämän sivun yleistä kuvausta.</div>
+</div>
+
+<!-- VAIHE 4 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">4</div>
+    <h3>Tuota sisältöä konseptiohjatusti</h3>
+  </div>
+  <p class="why">Miksi: Nyt testataan agentin ydin. Kun kerrot konseptin, kanavan ja aiheen, agentti osaa rakentaa oikean tyyppisen julkaisun — ei geneeristä tekstiä vaan Mieli ry:n formaatin mukaista sisältöä.</p>
+  <p>Jatka samassa Copilot-keskustelussa (tai käytä luomaasi Gemiä). Kokeile eri konsepteja ja aiheita vaiheen 1 sitemap-analyysistä.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 4a – Somejulkaisu konseptin mukaan</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tee seuraava somejulkaisu:
+
+Konsepti: [VALITSE — esim. Sitaattijulkaisu / Mielen voimavarat / Artikkeli/tietosisältö / Kriisiauttaminen]
+Kanava: [VALITSE — FB / IG / LI / Bluesky]
+Aihe: [KIRJOITA AIHE — esim. "nuorten mielenterveys loppukeväästä" tai vaiheen 1 analyysistä löytämäsi aihe]
+Lisätietoja / faktat: [LISÄÄ TÄHÄN tai jätä tyhjäksi]
+
+Noudata valitun konseptin rakennetta tarkasti.</div>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 4b – Sitaattijulkaisu valmiilla lainauksella</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tee sitaattijulkaisu seuraavalla lainauksella:
+
+Sitaatti: "[KIRJOITA LAINAUS TÄHÄN]"
+Henkilö: [Etunimi Sukunimi, titteli tai "Palaute MIELI Kriisipuhelimesta"]
+Kanava: Instagram ja Facebook
+Aihe / konteksti: [lyhyesti mistä on kyse]
+
+Kirjoita kuvatekstit molemmille kanaville konseptin mukaisesti.</div>
+  </div>
+  <div class="tip"><strong>💡 Kokeile useita konsepteja:</strong> Ota sama aihe (esim. "mielenterveyden ensiapu arjessa") ja pyydä siitä ensin artikkeli/tietosisältö, sitten Mielen voimavarat -versio. Katso miten rakenne muuttuu.</div>
+  <div class="tip"><strong>📐 Jos tulos ei miellytä:</strong> Pyydä muokkauksia suoraan — "Kirjoita lyhyempi IG-versio", "Muuta sävy toiveikkaammaksi", "Anna 3 erilaista vaihtoehtoa" tai "Poista toimintakutsu". Promptaus on dialogia — ensimmäinen versio on harvoin valmis.</div>
+</div>
+
+<!-- BONUS A -->
+<hr>
+<span class="bonus-badge">⭐ Bonustehtävä A</span>
+<p class="bonus-note">Jos aika riittää — tai palaa tähän jälkikäteen. Päätehtävät ovat vaiheet 1–4.</p>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">5</div>
+    <h3>Varainhankintaräätälöinti eri kohderyhmille</h3>
+  </div>
+  <p class="why">Miksi: Varainhankinnassa sama asia puhuttelee eri ihmisiä eri tavalla. Yrityspäättäjää kiinnostaa ESG-data, kuukausilahjoittajaa tunnesuhde missioon, perinnönantajaa hiljainen arvovalinta. Tekoäly muuttaa kulman sekunneissa.</p>
+  <p>Jatka samassa agenttikeskustelussa. Käytä vaiheen 4 tulosta tai anna uusi aihe.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 5 – Varainhankintakulma eri yleisöille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Muokkaa äsken tehty julkaisu varainhankintajulkaisuksi kolmelle eri kohderyhmälle. Käytä Varainhankinta-konseptia: sama rakenne kuin aiemmassa julkaisussa, mutta lisää räätälöity lahjoituskehotus.
+
+1. YRITYS (LinkedIn)
+Painota: henkilöstöhyvinvointi, ESG-tavoitteet, konkreettinen yhteistyö
+Sävy: asiantunteva, strateginen, dataan pohjautuva
+
+2. KUUKAUSILAHJOITTAJA (Facebook / Instagram)
+Painota: jatkuvan tuen merkitys, henkilökohtainen yhteys, "pienelläkin panoksella"
+Sävy: lämmin, henkilökohtainen, ei painostava
+
+3. PERINNÖNANTAJA (Facebook)
+Painota: arvot, pitkäkestoinen vaikutus, hiljainen tapa jättää jälki
+Sävy: rauhallinen, arvokas
+
+Muuta vain kulma ja lahjoituskehotus — säilytä Mieli ry:n äänensävy ja faktat tarkasti.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Varainhankinta = mikä tahansa somekonsepti + lahjoituskehotus. Kokeile myös: "Tee sitaattijulkaisu kriisipuhelinpalautteesta ja lisää siihen kuukausilahjoittajakulma."</div>
+</div>
+
+<!-- BONUS B -->
+<span class="bonus-badge">⭐ Bonustehtävä B</span>
+<p class="bonus-note">Juttusisällön tuottaminen verkkosivuille — kokeile jos ehdit.</p>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">6</div>
+    <h3>Tuota juttusisältöä — blogi tai henkilötarina</h3>
+  </div>
+  <p class="why">Miksi: Somekonseptien lisäksi Mieli ry tuottaa pitkää verkkosisältöä: blogeja, henkilötarinoita ja asiantuntijahaastatteluja. Sama agentti osaa kirjoittaa myös näitä — oikea juttutyyppi valitsee rakenteen automaattisesti.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 6a – Blogikirjoituksen aloitus</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Kirjoita blogikirjoituksen aloitus seuraavasta aiheesta:
+
+Aihe: [KIRJOITA AIHE — esim. "miksi mielenterveyden puheeksiottaminen töissä on tärkeää"]
+Kirjoittajan rooli: Mieli ry:n asiantuntija (ei henkilö itse)
+Sävy: väite tai pohdinta, omakohtainen näkökulma, tarttumapintainen
+Pituus aloitukselle: 150–200 sanaa (ingressityyppinen)
+
+Kirjoituksen ei tarvitse olla valmis — riittää vahva aloitus joka saa lukijan jatkamaan.</div>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 6b – Henkilötarinan rakenne</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Luo henkilötarinan rakenne seuraavasta tilanteesta:
+
+Henkilö / tarina: [KUVAILE LYHYESTI — esim. "henkilö joka sai apua kriisipuhelimesta vaikeana hetkenä"]
+Kanava: mieli.fi verkkosivut
+Juttutyyppi: henkilötarina (omakohtainen kasvutarina)
+
+Tee ensin 4–5 kohdan haastattelurunko, jonka avulla tarina voitaisiin kerätä. Sitten kirjoita lyhyt esimerkki siitä, miltä tarinan aloitus voisi näyttää.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Samaa agenttia voi käyttää myös juttuihin — se tietää sekä somekonseptit että juttukonseptit. Kerro vain selvästi kumman tyyppistä sisältöä haluat.</div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä A · <a href="workshop2.html" style="color:var(--pm);">Takaisin workshop-etusivulle</a> · <a href="w2-ryhmaB.html" style="color:var(--pm);">Ryhmä B →</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

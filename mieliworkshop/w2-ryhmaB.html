@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryhmä B – Fazer-case ja varainhankinta</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  nav a.nav-back { opacity: 0.6; font-size: 13px; }
+  nav a.nav-back:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .goal { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 32px; }
+  .goal h2 { font-size: 12px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .goal p { font-size: 17px; font-weight: 600; line-height: 1.5; }
+  .tools { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; margin-bottom: 36px; font-size: 14px; }
+  .tools strong { color: var(--pd); display: block; margin-bottom: 6px; }
+  .chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 14px; color: #888; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #444; font-size: 15px; margin: 0 0 10px 48px; }
+  .tool-note { background: #F8F8FF; border-radius: 8px; padding: 12px 16px; margin: 0 0 12px 48px; font-size: 14px; color: #444; }
+  .tool-note strong { color: var(--pm); display: block; margin-bottom: 4px; }
+  .how-steps { margin: 0 0 12px 48px; padding-left: 0; list-style: none; }
+  .how-steps li { font-size: 14px; color: #444; padding: 5px 0 5px 22px; position: relative; }
+  .how-steps li::before { content: '→'; position: absolute; left: 0; color: var(--pm); font-weight: 700; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 13px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #e8856f; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 15px; line-height: 1.75; white-space: pre-wrap; color: #222; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 13px; }
+  .tip { background: #FFFFF0; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .tip strong { color: #8B6914; }
+  .warning { background: #FFF5F5; border-left: 3px solid #DC2626; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 14px; color: #555; }
+  .warning strong { color: #DC2626; }
+  .bonus-badge { background: var(--pm); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; margin-left: 48px; }
+  .bonus-note { font-size: 13px; color: #888; font-style: italic; margin: 0 0 10px 48px; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  @media (max-width: 640px) { header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; } .prompt-wrap, .step .why, .step p, .tip, .warning, .tool-note, .how-steps, .bonus-badge, .bonus-note { margin-left: 0; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html" class="nav-back">← Kaikki</a>
+  <a href="workshop2.html">Workshop 21.5.</a>
+  <a href="w2-ryhmaA.html">Ryhmä A</a>
+  <a href="w2-ryhmaB.html" class="active">Ryhmä B</a>
+</nav>
+<header>
+  <div class="kicker">Ryhmä B · Workshop 21.5.2026</div>
+  <h1>Fazer-case: data kumppanuuspuheeksi</h1>
+</header>
+<main>
+
+<div class="goal">
+  <h2>Tavoite</h2>
+  <p>Rakentaa Copilot-agentti, jolla on Mieli ry:n tiedot valmiina. Agentti analysoi ulkoisen organisaation datan ja rakentaa kumppanuusesityksen — niin että sama agentti toimii Fazerille, K-ryhmälle tai mille tahansa muulle yritykselle.</p>
+</div>
+
+<div class="tools">
+  <strong>🛠️ Tämän ryhmän työkalut</strong>
+  <span class="chip"><a href="https://m365.cloud.microsoft" target="_blank" style="color:inherit;text-decoration:none;">Microsoft Copilot — Agent Builder</a></span>
+  <br><small style="color:#666; margin-top:6px; display:block;">Sama Agent Builder kuin Ryhmä A — käydään läpi yhdessä alussa. Agentti rakennetaan ensin, sitten sille ladataan Fazer-data.</small>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Rakenna Mieli ry:n kumppanuusagentti</h3>
+  </div>
+  <p class="why">Miksi: Kun agentilla on Mieli ry:n tiedot valmiina, se löytää synergiat automaattisesti heti kun saa uuden yrityksen datan. Sama agentti toimii Fazerille, Finnairin kanssa tai kenen tahansa kanssa — Mieli ry:n puoli ei tarvitse selittää joka kerta uudelleen.</p>
+  <div class="tool-note">
+    <strong>🛠️ Työkalu: <a href="https://m365.cloud.microsoft" target="_blank" style="color:var(--pm);">Microsoft Copilot — Agent Builder</a></strong>
+    Avaa m365.cloud.microsoft → vasemmasta valikosta <strong>Agentit → Uusi agentti → Siirry määritykseen</strong>. Anna agentille nimi ja liitä alla oleva järjestelmäohje <strong>Ohjeet</strong>-kenttään. Katso tarkempi opastus workshop-etusivulta.
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Kumppanuusagentin järjestelmäohje</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Olet Mieli ry:n kumppanuusasiantuntija. Tehtäväsi on analysoida potentiaalisia yritys- ja organisaatiokumppaneita ja rakentaa vakuuttavia yhteistyöehdotuksia.
+
+MIELI RY — TIETOPOHJA (täydennä tarvittaessa):
+• Suomen johtava mielenterveysjärjestö, perustettu 1897
+• Missio: edistää mielenterveyttä ja tarjota kriisitukea
+• Mielinauha-kampanja: vuosittainen varainkeruu, mielenterveyden edistäminen
+• Kriisipuhelin 09 2525 0111, avoinna 24/7 — yli 100 000 puhelua vuosittain
+• Palvelut yrityksille: mielenterveyskoulutukset, esihenkilövalmennukset, työhyvinvointiohjelmat
+• Kumppanuusmuodot: kampanjatuki, henkilöstöhyvinvointiyhteistyö, yrityslahjoitukset, yhteiset viestintätoimet
+• Toimii koko Suomessa, paikallisia kriisikeskuksia useilla paikkakunnilla
+
+TOIMINTAOHJE:
+Kun käyttäjä antaa tietoa ulkoisesta organisaatiosta, toimi näin:
+1. Analysoi organisaation arvot, henkilöstöhyvinvointitavoitteet, yhteiskuntavastuuprofiili ja kumppanuushistoria
+2. Tunnista 3–5 konkreettista yhtymäkohtaa Mieli ry:n toiminnan kanssa
+3. Rakenna selkeä kumppanuusperuste: miksi juuri tämä yhteistyö on luonteva?
+4. Ehdota 2–3 konkreettista yhteistyömuotoa molemminpuolisine hyötyineen
+5. Luo 6-diainen esitysrunko kumppanuusehdotukselle (pyydettäessä)
+6. Räätälöi viesti eri yleisöille (pyydettäessä)
+
+JOS MIELI RY:N TIEDOT TUNTUVAT PUUTTUVAN:
+Kysy käyttäjältä täydentäviä tietoja ennen analyysia — esim. "Onko Mieli ry:llä erityisiä varainhankinnan tavoitteita tai aiempia yrityskumppanuuksia, joita kannattaa ottaa huomioon?"
+
+Älä koskaan keksi faktoja — käytä vain käyttäjän antamia tietoja. Muistuta käyttäjää tarkistamaan faktat ennen esityksen käyttöä.</div>
+  </div>
+  <div class="warning"><strong>✏️ Muokkaa ennen käyttöä:</strong> Ohjeen Mieli ry -tiedot ovat esimerkkipohjana — päivitä ne oikeilla tiedoilla ennen agentin tallentamista. Lisää esim. ajankohtaiset kumppanuustavoitteet, budjettikehykset tai erityiset painopisteet. Mitä tarkempi tieto, sitä osuvampi analyysi.</div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Anna agentille kuvaava nimi, esim. <strong>"Mieli ry kumppanuusagentti"</strong>. Se löytyy sitten aina Agentit-listasta — voit käyttää sitä uudelleen mille tahansa yritykselle.</div>
+  <div class="tip"><strong>🔒 Agentin turvallinen käyttö:</strong> Agentti ehdottaa — ihminen päättää. Älä syötä henkilötietoja tai tunnistettavia asiakastapauksia agentille. Käytä julkista tai anonymisoitua tietoa. Copilot M365-tilillä ei käytä syötteitä mallien kouluttamiseen.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Lataa Fazer-vuosikertomus agentille</h3>
+  </div>
+  <p class="why">Miksi: Nyt testataan agentin ydin — sille annetaan uuden kumppanin data, ja se tietää jo Mieli ry:n puolen. Tekoäly löytää yhtymäkohdat automaattisesti.</p>
+  <p>Avaa luomasi kumppanuusagentti. Lataa Fazer-vuosikertomus PDF liitteenä ja pyydä analyysia.</p>
+  <ul class="how-steps">
+    <li>Lataa PDF: <a href="https://fazer.com/globalassets/fazer-group/pdfs/fazer-vuosikertomus-2025.pdf" target="_blank" style="color:var(--pm);">Fazer vuosikertomus 2025</a> — tallenna <strong>Ctrl+S</strong> (Win) tai <strong>Cmd+S</strong> (Mac)</li>
+    <li>Avaa agentti Copilotissa (Agentit-lista → kumppanuusagentti)</li>
+    <li>Lisää PDF liitteenä (paperiliitin-ikoni)</li>
+    <li>Kopioi alla oleva prompti ja lähetä</li>
+  </ul>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 2 – Fazer-analyysi agentille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Tässä on Fazer Group -konsernin vuosikertomus 2025 liitteenä.
+
+Analysoi se ja etsi kumppanuusnäkökulmasta:
+1. Henkilöstö, toimintamaat ja koko
+2. Yhteiskuntavastuu ja hyvinvointitavoitteet
+3. Mitä Fazer sanoo henkilöstön hyvinvoinnista tai mielenterveydestä?
+4. Olemassa olevat kumppanuudet tai lahjoitukset
+5. Arvot ja missio
+
+Etsi sen jälkeen yhtymäkohdat Mieli ry:n toimintaan ja rakenna kumppanuuscase.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit myös kokeilla muita yrityksiä — lataa minkä tahansa yrityksen vuosikertomus ja anna sama pyyntö. Agentti tietää aina Mieli ry:n puolen.</div>
+</div>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Pyydä esitysrunko agentilta</h3>
+  </div>
+  <p class="why">Miksi: Microsoft 365 Copilot voi luoda PowerPoint-esityksen suoraan — mutta parempi lopputulos syntyy, kun ensin rakennetaan selkeä sisältörunko. Ensin runko tekstinä, sitten bonustehtävässä kokeillaan viedä se suoraan PowerPointiin.</p>
+  <p>Jatka samassa agenttikeskustelussa. Agentti muistaa Fazer-analyysin — pyydä se nyt rakentamaan esitysrunko.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 3 – Esitysrunko</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Rakenna analyysin pohjalta 6-diainen esitysrunko kumppanuusehdotuksesta Fazerille.
+
+Jokainen dia muodossa:
+DIAN NUMERO: [otsikko]
+Ydinsisältö: [2–4 lausetta tai ranskalaisilla viivoilla]
+Mahdollinen data: [jos relevanttia]
+
+Diojen järjestys:
+1. Otsikkodia: Yhteistyöehdotus Mieli ry × Fazer
+2. Fazerin tilannekuva hyvinvointityössä
+3. Mieli ry — keitä olemme, mitä tarjoamme
+4. Miksi nyt yhdessä — synergiat
+5. Konkreettiset yhteistyömuodot
+6. Seuraavat askeleet
+
+Käytä vain annettuja faktoja. Tee jokaisesta diasta tiivis mutta vakuuttava.</div>
+  </div>
+</div>
+
+<span class="bonus-badge">⭐ Bonustehtävä A</span>
+<p class="bonus-note">Jos aika loppuu, tähän voi palata jälkikäteen — päätehtävät ovat vaiheet 1–3.</p>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">4</div>
+    <h3>Luo oikea PowerPoint Copilotilla</h3>
+  </div>
+  <p class="why">Miksi: Copilot PowerPoint-sovelluksen sisällä voi luoda oikeat diat suoraan — etenkin jos antaa valmiin esityspohjan (template), lopputulos on heti visuaalisesti valmis.</p>
+  <p>Avaa Microsoft PowerPoint (M365). Jos sinulla on vanha Mieli ry:n esityspohja tai jokin muu .pptx-template, avaa se ensin — Copilot osaa noudattaa sen muotoilua.</p>
+  <div class="tool-note">
+    <strong>🛠️ Työkalu: PowerPoint + Copilot (M365)</strong>
+    Avaa PowerPoint → klikkaa yläpalkista <strong>Copilot</strong>-painiketta (tähti-ikoni) → kirjoita pyyntö. Jos sinulla on template, avaa se ensin ja pyydä Copilotia lisäämään diat sen pohjalle.
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Pyyntö PowerPointin Copilotille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Luo kumppanuusesitys Mieli ry:n ja Fazerin yhteistyöstä. Käytä tätä rakennetta:
+
+Dia 1: Otsikkodia — Yhteistyöehdotus: Mieli ry × Fazer
+Dia 2: Fazerin tilannekuva hyvinvointityössä
+Dia 3: Mieli ry lyhyesti — keitä olemme, mitä tarjoamme
+Dia 4: Miksi nyt yhdessä — synergiat ja yhtymäkohdat
+Dia 5: Konkreettiset yhteistyömuodot
+Dia 6: Seuraavat askeleet — kutsu jatkokeskusteluun
+
+<span class="ph">[LIITÄ TÄHÄN COPILOT-CHATIN TUOTTAMA RUNKO — tai lyhyt tiivistelmä sisällöstä]</span>
+
+Tee esityksestä selkeä ja ammattimainen. Käytä lyhyitä lauseita ja ranskalaisilla viivoilla.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Jos sinulla on vanha esityspohja (.pptx), avaa se ensin PowerPointissa ennen kuin pyydät Copilotia luomaan diat — se noudattaa automaattisesti sen värejä, fontteja ja asettelua.</div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Voit myös pyytää Copilotia suoraan: "Luo esitys tiedoston [liitä Word- tai PDF-tiedosto] pohjalta" — se lukee dokumentin ja rakentaa diat automaattisesti.</div>
+</div>
+
+<span class="bonus-badge">⭐ Bonustehtävä B</span>
+<p class="bonus-note">Räätälöinti eri yleisöille — kokeile tätä jos ehdit.</p>
+
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">5</div>
+    <h3>Räätälöi eri yleisöille</h3>
+  </div>
+  <p class="why">Miksi: Sama kumppanuuscase puhuttelee eri ihmisiä eri tavoin. Fazerin vastuullisuusjohtajaa kiinnostaa eri asia kuin Fazerin viestintäjohtajaa — tai Mieli ry:n omaa hallitusta. Tekoäly räätälöi saman sisällön eri yleisöille sekunneissa.</p>
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>📝 Prompti 4 – Räätälöinti eri yleisöille</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Muokkaa kumppanuuscase-tiivistelmä kolmelle eri yleisölle. Jokaiseen oma versio (max 150 sanaa per versio):
+
+1. FAZERIN VASTUULLISUUSJOHTAJA
+Korostukset: ESG-mittarit, henkilöstön hyvinvointi, sidosryhmäraportointi, maine
+Sävy: asiantunteva, dataan pohjautuva, strateginen
+
+2. FAZERIN VIESTINTÄJOHTAJA
+Korostukset: brändiarvot, kampanjamahdollisuudet, positiivinen julkisuus, sisällöt
+Sävy: luova, innostava, konkreettiset viestintäideat
+
+3. MIELI RY:N OMA HALLITUS
+Korostukset: varainhankinta, missio, mitä kumppanuus tarkoittaa käytännössä
+Sävy: sisäinen raportointi, rehellinen ja selkeä
+
+Säilytä kaikissa faktat tarkasti — vain kulma ja painotukset muuttuvat.</div>
+  </div>
+  <div class="tip"><strong>💡 Vinkki:</strong> Sama räätälöintilogiikka toimii milloin tahansa: pyydä tekoälyä muokkaamaan sama viesti "nuorelle vs. seniori", "tekninen vs. ei-tekninen" tai "suomeksi vs. englanniksi". Sisältö pysyy — kulma muuttuu.</div>
+  <div class="tip"><strong>💡 Jatkomahdollisuus:</strong> Kokeile sama analyysi eri yrityksellä — esim. K-ryhmä, S-ryhmä tai Finnair. Lataa niiden vuosikertomus ja käytä samaa promptia. Tekoäly sopeutuu automaattisesti.</div>
+</div>
+
+<hr>
+<p style="font-size:14px; color:#888; text-align:center;">Ryhmä B · <a href="workshop2.html" style="color:var(--pm);">Takaisin workshop-etusivulle</a> · <a href="w2-ryhmaA.html" style="color:var(--pm);">← Ryhmä A</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

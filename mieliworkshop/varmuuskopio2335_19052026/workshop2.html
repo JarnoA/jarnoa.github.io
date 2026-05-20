@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälyagentit ja äänensävy – MIELI Workshop 21.5.2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A0A4E; --pm: #6B35C0; --lav: #EDE0FF; --sal: #F2A59A; --sal-l: #FDE8E5; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #2C1654; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 15px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.8); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 14px; transition: all 0.2s; }
+  nav a:hover { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  nav a.nav-back { opacity: 0.6; font-size: 13px; }
+  nav a.nav-back:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+  header { background: var(--lav); padding: 56px 40px 44px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 13px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 12px; }
+  header h1 { font-size: 40px; color: var(--pd); font-weight: 900; line-height: 1.2; margin-bottom: 12px; }
+  header .date-tag { display: inline-block; background: var(--sal); color: var(--pd); padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 700; margin-top: 8px; }
+  main { max-width: 940px; margin: 0 auto; padding: 48px 28px 80px; }
+  .mission { background: var(--pd); color: #fff; padding: 28px 32px; border-radius: 14px; margin-bottom: 40px; }
+  .mission h2 { font-size: 13px; opacity: 0.7; font-weight: 500; margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+  .mission blockquote { font-size: 21px; font-weight: 700; line-height: 1.4; border-left: 4px solid var(--sal); padding-left: 18px; }
+  .instructions { background: var(--sal-l); border: 2px solid var(--sal); border-radius: 12px; padding: 22px 26px; margin-bottom: 40px; }
+  .instructions h2 { color: var(--pd); font-size: 17px; margin-bottom: 12px; }
+  .instructions ol { padding-left: 20px; }
+  .instructions li { margin-bottom: 8px; font-size: 15px; color: #444; }
+  .instructions li strong { color: var(--pd); }
+  .section-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); margin-bottom: 16px; }
+  /* Aikataulu */
+  .aikataulu { background: #F8F8FF; border-radius: 12px; padding: 24px 28px; margin-bottom: 40px; }
+  .aikataulu h2 { color: var(--pd); font-size: 17px; margin-bottom: 16px; }
+  .aika-row { display: flex; gap: 16px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--lav); }
+  .aika-row:last-child { border-bottom: none; }
+  .aika-time { font-size: 15px; font-weight: 700; color: var(--pm); min-width: 80px; flex-shrink: 0; }
+  .aika-kesto { font-size: 12px; color: #999; min-width: 50px; flex-shrink: 0; margin-top: 2px; }
+  .aika-mita { font-size: 15px; color: #333; }
+  .aika-mita strong { color: var(--pd); display: block; }
+  .aika-mita span { font-size: 13px; color: #888; }
+  /* Group cards */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; }
+  .card { background: #fff; border: 2px solid var(--lav); border-radius: 14px; padding: 26px; text-decoration: none; color: inherit; transition: all 0.2s; display: block; }
+  .card:hover { border-color: var(--pm); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(26,10,78,0.12); }
+  .card .num { font-size: 56px; font-weight: 900; color: var(--lav); line-height: 1; margin-bottom: 10px; -webkit-text-stroke: 2px var(--pd); }
+  .card h3 { color: var(--pd); font-size: 18px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+  .card p { color: #666; font-size: 14px; line-height: 1.55; }
+  .card .card-tag { display: inline-block; background: var(--lav); color: var(--pm); font-size: 12px; padding: 3px 10px; border-radius: 10px; margin-top: 12px; font-weight: 600; }
+  /* Tools */
+  .tools-section { background: #F8F8FF; border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
+  .tools-section h2 { color: var(--pd); font-size: 17px; margin-bottom: 16px; }
+  .tool-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .tool-row label { font-size: 14px; color: #666; min-width: 200px; }
+  .tool-chip { background: #fff; border: 2px solid var(--pd); color: var(--pd); padding: 4px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+  .tool-chip.rec { background: var(--sal); border-color: var(--sal); }
+  .note { margin-top: 14px; font-size: 13px; color: #666; }
+  /* Agent explainer */
+  .agent-box { background: var(--pd); color: #fff; border-radius: 14px; padding: 28px 32px; margin-bottom: 44px; }
+  .agent-box h3 { font-size: 20px; font-weight: 700; color: var(--sal); margin-bottom: 16px; }
+  .agent-types { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .agent-type { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 16px 18px; }
+  .agent-type .agent-icon { font-size: 24px; margin-bottom: 8px; }
+  .agent-type strong { display: block; font-size: 14px; color: var(--sal); margin-bottom: 4px; }
+  .agent-type p { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5; margin: 0; }
+  /* Agenttiohje */
+  .agenttiohje { border: 2px solid var(--pd); border-radius: 14px; margin-bottom: 40px; overflow: hidden; }
+  .agenttiohje summary { padding: 18px 24px; font-size: 18px; font-weight: 700; color: var(--pd); cursor: pointer; list-style: none; display: flex; align-items: center; gap: 12px; user-select: none; background: var(--lav); }
+  .agenttiohje summary::before { content: '▶'; font-size: 13px; color: var(--pm); transition: transform 0.2s; flex-shrink: 0; }
+  .agenttiohje[open] summary::before { transform: rotate(90deg); }
+  .agenttiohje summary:hover { background: #ddd0f5; }
+  .agenttiohje-sisalto { padding: 28px 28px 32px; }
+  .ao-intro { font-size: 15px; color: #555; margin-bottom: 28px; font-style: italic; }
+  .ao-vaihe { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; }
+  .ao-num { background: var(--pd); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .ao-teksti strong { font-size: 16px; color: var(--pd); display: block; margin-bottom: 4px; }
+  .ao-teksti p { font-size: 14px; color: #444; margin: 0; line-height: 1.6; }
+  .ao-teksti a { color: var(--pm); }
+  .ao-kuva { width: 100%; border-radius: 10px; border: 2px solid var(--lav); margin: 12px 0 28px; display: block; }
+  .ao-huomio { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 14px 18px; border-radius: 8px; font-size: 14px; color: #444; margin-top: 8px; }
+  .ao-huomio strong { color: var(--pd); }
+  /* Hamburger */
+  .pelot-intro { text-align: center; margin: 56px 0 32px; }
+  .pelot-intro h2 { font-size: 28px; color: var(--pd); font-weight: 900; margin-bottom: 12px; line-height: 1.3; }
+  .pelot-intro p { font-size: 16px; color: #555; max-width: 580px; margin: 0 auto; }
+  .hampurilainen { max-width: 560px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,10,78,0.20)); }
+  .hamp-layer { padding: 16px 24px; font-size: 14px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
+  .hamp-layer.human-top { background: var(--sal); color: var(--pd); border-radius: 70px 70px 5px 5px; padding-top: 26px; position: relative; animation-delay: 0.2s; }
+  .hamp-layer.human-top::before { content: '●  ●  ●  ●'; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 8px; letter-spacing: 6px; white-space: nowrap; }
+  .hamp-lettuce { height: 11px; background: linear-gradient(90deg, #5D9E5D 0%, #4CAF50 40%, #5D9E5D 100%); opacity: 0; animation: hampIn 0.4s 0.48s ease forwards; border-radius: 2px; margin: 0 4px; }
+  .hamp-layer.ai-mid { background: var(--pd); color: #fff; border-radius: 5px; animation-delay: 0.72s; }
+  .hamp-layer.human-bot { background: #E8956E; color: var(--pd); border-radius: 5px 5px 60px 60px; padding-bottom: 22px; animation-delay: 1.1s; }
+  .hamp-who { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; flex-shrink: 0; min-width: 80px; }
+  .hamp-text { flex: 1; line-height: 1.45; font-weight: 600; }
+  .hamp-text em { font-weight: 400; opacity: 0.8; display: block; font-size: 13px; margin-top: 2px; }
+  @keyframes hampIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+  .ulkoista-tag { text-align: center; font-size: 21px; font-weight: 900; color: var(--pm); margin: 18px 0 44px; letter-spacing: -0.3px; }
+  .prompt-merkitys { background: var(--lav); border-radius: 12px; padding: 24px 28px; margin-bottom: 36px; }
+  .prompt-merkitys h3 { color: var(--pd); font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .prompt-merkitys p { color: #444; font-size: 15px; line-height: 1.65; }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } .agent-types { grid-template-columns: 1fr; } header { padding: 32px 20px; } header h1 { font-size: 28px; } main { padding: 32px 16px 60px; } .hamp-layer { flex-direction: column; align-items: flex-start; gap: 4px; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">SaavutaÄly × Mieli ry</span>
+  <a href="index.html" class="nav-back">← Kaikki</a>
+  <a href="workshop2.html" class="active">Workshop 21.5.</a>
+  <a href="w2-ryhmaA.html">Ryhmä A</a>
+  <a href="w2-ryhmaB.html">Ryhmä B</a>
+  <a href="workshop1.html">Workshop 7.5.</a>
+</nav>
+<header>
+  <div class="kicker">Tekoälyagentit ja äänensävy</div>
+  <h1>Kehittämiskumppanuudet-workshop</h1>
+  <div class="date-tag">21.5.2026</div>
+</header>
+<main>
+  <div class="mission">
+    <h2>Päivän missio</h2>
+    <blockquote>"Miten rakennamme tekoälyagentin, joka puhuu Mieli ry:n äänellä — ja louhimme datasta kumppanuusmahdollisuuksia?"</blockquote>
+  </div>
+
+  <div class="instructions">
+    <h2>📋 Näin käytät sivustoa</h2>
+    <ol>
+      <li>Aloitus yhdessä: <strong>NotebookLM-demo</strong> klo 13:00–13:20.</li>
+      <li>Siirry oman ryhmäsi sivulle yläreunan navigaatiosta klo 13:20.</li>
+      <li><strong>Kopioi prompti</strong> painamalla "Kopioi"-nappia — liitä se suoraan tekoälytyökaluusi.</li>
+      <li>Muokkaa <strong>[HAKASULKEISSA]</strong> olevat kohdat omaan tilanteeseen sopiviksi.</li>
+      <li>Ei suunnitella — <strong>testataan</strong>. Villit ideat ovat tervetulleita!</li>
+    </ol>
+  </div>
+
+  <div class="aikataulu">
+    <h2>🕐 Päivän aikataulu</h2>
+    <div class="aika-row">
+      <span class="aika-time">13:00</span>
+      <span class="aika-kesto">20 min</span>
+      <div class="aika-mita"><strong>Yhteinen aloitus: NotebookLM-demo</strong><span>Esittely ja yhteinen kokeilu fasilitaattorin johdolla</span></div>
+    </div>
+    <div class="aika-row">
+      <span class="aika-time">13:20</span>
+      <span class="aika-kesto">~90 min</span>
+      <div class="aika-mita"><strong>Ryhmätyöt</strong><span>Ryhmä A: Äänensävy ja someagentti · Ryhmä B: Fazer-case ja varainhankinta</span></div>
+    </div>
+    <div class="aika-row">
+      <span class="aika-time">Lopuksi</span>
+      <span class="aika-kesto"></span>
+      <div class="aika-mita"><strong>Tulosten jako yhdessä</strong><span>Mitä syntyi? Mitä yllättivät?</span></div>
+    </div>
+  </div>
+
+  <p class="section-title">Kaksi ryhmää — valitse omasi</p>
+  <div class="cards">
+    <a href="w2-ryhmaA.html" class="card">
+      <div class="num">A</div>
+      <h3>Äänensävy ja someagentti</h3>
+      <p>Louhitaan Mieli ry:n verkkosivujen rakenne, tiivistetään äänensävy-ohjeet ja rakennetaan tekoälyagentti, joka kirjoittaa Mieli ry:n tyyliin.</p>
+      <span class="card-tag">Sitemap · Äänensävy · Copilot-agentti · Somepostaus</span>
+    </a>
+    <a href="w2-ryhmaB.html" class="card">
+      <div class="num">B</div>
+      <h3>Fazer-case: data kumppanuuspuheeksi</h3>
+      <p>Analysoidaan Fazerin vuosikertomus Copilotilla, etsitään synergiat Mieli ry:n kanssa ja rakennetaan kumppanuusesitys.</p>
+      <span class="card-tag">PDF-analyysi · Tiedonlouhinta · Slidedeck · Räätälöinti</span>
+    </a>
+  </div>
+
+  <div class="tools-section">
+    <h2>🛠️ Päivän työkalut</h2>
+    <div class="tool-row"><label>Päätyökalu:</label><span class="tool-chip rec"><a href="https://m365.cloud.microsoft" target="_blank" style="color:inherit;text-decoration:none;">Microsoft Copilot</a></span></div>
+    <div class="tool-row"><label>Agentin rakentamiseen:</label><span class="tool-chip rec"><a href="https://m365.cloud.microsoft" target="_blank" style="color:inherit;text-decoration:none;">Copilot-agentti</a></span><span class="tool-chip"><a href="https://gemini.google.com/gems" target="_blank" style="color:inherit;text-decoration:none;">Gemini Gem</a></span></div>
+    <div class="tool-row"><label>Dokumenttien analyysiin:</label><span class="tool-chip"><a href="https://notebooklm.google.com" target="_blank" style="color:inherit;text-decoration:none;">Google NotebookLM</a></span></div>
+    <div class="tool-row"><label>Vaihtoehto Copilotille:</label><span class="tool-chip"><a href="https://gemini.google.com" target="_blank" style="color:inherit;text-decoration:none;">Google Gemini</a></span></div>
+    <div class="tool-row"><label>SaavutaÄly:</label><span class="tool-chip"><a href="https://saavuta-aly.laurea.fi/" target="blank">Tietoiskut, julkaisut ja materiaalit</a></span></div>
+    <p class="note"><strong>Huom. Copilot vs. Gemini:</strong> Organisaation M365 Copilot on turvallinen sisäiselle datalle — se ei käytä tietoja mallien kouluttamiseen. Ilmainen Gemini saattaa hyödyntää syötteitä Googlen koulutuksessa. Käytä Copilotia luottamukselliseen aineistoon.</p>
+    <p class="note"><strong>Copilot-agentti vs. Gemini Gem:</strong> Copilot Agent Builder (m365.cloud.microsoft) on ensisijainen — turvallinen ja integroitu M365-ympäristöön. Gemini Gem on hyvä vaihtoehto erityisesti siksi, että siihen voi lisätä tiedostoja pysyviksi tietolähteiksi. Copilot-agentti ei tue tätä halvimmalla M365-lisenssillä.</p>
+    <p class="note"><strong>Muista:</strong> Tekoäly voi erehtyä. Tarkista aina faktat ennen julkaisua. Älä syötä luottamuksellisia henkilötietoja.</p>
+  </div>
+
+  <!-- AGENTTIOHJE -->
+  <details class="agenttiohje">
+    <summary>📱 Yhteinen alkuopastus: Näin luodaan Copilot-agentti</summary>
+    <div class="agenttiohje-sisalto">
+      <p class="ao-intro">Käydään tämä läpi yhdessä ennen ryhmätöitä. Neljä vaihetta riittää.</p>
+
+      <div class="ao-vaihe">
+        <div class="ao-num">1</div>
+        <div class="ao-teksti">
+          <strong>Avaa Copilot ja siirry Agent Builderiin</strong>
+          <p>Mene osoitteeseen <a href="https://m365.cloud.microsoft" target="_blank">m365.cloud.microsoft</a>. Kirjaudu M365-tilillä. Vasemmasta valikosta löydät kohdan <strong>Agentit</strong> — klikkaa <strong>Uusi agentti</strong>.</p>
+        </div>
+      </div>
+      <img src="materials/Näyttökuva 2026-05-19 115720.png" alt="Copilot Agent Builder – Uusi agentti" class="ao-kuva">
+
+      <div class="ao-vaihe">
+        <div class="ao-num">2</div>
+        <div class="ao-teksti">
+          <strong>Siirry suoraan määritykseen</strong>
+          <p>Klikkaa <strong>"Siirry määritykseen"</strong> (oikeassa alareunassa) tai kirjoita kuvaus kenttään. Aukeaa agentin asetussivu. Kohdasta <strong>Ohjeet</strong> löytyy kenttä, johon liitetään järjestelmäohje.</p>
+        </div>
+      </div>
+      <img src="materials/Näyttökuva 2026-05-19 115803.png" alt="Copilot Agent Builder – Ohjeet-kenttä" class="ao-kuva">
+
+      <div class="ao-vaihe">
+        <div class="ao-num">3</div>
+        <div class="ao-teksti">
+          <strong>Liitä järjestelmäohje Ohjeet-kenttään</strong>
+          <p>Kopioi järjestelmäohje ryhmäsivulta (Ryhmä A, vaihe 3). Liitä se <strong>Ohjeet</strong>-kenttään. Sivulta löytyy myös <strong>Tieto</strong>-osio — sieltä voi halutessaan lisätä verkkosivulähteitä tai pitää oletusasetukset.</p>
+        </div>
+      </div>
+      <img src="materials/Näyttökuva 2026-05-19 115848.png" alt="Copilot Agent Builder – Tieto-osio" class="ao-kuva">
+
+      <div class="ao-vaihe">
+        <div class="ao-num">4</div>
+        <div class="ao-teksti">
+          <strong>Testaa ja tallenna</strong>
+          <p>Klikkaa <strong>"Kokeile"</strong>-välilehteä oikeasta yläkulmasta — voit testata agentin heti. Kun olet tyytyväinen, klikkaa <strong>"Luo"</strong> tallentaaksesi. Agentti ilmestyy vasemman palkin Agentit-listaan.</p>
+        </div>
+      </div>
+
+      <div class="ao-huomio">
+        💡 <strong>Ryhmä A käyttää tätä vaiheen 3 tehtävässä.</strong> Ryhmä B työskentelee suoraan Copilot-chatissa — Agent Builder ei ole heille pakollinen.
+      </div>
+    </div>
+  </details>
+
+  <div class="agent-box">
+    <h3>🤖 Mikä on tekoälyagentti?</h3>
+    <div class="agent-types">
+      <div class="agent-type">
+        <div class="agent-icon">🎭</div>
+        <strong>Persoona-agentti</strong>
+        <p>Tekoälylle annetaan pysyvä rooli ja ohjeet. Esim. Gemini Gem tai Copilot-agentti, joka kirjoittaa aina Mieli ry:n tyyliin — ei tarvitse selittää joka kerta uudestaan.</p>
+      </div>
+      <div class="agent-type">
+        <div class="agent-icon">🔧</div>
+        <strong>Työkaluagentti</strong>
+        <p>Tekoäly, jolla on pääsy ulkoisiin järjestelmiin: kalenteriin, sähköpostiin tai tietokantoihin. Voi hakea ja päivittää tietoa itsenäisesti.</p>
+      </div>
+      <div class="agent-type">
+        <div class="agent-icon">🚀</div>
+        <strong>Autonominen agentti</strong>
+        <p>Tekoäly, joka suorittaa monivaiheiset tehtävät itse: suunnittelee, kokeilee, korjaa virheet ja raportoi tuloksen. Kehittyy nopeasti.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-title" style="text-align:center; margin-bottom:20px;">Kuka tekee mitä?</p>
+  <div class="hampurilainen">
+    <div class="hamp-layer human-top">
+      <span class="hamp-who">👤 Ihminen</span>
+      <span class="hamp-text">Määrittele tavoite, konteksti ja rajaus<em>"Mitä haluamme saavuttaa?"</em></span>
+    </div>
+    <div class="hamp-lettuce"></div>
+    <div class="hamp-layer ai-mid">
+      <span class="hamp-who">🤖 Agentti</span>
+      <span class="hamp-text">Luonnostelu, analysointi, sovittaminen äänensävyyn<em>Raakatyö organisaation tyylillä</em></span>
+    </div>
+    <div class="hamp-layer human-bot">
+      <span class="hamp-who">👤 Ihminen</span>
+      <span class="hamp-text">Arviointi, tunneäly, päätöksenteko<em>"Onko tämä totta? Onko tämä Mieli ry:n äänellä?"</em></span>
+    </div>
+  </div>
+  <div class="ulkoista-tag">Ulkoista työvaihe — älä lopputulosta.</div>
+
+  <div class="prompt-merkitys">
+    <h3>💬 Mitä agentti tarvitsee toimiakseen?</h3>
+    <p>Hyvä agentti tarvitsee kolme asiaa: <strong>roolin</strong> (kuka se on), <strong>tiedon</strong> (mistä se puhuu ja kenelle) ja <strong>äänensävyn</strong> (miten se puhuu). Tänään rakennamme kaikki kolme — ja testaamme, toimiiko lopputulos oikeasti.</p>
+  </div>
+
+  <div style="margin-top: 56px; padding: 40px 20px; background: var(--pd); border-radius: 16px; text-align: center;">
+    <p style="color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px;">Avaa omalla laitteella</p>
+    <a href="https://csy.fi/mieliworkshop" style="color: var(--sal); font-size: 42px; font-weight: 900; text-decoration: none; letter-spacing: 3px; line-height: 1.1; display: block;">csy.fi/mieliworkshop</a>
+  </div>
+
+</main>
+</body>
+</html>
