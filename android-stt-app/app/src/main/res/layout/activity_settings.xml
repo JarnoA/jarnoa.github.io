@@ -77,35 +77,12 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Lista-ID"
-                android:layout_marginBottom="24dp">
+                android:layout_marginBottom="28dp">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etTrelloListId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text|textNoSuggestions"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Email section -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sähköposti"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"
-                android:paddingBottom="4dp"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Vastaanottajan sähköposti"
-                android:layout_marginBottom="28dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmailRecipient"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

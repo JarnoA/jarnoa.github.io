@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     private var isListening = false
     private var transcribedText = ""
 
+    companion object {
+        private const val TRELLO_EMAIL = "jarno8+ljq8wcyvqcqfwikhb2nn@app.trello.com"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -157,18 +161,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendEmail(text: String) {
-        val prefs = getSharedPreferences("stt_settings", MODE_PRIVATE)
-        val recipient = prefs.getString("email_recipient", "").orEmpty()
-
-        if (recipient.isBlank()) {
-            toast("Aseta sähköpostiosoite asetuksissa")
-            startActivity(Intent(this, SettingsActivity::class.java))
-            return
-        }
-
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(TRELLO_EMAIL))
             putExtra(Intent.EXTRA_SUBJECT, "Puhemuistiinpano")
             putExtra(Intent.EXTRA_TEXT, text)
         }
