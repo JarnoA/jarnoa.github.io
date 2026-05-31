@@ -83,18 +83,7 @@
             android:text="@string/btn_trello"
             android:enabled="false"
             app:icon="@drawable/ic_add_card"
-            android:layout_marginEnd="4dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSendEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/btn_email"
-            android:enabled="false"
-            app:icon="@drawable/ic_email"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"/>
+            android:layout_marginEnd="8dp"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClear"
@@ -102,8 +91,7 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_clear"
             android:enabled="false"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_marginStart="4dp"/>
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

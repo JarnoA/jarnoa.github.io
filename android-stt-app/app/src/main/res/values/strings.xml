@@ -2,8 +2,7 @@
 <resources>
     <string name="app_name">Puheentunnistus</string>
     <string name="hint_transcription">Transkriptio näkyy tässä…</string>
-    <string name="btn_trello">Trello</string>
-    <string name="btn_email">Lähetä Trelloon</string>
+    <string name="btn_trello">Trelloon!</string>
     <string name="btn_clear">Tyhjennä</string>
     <string name="btn_settings">Asetukset</string>
 </resources>

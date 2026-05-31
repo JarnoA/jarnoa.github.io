@@ -88,10 +88,6 @@ class MainActivity : AppCompatActivity() {
             val text = binding.etTranscription.text.toString().trim()
             if (text.isNotBlank()) sendToTrello(text)
         }
-        binding.btnSendEmail.setOnClickListener {
-            val text = binding.etTranscription.text.toString().trim()
-            if (text.isNotBlank()) sendEmail(text)
-        }
         binding.btnClear.setOnClickListener {
             transcribedText = ""
             binding.etTranscription.setText("")
@@ -128,7 +124,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateActionButtons(enabled: Boolean) {
         binding.btnSendTrello.isEnabled = enabled
-        binding.btnSendEmail.isEnabled = enabled
         binding.btnClear.isEnabled = enabled
     }
 
@@ -139,8 +134,14 @@ class MainActivity : AppCompatActivity() {
         val listId = prefs.getString("trello_list_id", "").orEmpty()
 
         if (key.isBlank() || token.isBlank() || listId.isBlank()) {
-            toast("Aseta Trello-asetukset ensin")
-            startActivity(Intent(this, SettingsActivity::class.java))
+            // No API credentials — send via the Trello email address instead
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(TRELLO_EMAIL))
+                putExtra(Intent.EXTRA_SUBJECT, text.take(100))
+                putExtra(Intent.EXTRA_TEXT, text)
+            }
+            startActivity(intent)
             return
         }
 
@@ -149,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             val ok = TrelloService.createCard(key, token, listId, text)
-            binding.btnSendTrello.text = "Trello"
+            binding.btnSendTrello.text = getString(R.string.btn_trello)
             if (ok) {
                 toast("Kortti lisätty Trelloon!")
                 clearAll()
@@ -158,16 +159,6 @@ class MainActivity : AppCompatActivity() {
                 binding.btnSendTrello.isEnabled = true
             }
         }
-    }
-
-    private fun sendEmail(text: String) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(TRELLO_EMAIL))
-            putExtra(Intent.EXTRA_SUBJECT, "Puhemuistiinpano")
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-        startActivity(Intent.createChooser(intent, "Lähetä sähköposti"))
     }
 
     private fun clearAll() {
