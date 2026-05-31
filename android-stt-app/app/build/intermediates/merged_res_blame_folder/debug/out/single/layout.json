@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.jarnoa.sttapp-mergeDebugResources-33:/layout/activity_main.xml",
+        "source": "com.jarnoa.sttapp-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-mergeDebugResources-33:/layout/activity_settings.xml",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-mergeDebugResources-33:/layout/activity_main.xml",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/layout/activity_main.xml"
+    }
+]

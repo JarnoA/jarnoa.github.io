@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.support.v4.media.session.MediaSessionCompat
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -21,7 +23,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var speechRecognizer: SpeechRecognizer
+    private lateinit var mediaSession: MediaSessionCompat
     private var isListening = false
+    private var shouldKeepListening = false
     private var transcribedText = ""
 
     companion object {
@@ -35,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         checkMicPermission()
         setupSpeechRecognizer()
         setupButtons()
+        setupMediaSession()
         updateActionButtons(false)
     }
 
@@ -54,20 +59,29 @@ class MainActivity : AppCompatActivity() {
                 binding.tvStatus.text = "Käsitellään..."
             }
             override fun onError(error: Int) {
-                setRecordingState(false)
-                if (error != SpeechRecognizer.ERROR_NO_MATCH &&
-                    error != SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
-                    toast("Tunnistusvirhe ($error) — yritä uudelleen")
+                if (shouldKeepListening) {
+                    // Restart silently on timeout/no-match — user is still talking
+                    startListening()
+                } else {
+                    setRecordingState(false)
+                    if (error != SpeechRecognizer.ERROR_NO_MATCH &&
+                        error != SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
+                        toast("Tunnistusvirhe ($error) — yritä uudelleen")
+                    }
                 }
             }
             override fun onResults(results: Bundle?) {
-                setRecordingState(false)
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (!matches.isNullOrEmpty()) {
                     transcribedText = if (transcribedText.isEmpty()) matches[0]
                                       else "$transcribedText ${matches[0]}"
                     binding.etTranscription.setText(transcribedText)
                     updateActionButtons(true)
+                }
+                if (shouldKeepListening) {
+                    startListening()  // keep going automatically
+                } else {
+                    setRecordingState(false)
                 }
             }
             override fun onPartialResults(partialResults: Bundle?) {
@@ -82,7 +96,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnRecord.setOnClickListener {
-            if (isListening) speechRecognizer.stopListening() else startListening()
+            if (shouldKeepListening) {
+                shouldKeepListening = false
+                speechRecognizer.stopListening()
+                setRecordingState(false)
+            } else {
+                shouldKeepListening = true
+                startListening()
+            }
         }
         binding.btnSendTrello.setOnClickListener {
             val text = binding.etTranscription.text.toString().trim()
@@ -105,6 +126,8 @@ class MainActivity : AppCompatActivity() {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "fi-FI")
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 3000L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 3000L)
         }
         speechRecognizer.startListening(intent)
     }
@@ -162,10 +185,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearAll() {
+        shouldKeepListening = false
         transcribedText = ""
         binding.etTranscription.setText("")
         updateActionButtons(false)
-        binding.tvStatus.text = "Napauta mikrofonia puhuaksesi"
+        setRecordingState(false)
     }
 
     private fun checkMicPermission() {
@@ -186,10 +210,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupMediaSession() {
+        mediaSession = MediaSessionCompat(this, "SttApp").apply {
+            setCallback(object : MediaSessionCompat.Callback() {
+                override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+                    val event = mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+                    if (event?.action == KeyEvent.ACTION_DOWN &&
+                        (event.keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
+                         event.keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)) {
+                        binding.btnRecord.performClick()
+                        return true
+                    }
+                    return super.onMediaButtonEvent(mediaButtonEvent)
+                }
+            })
+            isActive = true
+        }
+    }
+
     private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     override fun onDestroy() {
         super.onDestroy()
         if (::speechRecognizer.isInitialized) speechRecognizer.destroy()
+        if (::mediaSession.isInitialized) mediaSession.release()
     }
 }

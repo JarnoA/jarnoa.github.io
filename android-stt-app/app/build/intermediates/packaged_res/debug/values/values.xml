@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#0A84FF</color>
+    <color name="background">#000000</color>
+    <color name="divider">#222222</color>
+    <color name="primary">#FFFFFF</color>
+    <color name="primary_dark">#000000</color>
+    <color name="recording">#FF3B30</color>
+    <color name="surface">#111111</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#888888</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">Puheentunnistus</string>
+    <string name="btn_clear">Tyhjennä</string>
+    <string name="btn_settings">Asetukset</string>
+    <string name="btn_trello">Trelloon!</string>
+    <string name="hint_transcription">Transkriptio näkyy tässä…</string>
+    <style name="Theme.SttApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="materialButtonStyle">@style/Widget.SttApp.Button</item>
+        <item name="textInputStyle">@style/Widget.SttApp.TextInput</item>
+    </style>
+    <style name="Widget.SttApp.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:letterSpacing">0.05</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="backgroundTint">@color/accent</item>
+    </style>
+    <style name="Widget.SttApp.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/divider</item>
+        <item name="boxBackgroundColor">@color/surface</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+    </style>
+</resources>

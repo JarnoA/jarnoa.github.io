@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_email.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_email.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/layout_activity_settings.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/layout/activity_settings.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_launcher_background.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.jarnoa.sttapp-merged_res-34:/layout_activity_main.xml.flat",
+        "source": "com.jarnoa.sttapp-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/layout_activity_main.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_mic.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_mic.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_add_card.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_add_card.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_close.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_close.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/drawable_ic_settings.xml.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/drawable/ic_settings.xml"
+    },
+    {
+        "merged": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-merged_res-34:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/jarnoalastalo/.gradle/daemon/8.6/com.jarnoa.sttapp-main-36:/mipmap-xhdpi/ic_launcher.png"
+    }
+]
