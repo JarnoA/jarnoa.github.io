@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tekoäly taiteilijalle – vinkkejä ja linkkejä</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kokoelma käytännön vinkkejä ja linkkejä taiteilijoille: oman teoksen suojaaminen tekoälyltä, viisas tekoälyttömyys ja ekologinen/turvallinen käyttö.">
+  <meta property="og:title" content="Tekoäly taiteilijalle – vinkkejä ja linkkejä">
+  <meta property="og:description" content="Kokoelma käytännön vinkkejä ja linkkejä taiteilijoille tekoälystä: suojaaminen, viisas käyttö, ekologisuus.">
+  <meta property="og:url" content="https://csy.fi/taiteilijoille/">
+  <meta property="og:type" content="website">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'EB Garamond', serif;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 2rem;
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+    a { color: #ecb45c; }
+    h2 {
+      color: #ecb45c;
+      text-align: center;
+      margin-bottom: 0.2rem;
+    }
+    .ingressi {
+      color: #bbb;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 2.5rem;
+    }
+    h3 {
+      color: #ecb45c;
+      margin-top: 2.5rem;
+      margin-bottom: 0.3rem;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.4rem;
+    }
+    h4 {
+      color: #f6efe4;
+      margin-top: 1.3rem;
+      margin-bottom: 0.2rem;
+      font-size: 1.15rem;
+    }
+    p { margin-top: 0.3rem; }
+    ul, ol { padding-left: 1.3rem; }
+    li { margin-bottom: 0.5rem; }
+    .kortti {
+      background-color: #2a2a2a;
+      border-radius: 8px;
+      padding: 1rem 1.3rem;
+      margin: 0.8rem 0;
+    }
+    .lahde { color: #aaa; font-size: 1rem; }
+    .vihje {
+      font-size: 1rem;
+      color: #ccc;
+      margin-top: 1.5rem;
+      background-color: #1a1a1a;
+      padding: 1rem;
+      border-left: 4px solid #ecb45c;
+    }
+    .linkit a { text-decoration: underline; }
+    code {
+      background: #2a2a2a;
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+    pre {
+      background: #161616;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #d8d8d8;
+    }
+    pre .kommentti { color: #7a8a6a; }
+    .footer-pieni {
+      font-size: 0.95rem;
+      color: #888;
+      margin-top: 3rem;
+    }
+  </style>
+  <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+
+  <div style="margin-bottom: 1rem;">
+    <a href="https://csy.fi/" style="text-decoration: none; font-size: 1.1rem;">← CSY Lab</a>
+  </div>
+
+  <h2>Tekoäly taiteilijalle</h2>
+  <p class="ingressi">
+    Kokoelma käytännön vinkkejä ja linkkejä: mistä löydät oikeat työkalut, mitä
+    kannattaa tietää ja mihin kannattaa tutustua tarkemmin. Koottu
+    taiteilijajärjestöille pidetyn luennon "Tekoäly taiteilijan silmin"
+    tueksi – palaa tänne aina kun tarvitset muistutuksen.
+  </p>
+
+  <h3>🛡️ Oman taiteen suojaaminen</h3>
+
+  <h4>Alustakohtainen suoja</h4>
+  <p>
+    Tarkista aina alustan omat asetukset tekoälykoulutusta vastaan – moni
+    palvelu tarjoaa tämän, mutta se ei ole päällä oletuksena:
+  </p>
+  <ul class="linkit">
+    <li><a href="https://www.deviantart.com/" target="_blank">DeviantArt</a> – oma NoAI-suojausasetus profiilin/teosten kohdalla</li>
+    <li><a href="https://www.artstation.com/" target="_blank">ArtStation</a> – vastaava asetus omissa tili-/yksityisyysasetuksissa</li>
+    <li><a href="https://cara.app/" target="_blank">Cara</a> – rakennettu alusta alkaen tekoälykoulutusta vastaan</li>
+    <li><a href="https://privacycenter.meta.com/" target="_blank">Meta Privacy Center</a> (Instagram &amp; Facebook) – "Generative AI at Meta" -kohdasta löytyy oikeus vastustaa datan käyttöä tekoälykoulutukseen</li>
+  </ul>
+
+  <h4>Omien verkkosivujen suoja</h4>
+  <div class="kortti">
+    <p><strong>Robots.txt</strong> pyytää botteja jättämään teokset rauhaan – ei kuitenkaan poista jo kerättyä dataa, eikä ole juridisesti sitova.</p>
+    <p><strong>TDMRep-protokolla</strong> sen sijaan on: pieni <code>tdmrep.json</code>-tiedosto, joka tekee oikeuksien pidättämisestä EU:ssa juridisesti sitovaa EU:n tekoälyasetuksen (AI Act) nojalla.</p>
+    <p class="lahde">
+      <a href="https://www.w3.org/community/reports/tdmrep/CG-FINAL-tdmrep-20240510/" target="_blank">W3C:n virallinen TDMRep-spesifikaatio</a> ·
+      <a href="https://docs.tdmai.org/tdmrep-technical-specification/json-format-for-tdmrep-declarations" target="_blank">tdmrep.json-tiedoston muoto käytännössä</a>
+    </p>
+    <p style="margin-top:1rem;">Esimerkki oman robots.txt:n rakenteesta:</p>
+<pre><span class="kommentti"># --------------------------------------------------
+# 1. GLOBAL PREFERENCE SIGNAL
+# Asks all search engines and crawlers to allow web search
+# but explicitly opt out of AI training datasets.
+# --------------------------------------------------</span>
+User-agent: *
+Content-Signal: search=yes, ai-train=no
+
+<span class="kommentti"># --------------------------------------------------
+# 2. KNOWN MAJOR AI SCRAPERS
+# Hard disallow for the most common commercial training bots.
+# --------------------------------------------------</span>
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Bytespider
+Disallow: /
+
+<span class="kommentti"># --------------------------------------------------
+# 3. IMAGE DIRECTORY & FILE PROTECTIONS
+# Restricts scraping of image files across your site.
+# --------------------------------------------------</span>
+User-agent: *
+Disallow: /images/
+Disallow: /uploads/
+Disallow: /*.jpg$
+Disallow: /*.jpeg$
+Disallow: /*.png$
+Disallow: /*.webp$
+Disallow: /*.tif$</pre>
+    <p class="lahde">
+      Huom: <code>Content-Signal</code>-rivi on Cloudflaren syyskuussa 2025 ehdottama uusi merkintä, ei
+      virallinen standardi – 2026 alkupuolella yksikään iso hakukone tai tekoälyfirma ei ole vielä
+      luvannut noudattaa sitä. Se on toive, ei lukko. Nimetyt bottiestot (kohta 2) ovat tehokkaampia
+      juuri nyt, koska ne perustuvat robots.txt:n vanhempaan, laajemmin tuettuun osaan.
+    </p>
+  </div>
+
+  <h4>Tekninen suoja</h4>
+  <div class="kortti">
+    <p><strong>Glaze</strong> (puolustava) – lisää kuvaan näkymätöntä pikselikohinaa, joka estää tekoälyä matkimasta uniikkia tyyliäsi.</p>
+    <p><strong>Nightshade</strong> (hyökkäävä) – "myrkyttää" luvatonta opetusdataa niin, että se sotkee tekoälyn käsitteet (esim. koira alkaa näyttää koneelle kissalta).</p>
+    <p class="lahde">
+      <a href="https://glaze.cs.uchicago.edu/" target="_blank">glaze.cs.uchicago.edu</a> ·
+      <a href="https://nightshade.cs.uchicago.edu/" target="_blank">nightshade.cs.uchicago.edu</a> – molemmat University of Chicagon SAND Labin ilmaisia työkaluja
+    </p>
+    <p class="lahde" style="margin-top:1rem;">
+      Huom: kumpikaan ei ole varma suoja. Tutkijat ovat toistuvasti onnistuneet purkamaan molemmat –
+      esim. LightShed (2025) poistaa suojauksen ~99,98&nbsp;% tarkkuudella, ja ICLR 2025 -tutkimus
+      (Hönig, Rando, Carlini, Tramèr) totesi suoraan että nämä työkalut "luovat valheellisen
+      turvallisuuden tunteen". Kohtele niitä hidasteena, ei takeena.
+    </p>
+  </div>
+
+  <h4>Mikä ei toimi</h4>
+  <ul>
+    <li>Matalan resoluution julkaisut eivät suojaa – mallit oppivat tyylit ja sommittelut myös pienistä kuvista.</li>
+    <li>Kuvatekstikiellot ("© älä käytä tekoälyyn") eivät täytä lain vaatimaa koneluettavaa muotoa – ne eivät ole botille mitään.</li>
+  </ul>
+
+  <h3>🧠 Viisas tekoälyttömyys</h3>
+  <p>Mitkä asiat oikeasti ärsyttävät, vievät aikaa siltä mitä haluaisit tehdä? Näyttelytekstit, apurahahakemukset, raportit, viestintä – tässä kannattaa olla tarkkana MITÄ koneelle antaa.</p>
+
+  <h4>Apurahahakemukset</h4>
+  <p>
+    Tekoäly on hyödyllinen työkalu yhteenvedon muotoilussa, ydinviestien
+    kirkastamisessa ja ns. "hissipuheen" tiivistämisessä – myös
+    kielenhuollossa ja käännöksissä. Mutta: rahoittajan kulmasta olennaista
+    on, että <strong>idea on sinun</strong>. Itse hakemusta ei kannata
+    ulkoistaa kokonaan.
+  </p>
+
+  <h4>Hampurilaismalli</h4>
+  <div class="kortti">
+    <p>🍞 <strong>Ihminen:</strong> tavoite, konteksti, rajaus – "mitä halutaan saavuttaa?"</p>
+    <p>🥩 <strong>Tekoäly:</strong> luonnos, tiivistys, lista, ideointi – "raakatyö"</p>
+    <p>🍞 <strong>Ihminen:</strong> arviointi, tunneäly, päätöksenteko – "onko tämä totta? onko tämä viisasta?"</p>
+    <p style="margin-top:0.8rem;">Ei anneta kaikkea tekoälylle – ihminen pitää paketin kasassa alusta loppuun.</p>
+  </div>
+
+  <h3>🌱 Käytännön ja ekologiset vinkit</h3>
+
+  <h4>Energiatehokas promptaus</h4>
+  <p>Vältä "promptirulettia" – muotoile heti alussa yksi kattava ja täsmällinen kehote (tavoitteet, tyyli ja tarkat rajaukset), sen sijaan että kokeilet montaa kertaa.</p>
+
+  <h4>Pidä keskusteluketjut lyhyinä</h4>
+  <p>Pitkissä keskusteluketjuissa malli lukee koko aiemman historian uudelleen jokaisella viestillä, mikä moninkertaistaa sähkönkulutuksen. Aloita tarvittaessa uusi keskustelu.</p>
+
+  <h4>Lokaalit kielimallit</h4>
+  <p>
+    <a href="https://ollama.com/" target="_blank">Ollama</a> – pieniä ja
+    tehokkaita tekoälymalleja voi ladata ja ajaa kokonaan paikallisesti
+    omalla koneella. Data ei karkaa opetusmateriaaliksi tai ulkopuolisille
+    palvelimille – mutta paikallinen laskenta käyttää oman laitteesi sähköä.
+  </p>
+
+  <h4>Pilvikielimallit &amp; oma aineisto</h4>
+  <p>
+    <a href="https://notebooklm.google/" target="_blank">NotebookLM</a> –
+    rajatun oman aineiston käyttö (RAG, Retrieval-Augmented Generation)
+    sitoo kielimallin vain sinun omiin dokumentteihisi. Muista opt-out-
+    asetukset myös muissa käyttämissäsi tekoälysovelluksissa.
+  </p>
+
+  <div class="vihje">
+    Vinkki oman agentin ohjeeksi: <em>"Jos et ole 95&nbsp;% varma asiasta,
+    kysy ja varmista minulta ennen kuin teet mitään."</em>
+  </div>
+
+  <h3>🧑‍🎨 Rakenna oma tekoälyavustaja</h3>
+  <p>
+    Voit tehdä itsellesi pysyvän avustajan, jolle ei tarvitse selittää samaa
+    taustaa joka kerta uudelleen – oma tyylisi, omat ohjeesi ja tarvittaessa
+    omat referenssitiedostosi tallessa. Kolme yleisintä tapaa:
+  </p>
+  <ul class="linkit">
+    <li><strong>Google Gemini – Gem:</strong> <a href="https://gemini.google.com/gems" target="_blank">gemini.google.com/gems</a> – ilmainen myös maksuttomalla tilillä, tukee jopa 10 tiedostoa, voi lukea Google Drive -tiedostoja suoraan.</li>
+    <li><strong>ChatGPT – oma GPT ("Custom GPT"):</strong> chatgpt.com → oma profiili (vasen alakulma) → <em>My GPTs</em> → <em>Create a GPT</em> – vaatii maksullisen tilauksen (Plus, Team, Enterprise tai Edu).</li>
+    <li><strong>Claude – Projects:</strong> <a href="https://claude.ai/" target="_blank">claude.ai</a>, sivupalkin <em>Projects</em> – ilmaisella tilillä jopa 5 projektia, mutta viestimäärä on rajattu.</li>
+  </ul>
+
+  <div class="kortti">
+    <p><strong>Näin pääset alkuun, työkalusta riippumatta:</strong></p>
+    <ol>
+      <li>Avaa työkalu ja etsi "Luo uusi" (Gem / GPT / Project).</li>
+      <li>Anna nimi ja kirjoita ohjeet: mikä on avustajan rooli, mitä tyyliä se käyttää ja mitä se <em>ei</em> saa tehdä.</li>
+      <li>Halutessasi lisää tausta-aineistoa – omia tekstejä, tyyliesimerkkejä tai muuta referenssiä.</li>
+      <li>Testaa muutamalla oikealla kysymyksellä ja tallenna.</li>
+    </ol>
+    <p class="lahde">Muista tässäkin hampurilaismalli (yllä) – sinä määrität tavoitteen ja arvioit lopputuloksen, avustaja tekee raakatyön.</p>
+  </div>
+
+  <p class="footer-pieni">
+    Jarno Alastalo · <a href="https://csy.fi/">csy.fi</a><br>
+    Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.
+  </p>
+
+</body>
+</html>
