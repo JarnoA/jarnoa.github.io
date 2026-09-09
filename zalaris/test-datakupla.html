@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Datakupla-testi</title>
+<style>
+  html,body{ margin:0; height:100%; background:#0a0e14; overflow:hidden; font-family:Georgia,Garamond,"Times New Roman",serif; }
+  #kupla-tausta{
+    position:fixed; inset:0;
+    background:radial-gradient(ellipse at center, #1c2438 0%, #0a0e14 70%);
+  }
+  #kupla-scene{ position:fixed; inset:0; }
+  #kupla-svg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+  #kupla-otsikko{
+    position:fixed; left:0; right:0; top:24px; text-align:center; z-index:20;
+    color:#f2c94c; font-size:1.6rem; font-weight:800; text-shadow:0 3px 18px rgba(0,0,0,.85); pointer-events:none;
+  }
+  #kupla-alaotsikko{
+    position:fixed; left:0; right:0; top:66px; text-align:center; z-index:20;
+    color:#f6efe4cc; font-size:1rem; font-style:italic; pointer-events:none;
+  }
+  .node{
+    position:absolute; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    transform:translate(-50%,-50%) scale(0); opacity:0;
+    transition:transform .7s cubic-bezier(.2,.9,.25,1.2), opacity .5s ease, box-shadow .4s ease, filter .4s ease;
+    box-sizing:border-box;
+  }
+  .node.nakyy{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+  .node-bubble{
+    background:radial-gradient(circle at 32% 28%, #6a5fd8cc 0%, #4a3aa8aa 55%, #2c2470 100%);
+    border:1px solid #9b8fff55;
+    box-shadow:0 0 10px #4a3aa855;
+  }
+  .node-meta{
+    background:radial-gradient(circle at 34% 30%, #4facfe 0%, #6a5fd8 38%, #b83ad1 68%, #e84393 100%);
+    border:2px solid #ffffffaa;
+    box-shadow:0 0 50px #8a5fe8aa, 0 0 120px #8a5fe855;
+    z-index:10;
+  }
+  .node-meta .lbl{ color:#fff; font-weight:900; font-size:1.3rem; text-shadow:0 2px 10px rgba(0,0,0,.6); }
+  .node .lbl{
+    color:#f6efe4; font-size:.62rem; font-weight:600; text-align:center; padding:0 4px;
+    line-height:1.15; pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.7);
+    max-width:100%; overflow:hidden;
+  }
+  .node.korostus{
+    box-shadow:0 0 0 3px #f2c94c, 0 0 30px 8px #f2c94caa;
+    z-index:15;
+  }
+  .node.korostus .node-bubble, .node.korostus{
+    background:radial-gradient(circle at 32% 28%, #ffe9a8 0%, #f2c94c 55%, #c9971f 100%);
+  }
+  .node.korostus .lbl{ color:#241a05; font-weight:800; font-size:.85rem; text-shadow:none; }
+  .node-badge{
+    position:absolute; top:-8px; right:-6px; background:#f2c94c; color:#241a05; font-weight:800;
+    font-size:.62rem; padding:2px 6px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.5);
+    opacity:0; transform:scale(.5); transition:opacity .3s ease, transform .3s ease;
+    font-family:Georgia,serif; white-space:nowrap;
+  }
+  .node.korostus .node-badge{ opacity:1; transform:scale(1); }
+  .kupla-line{ stroke:url(#kupla-viiva-liuku); stroke-width:1; opacity:0; transition:opacity 1s ease; }
+  .kupla-line.nakyy{ opacity:.5; }
+  .kupla-line.korostus{ opacity:.9 !important; stroke:#f2c94c; stroke-width:1.6; }
+</style>
+</head>
+<body>
+
+<div id="kupla-tausta"></div>
+<div id="kupla-otsikko">Facebookin ulkopuoliset sovellukset ja sivustot</div>
+<div id="kupla-alaotsikko"></div>
+<div id="kupla-scene">
+  <svg id="kupla-svg"><defs>
+    <linearGradient id="kupla-viiva-liuku" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8a5fe8" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#8a5fe8" stop-opacity="0.05"/>
+    </linearGradient>
+  </defs></svg>
+</div>
+
+<script src="esitys-2d-metaverkosto.js"></script>
+<script>
+// ============================================================
+// PAKKAUS-ALGORITMI: phyllotaxis-alkusijoitus (kultainen kulma)
+// + iteratiivinen törmäysten purku, Meta-solmu KIINTEÄNÄ keskellä
+// (osallistuu törmäystarkastukseen mutta ei koskaan itse liiku) -
+// sama "puskee kuplat pois tieltä" -efekti kuin esimerkkikuvissa,
+// ei tarvitse mitään ulkoista layout-kirjastoa.
+// ============================================================
+function laskeAsettelu(data, W, H) {
+  const cx = W/2, cy = H/2;
+  const minR = Math.min(W,H) * 0.012, maxR = Math.min(W,H) * 0.045;
+  const maxE = Math.max(...data.map(d=>d.e));
+  const metaR = Math.min(W,H) * 0.075;
+
+  const nodes = data.map(d => {
+    const t = Math.sqrt(d.e / maxE);
+    return { n:d.n, e:d.e, r: minR + t*(maxR-minR) };
+  });
+
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const spiralK = Math.min(W,H) * 0.028;
+  nodes.forEach((node, i) => {
+    const idx = i + 1;
+    const dist = spiralK * Math.sqrt(idx);
+    const angle = idx * golden;
+    node.x = cx + dist * Math.cos(angle);
+    node.y = cy + dist * Math.sin(angle);
+  });
+
+  const meta = { x: cx, y: cy, r: metaR, pinned: true };
+  const alle = nodes.concat([meta]);
+  const PAD = 3;
+  for (let iter = 0; iter < 260; iter++) {
+    for (let i = 0; i < alle.length; i++) {
+      for (let j = i + 1; j < alle.length; j++) {
+        const a = alle[i], b = alle[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const minDist = a.r + b.r + PAD;
+        if (dist < minDist) {
+          const overlap = (minDist - dist) / 2;
+          const ux = dx / dist, uy = dy / dist;
+          if (!a.pinned) { a.x -= ux * overlap; a.y -= uy * overlap; }
+          if (!b.pinned) { b.x += ux * overlap; b.y += uy * overlap; }
+        }
+      }
+    }
+    const pull = 0.006;
+    nodes.forEach(n => { n.x += (cx - n.x) * pull; n.y += (cy - n.y) * pull; });
+  }
+  return { nodes, meta };
+}
+
+function kaynnista() {
+  const W = innerWidth, H = innerHeight;
+  const { nodes, meta } = laskeAsettelu(METAVERKOSTO_DATA, W, H);
+
+  document.getElementById('kupla-alaotsikko').textContent =
+    METAVERKOSTO_DATA.length + ' sovellusta ja sivustoa · ' +
+    METAVERKOSTO_DATA.reduce((s,d)=>s+d.e,0) + ' tapahtumaa jaettu Metalle';
+
+  const scene = document.getElementById('kupla-scene');
+  const svg = document.getElementById('kupla-svg');
+
+  // Meta-solmu
+  const metaEl = document.createElement('div');
+  metaEl.className = 'node node-meta';
+  metaEl.style.left = meta.x + 'px';
+  metaEl.style.top = meta.y + 'px';
+  metaEl.style.width = metaEl.style.height = (meta.r * 2) + 'px';
+  metaEl.innerHTML = '<span class="lbl">Meta</span>';
+  scene.appendChild(metaEl);
+  // Meta ilmestyy ENSIN, ankkurina - vasta sen jälkeen kuplat sen ympärille
+  // (unohtui ensimmäisellä kierroksella - Meta pysyi opacity:0/scale:0:ssa
+  // koko ajan vaikka OSALLISTUI silti törmäyslaskentaan, joten kuplat
+  // pakkautuivat oikein "tyhjän" keskustan ympärille, mutta itse Meta-
+  // pallo ei koskaan tullut näkyviin).
+  requestAnimationFrame(() => requestAnimationFrame(() => metaEl.classList.add('nakyy')));
+
+  const jarjestys = nodes.map((_, i) => i);
+  for (let i = jarjestys.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [jarjestys[i], jarjestys[j]] = [jarjestys[j], jarjestys[i]];
+  }
+
+  const elems = [];
+  nodes.forEach((node, i) => {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', meta.x); line.setAttribute('y1', meta.y);
+    line.setAttribute('x2', node.x); line.setAttribute('y2', node.y);
+    line.setAttribute('class', 'kupla-line');
+    svg.appendChild(line);
+
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.style.left = node.x + 'px';
+    el.style.top = node.y + 'px';
+    el.style.width = el.style.height = (node.r * 2) + 'px';
+    const bubble = document.createElement('div');
+    bubble.className = 'node-bubble';
+    bubble.style.width = bubble.style.height = '100%';
+    bubble.style.borderRadius = '50%';
+    bubble.style.position = 'absolute'; bubble.style.inset = '0';
+    el.appendChild(bubble);
+    if (node.r > 17) {
+      const lbl = document.createElement('span');
+      lbl.className = 'lbl';
+      lbl.style.position = 'relative';
+      lbl.textContent = node.n;
+      lbl.style.fontSize = Math.max(0.55, Math.min(0.85, node.r / 32)) + 'rem';
+      el.appendChild(lbl);
+    }
+    const badge = document.createElement('div');
+    badge.className = 'node-badge';
+    badge.textContent = node.e + (node.e === 1 ? ' kerta' : ' kertaa');
+    el.appendChild(badge);
+    scene.appendChild(el);
+    elems.push({ el, line, node });
+  });
+
+  const KESTO_MS = 4200;
+  jarjestys.forEach((idx, i) => {
+    const delay = (i / jarjestys.length) * KESTO_MS;
+    setTimeout(() => {
+      elems[idx].el.classList.add('nakyy');
+      elems[idx].line.classList.add('nakyy');
+    }, delay);
+  });
+
+  // KOROSTUS-SYKLI: kierretään ajan mittaan muutama tunnistettava/eniten
+  // tapahtumia kerännyt nimi kerrallaan esiin (Jarno: "animation shows one
+  // by one some of names highlighted") - top 10 tapahtumamäärän mukaan,
+  // METAVERKOSTO_DATA on jo valmiiksi tässä järjestyksessä.
+  const korostettavat = elems.slice(0, 10);
+  let korostusIdx = 0;
+  function korostaSeuraava() {
+    korostettavat.forEach(e => { e.el.classList.remove('korostus'); e.line.classList.remove('korostus'); });
+    const kohde = korostettavat[korostusIdx % korostettavat.length];
+    kohde.el.classList.add('korostus');
+    kohde.line.classList.add('korostus');
+    kohde.el.style.zIndex = 15;
+    korostusIdx++;
+  }
+  setTimeout(() => {
+    korostaSeuraava();
+    setInterval(korostaSeuraava, 2200);
+  }, KESTO_MS + 400);
+}
+
+kaynnista();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "media": [
+    
+  ],
+  "label_values": [
+    {
+      "label": "Oikeudet",
+      "vec": [
+        {
+          "value": "Perus"
+        }
+      ]
+    },
+    {
+      "label": "Luontiaika",
+      "timestamp_value": 1193062109
+    },
+    {
+      "dict": [
+        
+      ],
+      "title": "Sovellukset, joita on estetty k\u00c3\u00a4ytt\u00c3\u00a4m\u00c3\u00a4st\u00c3\u00a4 tietojasi"
+    }
+  ],
+  "fbid": "3216160051811808"
+}

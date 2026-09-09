@@ -1,0 +1,81 @@
+{
+  "installed_apps_v2": [
+    {
+      "name": "Bistri",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10159946788652420,
+      "category": "removed",
+      "removed_timestamp": 0
+    },
+    {
+      "name": "Angry Birds Cards",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10159946788662420,
+      "category": "removed",
+      "removed_timestamp": 0
+    },
+    {
+      "name": "Sports Tracker Community",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10154026814502420,
+      "category": "removed",
+      "removed_timestamp": 1772004170
+    },
+    {
+      "name": "Virtavesivaalit",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10156852375537420,
+      "category": "removed",
+      "removed_timestamp": 1772004186
+    },
+    {
+      "name": "toptapahtuma.com",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10155570161362420,
+      "category": "removed",
+      "removed_timestamp": 1772004191
+    },
+    {
+      "name": "DLive",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10156892910067420,
+      "category": "removed",
+      "removed_timestamp": 1772004198
+    },
+    {
+      "name": "DJI GO 4.0",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10156532705627420,
+      "category": "removed",
+      "removed_timestamp": 1772004203
+    },
+    {
+      "name": "Blueprint",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10158753125372420,
+      "category": "removed",
+      "removed_timestamp": 1772004218
+    },
+    {
+      "name": "IBM Video Streaming",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10160674026882420,
+      "category": "removed",
+      "removed_timestamp": 1772004229
+    },
+    {
+      "name": "Which Celebrity Look Like?",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10152603800362420,
+      "category": "removed",
+      "removed_timestamp": 1772004233
+    },
+    {
+      "name": "quintly Live Statistics",
+      "added_timestamp": 0,
+      "user_app_scoped_id": 10153632940882420,
+      "category": "removed",
+      "removed_timestamp": 1772004237
+    }
+  ]
+}
