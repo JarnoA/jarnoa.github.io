@@ -27,6 +27,7 @@ jobs:
           done
 
       - name: Download photos
+        continue-on-error: true
         run: python3 .github/scripts/fetch_listing_images.py -o kotipolku11/images
 
       - name: Show result

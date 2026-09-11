@@ -1,170 +1,246 @@
 #!/usr/bin/env python3
-"""Download the photos of a real estate listing (Etuovi / OP Koti / Oikotie).
+"""Recover the photos of a removed real estate listing.
 
-Usage
------
-  # 1) straight from the listing pages
-  python3 get_listing_images.py -o kotipolku11
+The listing pages themselves are gone (Etuovi answers 410, OP Koti 404), so the
+photo URLs have to come from what is left behind:
 
-  # 2) other listing / other site
-  python3 get_listing_images.py -o out https://www.etuovi.com/kohde/123456/kuvat
+  1. the body of the "listing removed" page, which often still carries the
+     original image tags,
+  2. the Wayback Machine snapshots of the listing and photo pages,
+  3. an image search (Bing), which still indexes the pictures.
 
-  # 3) if the site blocks scripted access: open the photo page in a browser,
-  #    save it (Ctrl+S, "Web page, complete" or "HTML only"), then:
-  python3 get_listing_images.py -o kotipolku11 --from-file saved_page.html
+Each candidate is then downloaded from the live CDN, falling back to the
+Wayback copy when the CDN has dropped it too.
 
-  # 4) just print what it found, download nothing
-  python3 get_listing_images.py --list-only
+Usage:
+    python3 fetch_listing_images.py -o out/            # listing 598764
+    python3 fetch_listing_images.py -o out/ --id 12345 --url https://...
+    python3 fetch_listing_images.py --list-only        # show URLs, download nothing
 
-Stdlib only, no dependencies.
+Stdlib only.
 """
 
 import argparse
+import hashlib
+import json
 import os
 import re
 import sys
+import urllib.error
+import urllib.parse
 import urllib.request
-from urllib.parse import urlsplit
 
-# Kotipolku 11 A, Keskusta, Siilinjarvi, 3h+k+s, 71 m2 (listing id 598764)
-DEFAULT_SOURCES = [
+# Kotipolku 11 A, Keskusta, Siilinjarvi, 3h+k+s, 71 m2
+LISTING_ID = "598764"
+LISTING_PAGES = [
     "https://www.etuovi.com/kohde/598764/kuvat",
     "https://www.etuovi.com/kohde/598764",
     "https://op-koti.fi/kohde/598764",
-    "https://op-koti.fi/api/v1/listings/598764",
+]
+SEARCH_QUERIES = [
+    "etuovi 598764 Kotipolku 11 Siilinjärvi",
+    "Kotipolku 11 A Siilinjärvi kerrostalo 3h myynnissä kuvat",
 ]
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 
 IMG_RE = re.compile(
-    r'https?://[^\s"\'<>\\)]+?\.(?:jpe?g|png|webp)(?:\?[^\s"\'<>\\)]*)?',
-    re.IGNORECASE,
-)
+    r'https?://[^\s"\'<>\\)\]]+?\.(?:jpe?g|png|webp)(?:\?[^\s"\'<>\\)\]]*)?',
+    re.IGNORECASE)
 
-# assets that are never listing photos
 JUNK = re.compile(
-    r'(logo|icon|favicon|sprite|placeholder|avatar|badge|banner|map[-_]|'
-    r'/static/|/assets/(?:img/)?ui|footer|header|qr[-_])',
-    re.IGNORECASE,
-)
+    r'(logo|icon|favicon|sprite|placeholder|avatar|badge|banner|/ads?/|'
+    r'/static/|/assets/(?:img/)?ui|footer|header|qr[-_]|pixel|tracking|'
+    r'gravatar|googletagmanager|facebook\.com|doubleclick)', re.IGNORECASE)
+
+WAYBACK_PREFIX = re.compile(r'^https?://web\.archive\.org/web/[^/]+/', re.I)
 
 
-def unescape(url: str) -> str:
-    return (url.replace("\\u002F", "/").replace("\\u002f", "/")
-               .replace("\\/", "/"))
+def log(msg):
+    print(msg, flush=True)
 
 
-def fetch(url: str) -> str:
+def unescape(text):
+    return (text.replace("\\u002F", "/").replace("\\u002f", "/")
+                .replace("\\/", "/").replace("&amp;", "&"))
+
+
+def get(url, timeout=45):
+    """Fetch a URL. Returns the body even for 4xx/5xx, since a 410 page still
+    carries markup worth parsing."""
     req = urllib.request.Request(url, headers={
         "User-Agent": UA,
         "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
         "Accept-Language": "fi-FI,fi;q=0.9,en;q=0.8",
     })
-    with urllib.request.urlopen(req, timeout=30) as r:
-        body = r.read().decode(r.headers.get_content_charset() or "utf-8",
-                               errors="replace")
-    print(f"  status {r.status}, {len(body)} chars, "
-          f"type {r.headers.get('Content-Type', '?')}")
-    return body
+    try:
+        r = urllib.request.urlopen(req, timeout=timeout)
+        body = r.read()
+        code = r.status
+    except urllib.error.HTTPError as e:
+        body = e.read()
+        code = e.code
+    except Exception as e:                                  # noqa: BLE001
+        log(f"    {url} -> {e}")
+        return None, 0
+    log(f"    {url} -> http {code}, {len(body)} bytes")
+    return body.decode("utf-8", errors="replace"), code
 
 
-def biggest(url: str) -> str:
-    """Ask the CDN for a full size version instead of a thumbnail."""
+def candidates(text):
+    if not text:
+        return []
+    text = unescape(text)
+    out = []
+    for url in IMG_RE.findall(text):
+        url = WAYBACK_PREFIX.sub("", url)     # unwrap archived originals
+        if not JUNK.search(url):
+            out.append(url)
+    return out
+
+
+def from_pages(pages):
+    found = []
+    for url in pages:
+        body, _ = get(url)
+        found += candidates(body)
+    return found
+
+
+def from_wayback(pages):
+    found, snapshots = [], []
+    for page in pages:
+        target = page.split("://", 1)[1]
+        cdx = ("https://web.archive.org/cdx/search/cdx?url="
+               + urllib.parse.quote(target, safe="")
+               + "*&output=json&limit=25&filter=statuscode:200&collapse=digest")
+        body, _ = get(cdx)
+        if not body:
+            continue
+        try:
+            rows = json.loads(body)
+        except ValueError:
+            continue
+        for row in rows[1:]:
+            ts, original = row[1], row[2]
+            snapshots.append(f"https://web.archive.org/web/{ts}id_/{original}")
+    log(f"  {len(snapshots)} wayback snapshots")
+    for snap in snapshots[:12]:
+        body, _ = get(snap)
+        found += candidates(body)
+    return found
+
+
+def from_image_search(queries):
+    found = []
+    for q in queries:
+        url = ("https://www.bing.com/images/search?q="
+               + urllib.parse.quote(q) + "&form=HDRSC2&first=1")
+        body, _ = get(url)
+        if not body:
+            continue
+        for m in re.findall(r'murl&quot;:&quot;(.*?)&quot;', body):
+            found.append(unescape(m))
+        found += candidates(body)
+    return found
+
+
+def biggest(url):
     url = re.sub(r'([?&])(w|width|h|height|size)=\d+', r'\g<1>\g<2>=2048', url)
-    # Etuovi / OP style path tokens: /800x600/, /medium/, /thumb/
-    url = re.sub(r'/(?:\d{2,4}x\d{2,4})/', '/1920x1440/', url)
-    url = re.sub(r'/(?:thumb|thumbnail|small|medium|preview)/', '/large/', url,
+    url = re.sub(r'/(\d{2,4})x(\d{2,4})/', '/1920x1440/', url)
+    url = re.sub(r'/(thumb|thumbnail|small|medium|preview)/', '/large/', url,
                  flags=re.IGNORECASE)
     return url
 
 
-def collect(text: str) -> list:
-    # JSON blobs inside the page escape their slashes; normalise first so the
-    # same regex finds URLs in markup and in __NEXT_DATA__ alike.
-    text = unescape(text)
+def dedupe(urls, listing_id):
     seen, out = set(), []
-    for url in IMG_RE.findall(text):
-        if JUNK.search(url):
-            continue
-        url = biggest(url)
-        key = urlsplit(url).path.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(url)
+    for url in urls:
+        url = biggest(url.strip().rstrip('\\'))
+        key = urllib.parse.urlsplit(url).path.lower()
+        if key and key not in seen:
+            seen.add(key)
+            out.append(url)
+    # If several candidates carry the listing id, the rest are other listings.
+    keyed = [u for u in out if listing_id in u]
+    if len(keyed) >= 3:
+        log(f"  filtering to {len(keyed)} urls containing id {listing_id}")
+        return keyed
     return out
 
 
-def download(urls: list, outdir: str) -> int:
+def fetch_binary(url):
+    req = urllib.request.Request(url, headers={
+        "User-Agent": UA, "Referer": "https://www.etuovi.com/"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return r.read()
+
+
+def download(urls, outdir):
     os.makedirs(outdir, exist_ok=True)
-    ok = 0
+    hashes, saved = set(), 0
     width = max(2, len(str(len(urls))))
     for i, url in enumerate(urls, 1):
-        ext = os.path.splitext(urlsplit(url).path)[1] or ".jpg"
-        path = os.path.join(outdir, f"{i:0{width}d}{ext.lower()}")
-        try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA,
-                                                       "Referer": "https://www.etuovi.com/"})
-            with urllib.request.urlopen(req, timeout=60) as r, open(path, "wb") as f:
-                data = r.read()
-                if len(data) < 8000:          # icon sized, not a photo
-                    print(f"  skip (too small) {url}")
-                    continue
-                f.write(data)
-        except Exception as e:                # noqa: BLE001
-            print(f"  FAIL {url}: {e}")
+        data = None
+        for attempt in (url, "https://web.archive.org/web/2020id_/" + url):
+            try:
+                data = fetch_binary(attempt)
+                break
+            except Exception as e:                          # noqa: BLE001
+                log(f"  {attempt[:110]} -> {e}")
+        if not data or len(data) < 12000:
+            log(f"  skip {url[:110]} ({0 if not data else len(data)} bytes)")
             continue
-        print(f"  {path}  ({len(data)//1024} kB)")
-        ok += 1
-    return ok
+        digest = hashlib.sha1(data).hexdigest()
+        if digest in hashes:
+            log(f"  duplicate, skipped: {url[:110]}")
+            continue
+        hashes.add(digest)
+        ext = os.path.splitext(urllib.parse.urlsplit(url).path)[1].lower() or ".jpg"
+        path = os.path.join(outdir, f"{i:0{width}d}{ext}")
+        with open(path, "wb") as f:
+            f.write(data)
+        log(f"  saved {path} ({len(data)//1024} kB)")
+        saved += 1
+    return saved
 
 
-def main() -> int:
+def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("sources", nargs="*", default=[],
-                    help="listing page URLs (default: Kotipolku 11 listing)")
     ap.add_argument("-o", "--outdir", default="listing-images")
-    ap.add_argument("--from-file", action="append", default=[],
-                    help="parse a page saved from the browser instead of fetching")
+    ap.add_argument("--id", default=LISTING_ID)
+    ap.add_argument("--url", action="append", default=[])
     ap.add_argument("--list-only", action="store_true")
     args = ap.parse_args()
 
-    pages = []
-    for p in args.from_file:
-        with open(p, encoding="utf-8", errors="replace") as f:
-            pages.append((p, f.read()))
-    if not pages:
-        for url in (args.sources or DEFAULT_SOURCES):
-            try:
-                pages.append((url, fetch(url)))
-                print(f"fetched {url}")
-            except Exception as e:            # noqa: BLE001
-                print(f"could not fetch {url}: {e}", file=sys.stderr)
+    pages = args.url or LISTING_PAGES
+    found = []
 
-    urls, seen = [], set()
-    for _, body in pages:
-        for u in collect(body):
-            k = urlsplit(u).path.lower()
-            if k not in seen:
-                seen.add(k)
-                urls.append(u)
+    log("1. listing pages (parsing the body even when removed)")
+    found += from_pages(pages)
+    log(f"  {len(found)} candidates so far")
 
-    if not urls:
-        print("No image URLs found. The page is probably rendered behind a "
-              "bot check: open it in a browser, save the page, and rerun with "
-              "--from-file.", file=sys.stderr)
-        return 1
+    log("2. wayback machine")
+    found += from_wayback(pages)
+    log(f"  {len(found)} candidates so far")
 
-    print(f"\n{len(urls)} candidate images:")
+    log("3. image search")
+    found += from_image_search(SEARCH_QUERIES)
+    log(f"  {len(found)} candidates so far")
+
+    urls = dedupe(found, args.id)
+    log(f"\n{len(urls)} unique candidate images:")
     for u in urls:
-        print("  " + u)
+        log("  " + u)
     if args.list_only:
         return 0
+    if not urls:
+        return 1
 
-    print(f"\ndownloading into {args.outdir}/")
+    log(f"\ndownloading into {args.outdir}/")
     n = download(urls, args.outdir)
-    print(f"\ndone: {n}/{len(urls)} saved")
+    log(f"\ndone: {n} images saved")
     return 0 if n else 1
 
 
