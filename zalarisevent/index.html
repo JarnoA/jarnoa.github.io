@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Musta laatikko – Tekoälyttömyyden ajan alku · Jarno Alastalo</title>
+<meta name="description" content="Tekoäly, HR ja palkkahallinto: mitä kone löytää ja mikä jää aina ihmiselle. Jarno Alastalo, Musta laatikko.">
+<style>
+  :root{
+    --bg:#0f1117; --panel:#1c1e26; --reuna:#2c2f3a;
+    --teksti:#eef0f6; --himmea:#9a9eb2; --kelta:#f2c94c; --vihrea:#B0CB40; --koralli:#FF5562; --kerma:#FBFCE2;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; background:var(--bg); color:var(--teksti);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; line-height:1.55; }
+  a{ color:var(--kelta); }
+  .wrap{ max-width:900px; margin:0 auto; padding:0 22px; }
+
+  /* HERO */
+  header{
+    background:radial-gradient(ellipse at 50% 30%, #1c2438 0%, #0a0e14 75%);
+    border-bottom:1px solid var(--reuna); text-align:center; padding:48px 0 0;
+  }
+  .eyebrow{ color:var(--himmea); font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; margin-bottom:22px; }
+  .fox{ width:200px; height:200px; image-rendering:auto; margin:0 auto 6px; display:block; }
+  h1{ font-family:Georgia,Garamond,"Times New Roman",serif; color:var(--kelta); font-size:clamp(2.2rem,6vw,3.4rem);
+      font-weight:800; letter-spacing:-.01em; margin:0; line-height:1.1; text-shadow:0 3px 18px rgba(0,0,0,.8); }
+  .sub{ font-family:Georgia,Garamond,"Times New Roman",serif; font-style:italic; color:var(--kerma); font-size:clamp(1.05rem,2.4vw,1.35rem); margin:10px auto 0; max-width:640px; opacity:.9; }
+
+  /* PIXEL BAND - the hidden client items */
+  .band{ margin:30px 0 0; padding:26px 0 30px; border-top:1px solid #ffffff12; }
+  .items{ display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-end; gap:22px 28px; }
+  .items img{ image-rendering:pixelated; image-rendering:crisp-edges; height:auto; display:block; }
+  .band p{ color:var(--himmea); font-size:.9rem; margin:22px auto 0; max-width:560px; font-style:italic; }
+
+  /* HIGHLIGHTS */
+  section{ padding:44px 0 20px; }
+  h2{ font-family:Georgia,Garamond,"Times New Roman",serif; font-size:1.7rem; color:var(--teksti); margin:0 0 6px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+  .card{ background:var(--panel); border:1px solid var(--reuna); border-radius:14px; padding:22px 22px 20px; }
+  .card .n{ color:var(--vihrea); font-weight:700; font-size:.8rem; letter-spacing:.1em; margin-bottom:8px; }
+  .card h3{ font-family:Georgia,Garamond,"Times New Roman",serif; font-size:1.25rem; line-height:1.3; margin:0 0 10px; color:var(--kelta); }
+  .card p{ margin:0; color:#d3d6e0; font-size:.98rem; }
+  .card p em{ color:var(--kerma); font-style:normal; }
+  .card .lahde{ display:block; margin-top:10px; color:var(--himmea); font-size:.82rem; }
+
+  /* CLOSING QUOTE */
+  .quote{ margin:40px 0 0; padding:34px 28px; border-left:4px solid var(--vihrea); background:#ffffff08; border-radius:0 14px 14px 0; }
+  .quote p{ font-family:Georgia,Garamond,"Times New Roman",serif; font-size:clamp(1.25rem,3vw,1.6rem); margin:0; color:var(--kerma); line-height:1.4; }
+  .quote p span{ color:var(--vihrea); }
+
+  /* FOOTER / DETAILS */
+  footer{ margin-top:56px; border-top:1px solid var(--reuna); background:#0a0c12; padding:44px 0 56px; }
+  .me{ display:flex; gap:34px; align-items:center; flex-wrap:wrap; }
+  .me img.portrait{ width:230px; max-width:100%; border-radius:10px; box-shadow:0 12px 32px rgba(0,0,0,.6); flex-shrink:0; }
+  .me .txt{ flex:1; min-width:240px; }
+  .me .txt strong{ display:block; font-family:Georgia,Garamond,"Times New Roman",serif; font-size:1.55rem; color:var(--teksti); }
+  .me .txt .rooli{ color:var(--himmea); margin:4px 0 12px; }
+  .me .txt a{ text-decoration:none; font-weight:600; }
+  .me .txt a:hover{ text-decoration:underline; }
+  .book{ display:flex; gap:18px; align-items:center; margin-top:30px; padding-top:26px; border-top:1px solid #ffffff10; }
+  .book img{ width:76px; border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,.6); flex-shrink:0; }
+  .book div{ color:var(--himmea); font-size:.95rem; }
+  .book div b{ color:var(--teksti); display:block; font-family:Georgia,serif; font-size:1.05rem; margin-bottom:2px; }
+  .fine{ color:#5d6173; font-size:.78rem; margin-top:30px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Zalaris · asiakastilaisuus · syyskuu 2026</div>
+    <img class="fox" src="img/fox.png" alt="Esityksen opashahmo, kettu">
+    <h1>Musta laatikko</h1>
+    <p class="sub">Tekoälyttömyyden ajan alku</p>
+
+    <div class="band">
+      <div class="items">
+        <img src="img/finnair-lentokone.png"  style="width:136px" alt="Lentokone">
+        <img src="img/metsa-paperirulla.png"   style="width:56px"  alt="Paperirulla">
+        <img src="img/storaenso-laatikko.png"  style="width:88px"  alt="Pahvilaatikko">
+        <img src="img/upm-tukkipino.png"       style="width:84px"  alt="Tukkipino">
+        <img src="img/dna-puhelin.png"         style="width:56px"  alt="Puhelin">
+        <img src="img/ericsson-masto.png"      style="width:60px"  alt="Linkkimasto">
+        <img src="img/siemens-monitori.png"    style="width:104px" alt="Sydänmonitori">
+        <img src="img/santander-kortti.png"    style="width:88px"  alt="Pankkikortti">
+        <img src="img/danske-pankki.png"       style="width:160px" alt="Pankkirakennus">
+        <img src="img/gigantti-tv.png"         style="width:104px" alt="Televisio">
+      </div>
+      <p>Löysitkö oman yrityksesi esityksestä? Jokaisen asiakasyrityksen tuote oli piilotettuna esityksen maisemiin.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="n">01</div>
+        <h3>Tekoälyttömyys – kaksi merkitystä</h3>
+        <p><em>Kielteinen:</em> tila, jossa tekoälyn liiallinen käyttö heikentää oppimis- ja ajattelukykyä. <em>Myönteinen:</em> kyky käyttää tekoälyä viisaasti säilyttäen inhimillinen harkinta ja itsenäinen ajattelu.</p>
+      </div>
+
+      <div class="card">
+        <div class="n">02</div>
+        <h3>Miten algoritmi näkee sinut, työntekijän?</h3>
+        <p>Kone ei kohtaa ihmistä persoonana. Se näkee meidät riveinä kylmää dataa: <em>palkkakomponentteina, TES-tulkintoina ja poikkeamina.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="n">03</div>
+        <h3>Kone löytää poikkeaman, ihminen tietää tarinan</h3>
+        <p>Tekoäly huomaa sekunneissa poikkeaman palkkarivillä – mutta se ei tiedä, onko taustalla virhe vai ansaittu ylennys. <em>Vain ihminen tuo datalle kontekstin ja kasvot.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="n">04</div>
+        <h3>Kone ei tiedä, ettei se tiedä</h3>
+        <p>Tekoäly ei hae faktaa muistista, vaan arvaa tilastollisesti todennäköisimmän. Siksi väärä TES-tulkinta voi kuulostaa aivan yhtä varmalta kuin oikea.</p>
+      </div>
+
+      <div class="card">
+        <div class="n">05</div>
+        <h3>Muodollinen tieto vs. hiljainen tieto</h3>
+        <p>Tekoäly korvaa sen, mikä on kirjoitettu muistiin – ja huonosti sen, mikä opitaan vain tekemällä. Ihmisiä ei irtisanota massoittain, vaan tekoälylle soveltuvat aloituspaikat jätetään täyttämättä.</p>
+        <span class="lahde">Brynjolfsson et al., Stanford University 2026 – aineistona ADP:n palkkahallintodata</span>
+      </div>
+
+      <div class="card">
+        <div class="n">06</div>
+        <h3>Rikki oleva data tekee koneesta sokean</h3>
+        <p>Tekoälyn musta laatikko pysyy HR:ssä hallinnassa vain kahdella asialla: <em>puhtaalla datalla</em> ja <em>ihmisellä, joka ymmärtää prosessin ja tuntee oman datansa.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="n">07</div>
+        <h3>Tunne tietosi</h3>
+        <p>Jos prosessit automatisoidaan tai ulkoistetaan niin sokeasti, ettei kukaan talossa enää ymmärrä, mistä oma data tulee, organisaation oma lihas surkastuu. Vastuu ja ydinosaaminen on säilytettävä itsellä.</p>
+      </div>
+
+      <div class="card">
+        <div class="n">08</div>
+        <h3>Tekoäly on ajattelun GPS-laite</h3>
+        <p>Navigaattori auttaa löytämään oikean TES-säännön ja varoittaa ajoissa poikkeamista. <em>Mutta autoa ajat ja päätökset teet aina sinä itse.</em></p>
+      </div>
+
+      <div class="card">
+        <div class="n">09</div>
+        <h3>Tunti lisää ihmiselle</h3>
+        <p>Jos tekoäly vapauttaa tunnin paperitöistä, se on tunti lisää ihmiselle. Kone ei koe myötätuntoa – mutta se voi vapauttaa ihmisen kokemaan sitä.</p>
+      </div>
+
+      <div class="card">
+        <div class="n">10</div>
+        <h3>Huolenpito vaatii aina toisen ihmisen</h3>
+        <p>Rutiinit ja prosessit voidaan automatisoida, mutta työntekijän kokemus huolenpidosta ja arvostuksesta vaatii toisen ihmisen. Vain aito inhimillinen huomio ja läsnäolo vaikuttavat meihin syvällä.</p>
+      </div>
+
+    </div>
+
+    <div class="quote">
+      <p>Viisas tekoälyttömyys on kykyä valita – <span>milloin tekoäly tukee ihmisyyttä ja milloin se heikentää sitä.</span></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="me">
+      <img class="portrait" src="img/jarno.jpg" alt="Jarno Alastalo">
+      <div class="txt">
+        <strong>Jarno Alastalo</strong>
+        <div class="rooli">Puhuja · kirjailija · tekoälykouluttaja</div>
+        <a href="mailto:jarno@csy.fi">jarno@csy.fi</a> &nbsp;·&nbsp; <a href="https://csy.fi">csy.fi</a>
+      </div>
+    </div>
+    <div class="book">
+      <img src="img/kansi.png" alt="Musta laatikko – kirjan kansi">
+      <div>
+        <b>Musta laatikko – Tekoälyttömyyden ajan alku</b>
+        Jarno Alastalo · Avain 2026. Puhe perustui kirjan ajatuksiin ja yli kahdenkymmenen asiantuntijan haastatteluihin.
+      </div>
+    </div>
+    <p class="fine">Esitys toteutettiin omalla 2D-pelimoottorilla – opashahmona kettu.</p>
+  </div>
+</footer>
+
+</body>
+</html>
