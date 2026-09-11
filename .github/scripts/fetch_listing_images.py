@@ -266,16 +266,18 @@ def main():
     pages = args.url or LISTING_PAGES
     found = []
 
-    with Phase("1. listing pages (body is parsed even when the page is gone)") as p:
+    # Cheapest and most reliable sources first: a stalled archive then only
+    # costs the candidates it would have added, not the whole run.
+    with Phase("1. listing pages (body is parsed even when the page is gone)", 60) as p:
         found += from_pages(pages, p)
         log(f"  {len(found)} candidates so far")
 
-    with Phase("2. wayback machine") as p:
-        found += from_wayback(pages, p)
+    with Phase("2. image search", 90) as p:
+        found += from_image_search(SEARCH_QUERIES, p)
         log(f"  {len(found)} candidates so far")
 
-    with Phase("3. image search") as p:
-        found += from_image_search(SEARCH_QUERIES, p)
+    with Phase("3. wayback machine", 120) as p:
+        found += from_wayback(pages, p)
         log(f"  {len(found)} candidates so far")
 
     urls = dedupe(found, args.id)[:80]
@@ -287,8 +289,12 @@ def main():
     if not urls:
         return 1
 
+    os.makedirs(args.outdir, exist_ok=True)
+    with open(os.path.join(args.outdir, "urls.txt"), "w") as f:
+        f.write("\n".join(urls) + "\n")
+
     log(f"\ndownloading into {args.outdir}/")
-    n = download(urls, args.outdir)
+    n = download(urls, args.outdir, budget=300.0)
     log(f"\ndone: {n} images saved")
     return 0 if n else 1
 
