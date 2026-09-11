@@ -59,9 +59,17 @@ IMG_RE = re.compile(
     re.IGNORECASE)
 
 JUNK = re.compile(
-    r'(logo|icon|favicon|sprite|placeholder|avatar|badge|banner|/ads?/|'
+    r'(logo|icon|favicon|sprite|placeholder|dummy|avatar|badge|banner|/ads?/|'
     r'/static/|/assets/(?:img/)?ui|footer|header|qr[-_]|pixel|tracking|'
     r'gravatar|googletagmanager|facebook\.com|doubleclick)', re.IGNORECASE)
+
+# Search engines answer bot traffic with whatever they feel like, so nothing is
+# downloaded unless it sits on a host that actually serves listing photos.
+# d3ls91xgksobn.cloudfront.net is Etuovi's media CDN.
+ALLOWED_HOSTS = re.compile(
+    r'(^|\.)((d3ls91xgksobn\.cloudfront\.net)|(etuovi\.com)|(etuovimedia)|'
+    r'(op-koti\.fi)|(asuntopalvelu\.op\.fi)|(oikotie\.fi)|(oikotiecdn))',
+    re.IGNORECASE)
 
 WAYBACK_PREFIX = re.compile(r'^https?://web\.archive\.org/web/[^/]+/', re.I)
 
@@ -100,14 +108,17 @@ class Phase:
         return False
 
 
-def get(url, timeout=REQ_TIMEOUT):
+def get(url, timeout=REQ_TIMEOUT, cookie=None):
     """Fetch a URL. Returns the body even for 4xx/5xx, since a 410 page still
     carries markup worth parsing."""
-    req = urllib.request.Request(url, headers={
+    headers = {
         "User-Agent": UA,
         "Accept": "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
         "Accept-Language": "fi-FI,fi;q=0.9,en;q=0.8",
-    })
+    }
+    if cookie:
+        headers["Cookie"] = cookie
+    req = urllib.request.Request(url, headers=headers)
     try:
         r = urllib.request.urlopen(req, timeout=timeout)
         body = r.read()
@@ -146,6 +157,16 @@ def from_pages(pages, phase):
 
 def from_wayback(pages, phase):
     found, snapshots = [], []
+    for page in pages:                      # cheap lookup first, CDX is flaky
+        if phase.spent():
+            break
+        body, _ = get("https://archive.org/wayback/available?url="
+                      + urllib.parse.quote(page, safe=""))
+        try:
+            snap = json.loads(body or "{}")["archived_snapshots"]["closest"]["url"]
+            snapshots.append(snap.replace("/http", "id_/http", 1))
+        except (ValueError, KeyError, TypeError):
+            pass
     for page in pages:
         if phase.spent():
             break
@@ -173,25 +194,32 @@ def from_wayback(pages, phase):
 
 
 def from_image_search(queries, phase):
+    """Image search still indexes the photos even though the listing is gone.
+    Everything here is filtered by ALLOWED_HOSTS later, because these engines
+    happily answer a datacenter IP with results for a completely different
+    query."""
     found = []
     engines = [
-        "https://www.bing.com/images/search?q={q}&form=HDRSC2&first=1",
-        "https://duckduckgo.com/html/?q={q}",
+        "https://www.google.com/search?tbm=isch&hl=fi&gl=fi&num=40&q={q}",
+        "https://www.bing.com/images/search?q={q}&mkt=fi-FI&form=HDRSC2&first=1",
     ]
     for q in queries:
         for tpl in engines:
             if phase.spent():
                 return found
-            body, _ = get(tpl.format(q=urllib.parse.quote(q)))
+            body, _ = get(tpl.format(q=urllib.parse.quote(q)),
+                          cookie="CONSENT=YES+cb.20220301-11-p0.en+FX+111")
             if not body:
                 continue
+            found += candidates(body)
             for m in re.findall(r'murl&quot;:&quot;(.*?)&quot;', body):
                 found.append(unescape(m))
-            found += candidates(body)
     return found
 
 
 def biggest(url):
+    # Etuovi's CDN takes the size in the path: /500x,q90/etuovimedia/...
+    url = re.sub(r'/\d{2,4}x,q\d{1,3}/', '/1600x,q90/', url)
     url = re.sub(r'([?&])(w|width|h|height|size)=\d+', r'\g<1>\g<2>=2048', url)
     url = re.sub(r'/(\d{2,4})x(\d{2,4})/', '/1920x1440/', url)
     url = re.sub(r'/(thumb|thumbnail|small|medium|preview)/', '/large/', url,
@@ -200,13 +228,18 @@ def biggest(url):
 
 
 def dedupe(urls, listing_id):
-    seen, out = set(), []
+    seen, out, rejected = set(), [], 0
     for url in urls:
         url = biggest(url.strip().rstrip('\\'))
-        key = urllib.parse.urlsplit(url).path.lower()
+        parts = urllib.parse.urlsplit(url)
+        if not ALLOWED_HOSTS.search(parts.netloc):
+            rejected += 1
+            continue
+        key = parts.path.lower()
         if key and key not in seen:
             seen.add(key)
             out.append(url)
+    log(f"  {rejected} candidates dropped as off-host, {len(out)} kept")
     # If several candidates carry the listing id, the rest are other listings.
     keyed = [u for u in out if listing_id in u]
     if len(keyed) >= 3:
