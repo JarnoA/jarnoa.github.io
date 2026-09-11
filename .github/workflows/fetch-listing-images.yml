@@ -36,7 +36,8 @@ jobs:
         run: |
           # hard stop, so the commit and artifact steps always get to run
           timeout -k 15 480 python3 -u .github/scripts/fetch_listing_images.py \
-            -o kotipolku11/images || echo "fetcher stopped with code $?"
+            -o kotipolku11/images \
+            --urls-file kotipolku11/images/urls.txt || echo "fetcher stopped with code $?"
 
       - name: Show result
         run: ls -la kotipolku11/images || echo "nothing downloaded"

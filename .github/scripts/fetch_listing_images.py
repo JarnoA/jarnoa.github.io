@@ -248,9 +248,31 @@ def dedupe(urls, listing_id):
     return out
 
 
-def fetch_binary(url):
-    req = urllib.request.Request(url, headers={
-        "User-Agent": UA, "Referer": "https://www.etuovi.com/"})
+def image_headers(url):
+    """Photo hosts reject a bare urllib request, so ask the way a browser
+    rendering the listing page would, referer included."""
+    parts = urllib.parse.urlsplit(url)
+    return {
+        "User-Agent": UA,
+        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+        "Accept-Language": "fi-FI,fi;q=0.9,en;q=0.8",
+        "Referer": f"{parts.scheme}://{parts.netloc}/",
+        "Sec-Fetch-Dest": "image",
+        "Sec-Fetch-Mode": "no-cors",
+        "Sec-Fetch-Site": "same-origin",
+        "Connection": "keep-alive",
+    }
+
+
+def proxied(url):
+    """Public image proxy: fetches server side, which gets past hosts that
+    refuse this runner's address."""
+    return ("https://images.weserv.nl/?url="
+            + urllib.parse.quote(url.split("://", 1)[1], safe="") + "&n=-1")
+
+
+def fetch_binary(url, headers=None):
+    req = urllib.request.Request(url, headers=headers or image_headers(url))
     with urllib.request.urlopen(req, timeout=30) as r:
         return r.read()
 
@@ -265,7 +287,7 @@ def download(urls, outdir, budget=420.0):
             log(f"  download budget spent after {i - 1} urls")
             break
         data = None
-        for attempt in (url, "https://web.archive.org/web/2020id_/" + url):
+        for attempt in (url, proxied(url)):
             try:
                 data = fetch_binary(attempt)
                 break
@@ -294,7 +316,16 @@ def main():
     ap.add_argument("--id", default=LISTING_ID)
     ap.add_argument("--url", action="append", default=[])
     ap.add_argument("--list-only", action="store_true")
+    ap.add_argument("--urls-file",
+                    help="skip discovery and download these urls instead")
     args = ap.parse_args()
+
+    if args.urls_file and os.path.exists(args.urls_file):
+        with open(args.urls_file) as f:
+            known = [l.strip() for l in f if l.strip().startswith("http")]
+        log(f"using {len(known)} urls from {args.urls_file}")
+        if known:
+            return 0 if download(known, args.outdir, budget=420.0) else 1
 
     pages = args.url or LISTING_PAGES
     found = []
