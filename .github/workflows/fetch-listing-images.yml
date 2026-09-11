@@ -1,0 +1,53 @@
+name: Fetch listing images
+
+on:
+  push:
+    branches: [claude/kotipolku-11-images-njrv9k]
+    paths:
+      - .github/workflows/fetch-listing-images.yml
+      - .github/scripts/fetch_listing_images.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reachability check
+        run: |
+          for u in https://www.etuovi.com/kohde/598764/kuvat https://op-koti.fi/kohde/598764; do
+            echo "== $u"
+            curl -s -o /dev/null -w "  http %{http_code}, %{size_download} bytes\n" \
+              -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36" \
+              "$u" || echo "  curl failed"
+          done
+
+      - name: Download photos
+        run: python3 .github/scripts/fetch_listing_images.py -o kotipolku11/images
+
+      - name: Show result
+        run: ls -la kotipolku11/images || echo "nothing downloaded"
+
+      - name: Commit images
+        run: |
+          if [ -z "$(git status --porcelain kotipolku11)" ]; then
+            echo "no new files"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add kotipolku11
+          git commit -m "Kotipolku 11: listing photos fetched by workflow"
+          git push origin HEAD:claude/kotipolku-11-images-njrv9k
+
+      - name: Upload as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotipolku11-images
+          path: kotipolku11/images
+          if-no-files-found: warn
