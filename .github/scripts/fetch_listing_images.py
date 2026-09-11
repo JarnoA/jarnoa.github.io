@@ -25,10 +25,19 @@ import hashlib
 import json
 import os
 import re
+import socket
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
+
+# Archive endpoints answer slowly or not at all, so every request is capped and
+# each phase gets a wall-clock budget.
+socket.setdefaulttimeout(20)
+STARTED = time.monotonic()
+PHASE_BUDGET = 150.0        # seconds per phase
+REQ_TIMEOUT = 20
 
 # Kotipolku 11 A, Keskusta, Siilinjarvi, 3h+k+s, 71 m2
 LISTING_ID = "598764"
@@ -66,7 +75,32 @@ def unescape(text):
                 .replace("\\/", "/").replace("&amp;", "&"))
 
 
-def get(url, timeout=45):
+class Phase:
+    """Wall-clock budget for one source, so a stalled archive cannot hang the job."""
+
+    def __init__(self, name, budget=PHASE_BUDGET):
+        self.name, self.budget = name, budget
+
+    def __enter__(self):
+        self.t0 = time.monotonic()
+        log(f"\n{self.name}")
+        return self
+
+    def __exit__(self, *exc):
+        log(f"  ({self.name} took {time.monotonic() - self.t0:.0f}s)")
+        return False
+
+    def left(self):
+        return self.budget - (time.monotonic() - self.t0)
+
+    def spent(self):
+        if self.left() <= 0:
+            log(f"  budget spent, moving on")
+            return True
+        return False
+
+
+def get(url, timeout=REQ_TIMEOUT):
     """Fetch a URL. Returns the body even for 4xx/5xx, since a 410 page still
     carries markup worth parsing."""
     req = urllib.request.Request(url, headers={
@@ -100,21 +134,25 @@ def candidates(text):
     return out
 
 
-def from_pages(pages):
+def from_pages(pages, phase):
     found = []
     for url in pages:
+        if phase.spent():
+            break
         body, _ = get(url)
         found += candidates(body)
     return found
 
 
-def from_wayback(pages):
+def from_wayback(pages, phase):
     found, snapshots = [], []
     for page in pages:
+        if phase.spent():
+            break
         target = page.split("://", 1)[1]
         cdx = ("https://web.archive.org/cdx/search/cdx?url="
                + urllib.parse.quote(target, safe="")
-               + "*&output=json&limit=25&filter=statuscode:200&collapse=digest")
+               + "*&output=json&limit=15&filter=statuscode:200&collapse=digest")
         body, _ = get(cdx)
         if not body:
             continue
@@ -126,23 +164,30 @@ def from_wayback(pages):
             ts, original = row[1], row[2]
             snapshots.append(f"https://web.archive.org/web/{ts}id_/{original}")
     log(f"  {len(snapshots)} wayback snapshots")
-    for snap in snapshots[:12]:
+    for snap in snapshots[:10]:
+        if phase.spent():
+            break
         body, _ = get(snap)
         found += candidates(body)
     return found
 
 
-def from_image_search(queries):
+def from_image_search(queries, phase):
     found = []
+    engines = [
+        "https://www.bing.com/images/search?q={q}&form=HDRSC2&first=1",
+        "https://duckduckgo.com/html/?q={q}",
+    ]
     for q in queries:
-        url = ("https://www.bing.com/images/search?q="
-               + urllib.parse.quote(q) + "&form=HDRSC2&first=1")
-        body, _ = get(url)
-        if not body:
-            continue
-        for m in re.findall(r'murl&quot;:&quot;(.*?)&quot;', body):
-            found.append(unescape(m))
-        found += candidates(body)
+        for tpl in engines:
+            if phase.spent():
+                return found
+            body, _ = get(tpl.format(q=urllib.parse.quote(q)))
+            if not body:
+                continue
+            for m in re.findall(r'murl&quot;:&quot;(.*?)&quot;', body):
+                found.append(unescape(m))
+            found += candidates(body)
     return found
 
 
@@ -173,15 +218,19 @@ def dedupe(urls, listing_id):
 def fetch_binary(url):
     req = urllib.request.Request(url, headers={
         "User-Agent": UA, "Referer": "https://www.etuovi.com/"})
-    with urllib.request.urlopen(req, timeout=60) as r:
+    with urllib.request.urlopen(req, timeout=30) as r:
         return r.read()
 
 
-def download(urls, outdir):
+def download(urls, outdir, budget=420.0):
     os.makedirs(outdir, exist_ok=True)
     hashes, saved = set(), 0
+    t0 = time.monotonic()
     width = max(2, len(str(len(urls))))
     for i, url in enumerate(urls, 1):
+        if time.monotonic() - t0 > budget:
+            log(f"  download budget spent after {i - 1} urls")
+            break
         data = None
         for attempt in (url, "https://web.archive.org/web/2020id_/" + url):
             try:
@@ -217,19 +266,19 @@ def main():
     pages = args.url or LISTING_PAGES
     found = []
 
-    log("1. listing pages (parsing the body even when removed)")
-    found += from_pages(pages)
-    log(f"  {len(found)} candidates so far")
+    with Phase("1. listing pages (body is parsed even when the page is gone)") as p:
+        found += from_pages(pages, p)
+        log(f"  {len(found)} candidates so far")
 
-    log("2. wayback machine")
-    found += from_wayback(pages)
-    log(f"  {len(found)} candidates so far")
+    with Phase("2. wayback machine") as p:
+        found += from_wayback(pages, p)
+        log(f"  {len(found)} candidates so far")
 
-    log("3. image search")
-    found += from_image_search(SEARCH_QUERIES)
-    log(f"  {len(found)} candidates so far")
+    with Phase("3. image search") as p:
+        found += from_image_search(SEARCH_QUERIES, p)
+        log(f"  {len(found)} candidates so far")
 
-    urls = dedupe(found, args.id)
+    urls = dedupe(found, args.id)[:80]
     log(f"\n{len(urls)} unique candidate images:")
     for u in urls:
         log("  " + u)
