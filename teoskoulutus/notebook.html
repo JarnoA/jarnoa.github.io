@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!--
+  Käyttöoikeus: tämä opas ja sen sisältämät promptit/mallipohjat on tarkoitettu
+  vapaasti kolmannen sektorin järjestöjen ja yhdistysten käyttöön omassa
+  toiminnassaan. Ei kaupalliseen käyttöön, jälleenmyyntiin tai kaupallisten
+  palveluiden/konsultoinnin pohjana ilman tekijän lupaa. Lisenssi: CC BY-NC 4.0.
+  © Jarno Alastalo. Yhteydenotot: jarno@csy.fi
+-->
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gemini Notebook -demo – TeOs-koulutuksen älykäs kaveri</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A1A1A; --pm: #3B62E3; --lav: #DCEBFF; --sal: #FFB549; --sal-l: #FFF3E0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 19px; color: #1A1A1A; background: #fff; line-height: 1.6; }
+  nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 16px; margin-right: 16px; }
+  nav a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 15px; transition: all 0.2s; }
+  nav a:hover, nav a:focus { background: var(--pm); color: #fff; }
+  nav a.active { background: var(--sal); color: var(--pd); font-weight: 700; }
+  header { background: var(--lav); padding: 48px 40px 36px; border-bottom: 5px solid var(--pd); }
+  header .kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--pm); text-transform: uppercase; margin-bottom: 10px; }
+  header h1 { font-size: 34px; color: var(--pd); font-weight: 900; line-height: 1.2; }
+  header .subtitle { font-size: 17px; color: #333; margin-top: 10px; max-width: 560px; line-height: 1.6; }
+  main { max-width: 860px; margin: 0 auto; padding: 44px 28px 80px; }
+  .intro-box { background: var(--pd); color: #fff; padding: 22px 26px; border-radius: 12px; margin-bottom: 36px; }
+  .intro-box h2 { font-size: 13px; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .intro-box p { font-size: 17px; line-height: 1.6; }
+  .intro-box strong { color: var(--sal); }
+  .step { margin-bottom: 44px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+  .step h3 { font-size: 20px; color: var(--pd); font-weight: 700; line-height: 1.3; }
+  .step .why { font-size: 15px; color: #666; font-style: italic; margin: 6px 0 12px 48px; }
+  .step p { color: #333; font-size: 17px; margin: 0 0 10px 48px; }
+  .how-steps { margin: 0 0 12px 48px; padding-left: 0; list-style: none; }
+  .how-steps li { font-size: 17px; color: #333; padding: 5px 0 5px 24px; position: relative; }
+  .how-steps li::before { content: '→'; position: absolute; left: 0; color: var(--pm); font-weight: 700; }
+  .how-steps li strong { color: var(--pd); }
+  .how-steps li code { background: var(--lav); color: var(--pm); padding: 1px 7px; border-radius: 4px; font-family: inherit; font-size: 15px; font-weight: 700; }
+  .prompt-wrap { margin: 14px 0 0 48px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 4px 14px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover { background: #E6992E; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 18px; font-size: 16px; line-height: 1.75; white-space: pre-wrap; color: #1A1A1A; font-family: 'Merriweather', Georgia, serif; }
+  .tip { background: #FFFBEA; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; margin: 14px 0 0 48px; font-size: 16px; color: #4a4a4a; }
+  .tip strong { color: #8B6914; }
+  .highlight-box { background: var(--sal-l); border-left: 4px solid var(--sal); padding: 18px 22px; border-radius: 8px; margin: 0 0 14px 48px; }
+  .highlight-box p { margin: 0; font-size: 16px; color: #333; }
+  .highlight-box strong { color: var(--pd); }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 14px 0 0 48px; }
+  .why-card { background: #F3F7FF; border: 1.5px solid var(--lav); border-radius: 10px; padding: 14px 16px; }
+  .why-card .why-icon { font-size: 22px; margin-bottom: 6px; }
+  .why-card .why-title { font-size: 14px; font-weight: 700; color: var(--pd); margin-bottom: 4px; }
+  .why-card .why-desc { font-size: 14px; color: #444; line-height: 1.5; }
+  hr { border: none; border-top: 2px solid var(--lav); margin: 44px 0; }
+  .bonus-badge { background: var(--pm); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-bottom: 10px; }
+  .bonus-note { font-size: 14px; color: #666; font-style: italic; margin: 0 0 20px; }
+  .bonus-item { margin-bottom: 28px; }
+  .bonus-item h4 { font-size: 17px; font-weight: 700; color: var(--pd); margin-bottom: 8px; }
+  .bonus-item p { font-size: 16px; color: #333; line-height: 1.6; }
+  .bonus-item ul { margin: 8px 0 0 20px; }
+  .bonus-item ul li { font-size: 16px; color: #333; line-height: 1.7; }
+  @media (max-width: 640px) {
+    header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; }
+    .step .why, .step p, .tip, .how-steps, .prompt-wrap, .highlight-box, .why-grid, .bonus-badge { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">TeOs-koulutus</span>
+  <a href="index.html">Etusivu</a>
+  <a href="index.html#harjoitus2">Harjoitus 2</a>
+  <a href="notebook.html" class="active">Bonus: Notebook</a>
+</nav>
+<header>
+  <div class="kicker">Työkalu · Harjoituksen 2 bonus</div>
+  <h1>Gemini Notebook — oppaan älykäs kaveri</h1>
+  <p class="subtitle">Tekoälypohjainen tutkimusassistentti, joka perustaa vastauksensa vain sinun antamiisi lähteisiin.</p>
+</header>
+<main>
+
+<div class="intro-box">
+  <h2>Mikä on Gemini Notebook?</h2>
+  <p>Gemini Notebook (tunnetaan monissa oppaissa vielä vanhalla nimellään <strong>NotebookLM</strong> — Google vaihtoi nimen kesällä 2026) on Googlen tekoälytyökalu, joka toimii kuin henkilökohtainen tutkimusassistentti. Toisin kuin tavallinen chat-tekoäly, se perustaa vastauksensa <strong>vain niihin lähteisiin, jotka sinä sille annat</strong>. Kokeillaan sitä ensin tämän oppaan kanssa — ja käytetään sitä jatkossa oikeiden hankeasiakirjojenne kanssa.</p>
+</div>
+
+<!-- VAIHE 1 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">1</div>
+    <h3>Käyttöönotto</h3>
+  </div>
+  <ul class="how-steps">
+    <li>Mene osoitteeseen: <strong><a href="https://notebook.google.com" target="_blank" rel="noopener" style="color:var(--pm);">notebook.google.com</a></strong></li>
+    <li>Luo uusi muistikirja: klikkaa <strong>New Notebook</strong> / <strong>Luo uusi</strong></li>
+    <li>Valitse lähteeksi: <strong>Website</strong></li>
+    <li>Liitä lähteeksi tämän oppaan osoite — kopioi se suoraan selaimesi osoiteriviltä</li>
+  </ul>
+  <div class="tip"><strong>💡 Vinkki:</strong> jos teet myöhemmin oman Gemini Notebookin oikeaa hanketta varten, lisää lähteeksi jokainen tarvitsemasi asiakirja erikseen (esim. hakuilmoitus, rahoittajan ohjeet, edellisen vuoden raportti) — tekoäly ei osaa itse etsiä lisämateriaalia, vaan lukee vain sen, minkä sille annat.</div>
+</div>
+
+<!-- VAIHE 2 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">2</div>
+    <h3>Kysy ja kokeile</h3>
+  </div>
+  <p class="why">Nyt tekoäly on lukenut tämän oppaan. Testaa sen kykyjä näillä kysymyksillä:</p>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Yleiskuva</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Mitkä ovat tämän oppaan kolme harjoitusta, ja kuinka paljon aikaa kullekin on varattu?</div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Valmistautuminen</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Mitä tarvitsen mukaani, jotta voin tehdä Harjoituksen 2 — oman tekoälyagentin rakentamisen?</div>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label">
+      <span>💬 Syvällinen ymmärrys</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Kopioi</button>
+    </div>
+    <div class="prompt-text">Mitä "tekoälyttömyys" tarkoittaa tämän oppaan mukaan, ja miten se liittyy päivän harjoituksiin?</div>
+  </div>
+
+  <div class="tip"><strong>💡 Vinkki:</strong> jatka samassa keskustelussa — kysy lisää, pyydä tarkennuksia tai haasta vastausta. Gemini Notebook muistaa koko keskustelun ja lähteensä.</div>
+</div>
+
+<!-- VAIHE 3 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num">3</div>
+    <h3>Audio Overview</h3>
+  </div>
+  <p class="why">Gemini Notebook osaa muuttaa tekstin eläväksi podcastiksi. Tämä kestää noin 2–5 minuuttia.</p>
+  <ul class="how-steps">
+    <li>Etsi oikeasta reunasta kohta <strong>Studio</strong> tai <strong>Notebook Guide</strong></li>
+    <li>Klikkaa <strong>Generate</strong> kohdasta <strong>Audio Overview</strong></li>
+    <li>Odota hetki</li>
+    <li>Laita kuulokkeet korville — tekoäly on luonut sinulle podcastin, jossa kaksi juontajaa keskustelee tästä oppaasta ja päivän harjoituksista</li>
+  </ul>
+  <div class="highlight-box">
+    <p><strong>Mitä kuulet?</strong> Kaksi tekoäly-"juontajaa" käy läpi oppaan sisällön, selittää harjoitukset ja antaa vinkkejä oman tekoälyagentin rakentamiseen — hyvä tapa kerrata sisältö vaikka kotimatkalla.</p>
+  </div>
+</div>
+
+<!-- MIKSI -->
+<hr>
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--pm);">?</div>
+    <h3>Miksi tämä on hyödyllinen juuri järjestötyössä?</h3>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🧠</div>
+      <div class="why-title">Informaatioähkyn hallinta</div>
+      <div class="why-desc">Sinun ei tarvitse lukea jokaista sivua sanasta sanaan — Gemini Notebook poimii olennaisen puolestasi.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📌</div>
+      <div class="why-title">Faktapohjaisuus</div>
+      <div class="why-desc">Tekoäly ei keksi omiaan, vaan näyttää aina viitteen (Citation) siihen kohtaan lähteestä, josta vastaus löytyi.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🎧</div>
+      <div class="why-title">Moniaistisuus</div>
+      <div class="why-desc">Voit "kuunnella" hankeraportin tai -hakemuksen pääkohdat podcastina siinä missä lukisit ne.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS -->
+<hr>
+<span class="bonus-badge">🎁 Bonus — ota kaikki irti</span>
+<p class="bonus-note" style="margin-top:8px;">Kun tämä demo on tehty, Gemini Notebook toimii erinomaisena tiedonhallintatyökaluna jatkossakin — juuri niissä tilanteissa, joita Harjoitus 2 käsitteli.</p>
+
+<div class="bonus-item">
+  <h4>1. Tuo omat tiedostosi (PDF, Docs, Slides)</h4>
+  <p>Gemini Notebook ei rajoitu vain verkkosivuihin. Voit ladata sinne:</p>
+  <ul>
+    <li><strong>Hankeraportit ja -hakemukset (PDF)</strong> — anna tekoälyn analysoida pitkä asiakirja puolestasi</li>
+    <li><strong>Rahoittajan ohjeet ja hakuilmoitukset</strong> — lataa useita yhteen muistikirjaan, Gemini Notebook yhdistelee tietoa kaikista yhtä aikaa</li>
+    <li><strong>Google Docs &amp; Slides</strong> — yhdistä suoraan Drive-tiedostosi</li>
+  </ul>
+</div>
+
+<div class="bonus-item">
+  <h4>2. Lähteet aina hallussa (Citations)</h4>
+  <p>Toisin kuin monet muut tekoälyt, Gemini Notebook ei "hallusinoi" niin herkästi. Aina kun se vastaa, se näyttää pienen numeron vastauksen perässä — klikkaamalla sitä näet suoraan lähdetiedostosta sen kohdan, josta tieto on peräisin. Tämä on korvaamatonta, kun kirjoitat virallisia raportteja tai rahoitushakemuksia — ja muistuttaa H2:n varoituksesta: tekoäly ei tiedä rahoittajan ajantasaisia vaatimuksia, mutta se osaa vähintään näyttää tarkasti, mistä se on poiminut vastauksensa.</p>
+</div>
+
+<div class="bonus-item">
+  <h4>3. Luo sisältöä aineistosi pohjalta</h4>
+  <p>Gemini Notebook ei vain tiivistä — se myös luo uutta. Kokeile pyytää:</p>
+  <ul>
+    <li>"Tee näiden PDF-tiedostojen pohjalta 10 kysymyksen FAQ-lista jäsenille."</li>
+    <li>"Luo selkokielinen versio tästä vaikeaselkoisesta hankeohjeesta." — sama rinnakkaisversio-periaate kuin H2:n saavutettavuusvinkissä</li>
+    <li>"Kirjoita luonnos tiedotteeksi, joka yhdistää nämä kolme eri lähdettä."</li>
+  </ul>
+</div>
+
+<div class="bonus-item">
+  <h4>4. Ääni ja podcastit jatkokäytössä</h4>
+  <p>Voit jakaa Audio Overview -podcastin muillekin — esimerkiksi kollegalle, joka ei ehtinyt lukea pitkää raporttia. Se on loistava tapa kerrata asioita vaikkapa työmatkalla.</p>
+</div>
+
+<hr>
+<p style="font-size:15px; color:#666; text-align:center;"><a href="index.html" style="color:var(--pm);">← Takaisin oppaaseen</a></p>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
