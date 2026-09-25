@@ -41,19 +41,19 @@
   .instructions ol { padding-left: 20px; }
   .instructions li { margin-bottom: 9px; font-size: 17px; color: #333; }
   .instructions li strong { color: var(--pd); }
-  .hb-title { text-align: center; margin-bottom: 18px; font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); }
-  .hampurilainen { max-width: 560px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,26,26,0.20)); }
-  .hamp-layer { padding: 16px 24px; font-size: 16px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
+  .hb-title { text-align: center; margin-bottom: 18px; font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); }
+  .hampurilainen { max-width: 660px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,26,26,0.20)); }
+  .hamp-layer { padding: 18px 26px; font-size: 20px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
   .hamp-layer.human-top { background: var(--sal); color: var(--pd); border-radius: 70px 70px 5px 5px; padding-top: 26px; position: relative; animation-delay: 0.2s; }
   .hamp-layer.human-top::before { content: '●  ●  ●  ●'; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 8px; letter-spacing: 6px; white-space: nowrap; }
   .hamp-lettuce { height: 11px; background: linear-gradient(90deg, #5D9E5D 0%, #4CAF50 40%, #5D9E5D 100%); opacity: 0; animation: hampIn 0.4s 0.48s ease forwards; border-radius: 2px; margin: 0 4px; }
   .hamp-layer.ai-mid { background: var(--pd); color: #fff; border-radius: 5px; animation-delay: 0.72s; }
   .hamp-layer.human-bot { background: #E8956E; color: var(--pd); border-radius: 5px 5px 60px 60px; padding-bottom: 22px; animation-delay: 1.1s; }
-  .hamp-who { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; flex-shrink: 0; min-width: 80px; }
+  .hamp-who { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; flex-shrink: 0; min-width: 96px; }
   .hamp-text { flex: 1; line-height: 1.45; font-weight: 600; }
-  .hamp-text em { font-weight: 400; opacity: 0.8; display: block; font-size: 14px; margin-top: 2px; }
+  .hamp-text em { font-weight: 400; opacity: 0.85; display: block; font-size: 17px; margin-top: 2px; }
   @keyframes hampIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
-  .ulkoista-tag { text-align: center; font-size: 22px; font-weight: 900; color: var(--pm); margin: 18px 0 44px; letter-spacing: -0.3px; }
+  .ulkoista-tag { text-align: center; font-size: 26px; font-weight: 900; color: var(--pm); margin: 18px 0 44px; letter-spacing: -0.3px; }
   .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 56px; }
   .section-nav a { flex: 1; min-width: 200px; background: #fff; border: 2px solid var(--lav); border-radius: 12px; padding: 16px 18px; text-decoration: none; color: var(--pd); transition: all 0.2s; }
   .section-nav a:hover, .section-nav a:focus { border-color: var(--pm); transform: translateY(-2px); }
@@ -70,6 +70,8 @@
   .tools strong { color: var(--pd); margin-right: 6px; }
   .tool-chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 14px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
   .tool-chip.rec { background: var(--sal); border-color: var(--sal); }
+  a.tool-chip { text-decoration: none; font-size: 16px; padding: 6px 16px; border-radius: 18px; }
+  a.tool-chip:hover, a.tool-chip:focus { background: var(--pm); border-color: var(--pm); color: #fff; }
   .step { margin-bottom: 36px; }
   .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
   .step-num { background: var(--pd); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
@@ -115,6 +117,42 @@
   .ws-note-top strong { color: #8B6914; }
   .ws-copy-row { margin-top: 22px; text-align: center; }
   .ws-copy-row .copy-btn { padding: 10px 22px; font-size: 16px; }
+  .ai-tips { background: #F3F7FF; border: 2px solid var(--pm); border-radius: 14px; padding: 30px 32px; margin-bottom: 48px; scroll-margin-top: 20px; }
+  .ai-tips .ai-kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); margin-bottom: 8px; }
+  .ai-tips h2 { font-size: 26px; color: var(--pd); font-weight: 900; line-height: 1.25; margin-bottom: 12px; }
+  .ai-tips .ai-intro { font-size: 17px; color: #333; margin-bottom: 24px; }
+  .ai-tips h3 { font-size: 17px; color: var(--pd); margin-bottom: 14px; }
+  .ai-list { list-style: none; padding: 0; margin: 0 0 8px; }
+  .ai-list li { position: relative; padding-left: 46px; margin-bottom: 22px; font-size: 17px; color: #262626; }
+  .ai-list li .n { position: absolute; left: 0; top: 0; background: var(--pm); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+  .ai-list li strong.t { display: block; font-size: 18px; color: var(--pd); margin-bottom: 6px; }
+  .ai-say { display: block; background: #fff; border-left: 4px solid var(--sal); border-radius: 0 8px 8px 0; padding: 9px 14px; margin: 6px 0 8px; font-size: 16px; line-height: 1.6; }
+  .ai-say .lbl { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8B6914; display: block; }
+  .ai-why { display: block; font-size: 16px; color: #444; font-style: italic; }
+  .ai-sign { text-align: right; font-style: italic; color: #555; font-size: 16px; margin-top: 18px; }
+  .ai-final { background: var(--pd); color: #fff; border-radius: 10px; padding: 16px 20px; font-size: 17px; margin-top: 8px; }
+  .roadmap { list-style: none; padding: 0; margin: 0 0 30px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .roadmap li { background: var(--lav); color: var(--pd); font-size: 15px; font-weight: 700; padding: 6px 14px 6px 6px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
+  .roadmap li span { background: var(--pd); color: #fff; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 13px; white-space: nowrap; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .phase { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 38px 0 10px; padding-top: 18px; border-top: 2px solid var(--lav); }
+  .phase .pn { background: var(--sal); color: var(--pd); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; }
+  .phase h3 { font-size: 22px; color: var(--pd); font-weight: 900; line-height: 1.25; }
+  .phase .pt { font-size: 14px; color: var(--pm); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .phase-p { font-size: 17px; color: #333; margin-bottom: 20px; }
+  details.more { margin-top: 26px; border: 2px dashed var(--pm); border-radius: 12px; background: #fff; }
+  details.more > summary { cursor: pointer; padding: 16px 22px; font-weight: 700; font-size: 17px; color: var(--pm); list-style: none; }
+  details.more > summary::-webkit-details-marker { display: none; }
+  details.more > summary::before { content: '＋ '; }
+  details.more[open] > summary::before { content: '－ '; }
+  details.more > summary:hover, details.more > summary:focus { background: var(--lav); border-radius: 10px; }
+  details.more .more-body { padding: 4px 22px 22px; }
+  .adv-item { margin-bottom: 30px; }
+  .adv-item:last-child { margin-bottom: 0; }
+  .adv-item h4 { font-size: 18px; color: var(--pd); margin-bottom: 8px; }
+  .adv-item p, .adv-item li { font-size: 16.5px; color: #333; }
+  .adv-item ol { padding-left: 22px; margin: 8px 0; }
+  .adv-item li { margin-bottom: 6px; }
+  .adv-item .prompt-wrap { margin-left: 0; }
   hr.divider { border: none; border-top: 3px solid var(--lav); margin: 0 0 56px; }
   .closing { background: var(--pd); color: #fff; border-radius: 16px; padding: 36px 32px; text-align: center; margin-top: 8px; }
   .closing p.who { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
@@ -131,6 +169,9 @@
     .prompt-wrap, .step p, .tip { margin-left: 0; }
     .section-nav { flex-direction: column; }
     .hamp-layer { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .ai-tips { padding: 24px 18px; }
+    .ai-list li { padding-left: 40px; }
+    details.more .more-body { padding: 4px 14px 18px; }
   }
 </style>
 </head>
@@ -139,6 +180,7 @@
 <nav aria-label="Sivun osiot">
   <span class="nav-logo">TeOs-koulutus</span>
   <a href="#alku">Etusivu</a>
+  <a href="#vinkit">Vinkit tekoälyltä</a>
   <a href="#harjoitus1">Harjoitus 1</a>
   <a href="#harjoitus2">Harjoitus 2</a>
   <a href="#harjoitus3">Harjoitus 3</a>
@@ -195,6 +237,73 @@
     </ol>
   </div>
 
+  <section class="ai-tips" id="vinkit" aria-labelledby="vinkit-otsikko">
+    <p class="ai-kicker">🤖 Tekoälyn oma näkökulma</p>
+    <h2 id="vinkit-otsikko">Kysyimme tekoälyltä: miten sinulta kannattaa kysyä?</h2>
+    <p class="ai-intro">Tätä opasta rakennettaessa kysyimme Claudelta (Anthropic), miten se toivoisi ihmisten kysyvän. Alla sen vastaus omin sanoin. Vinkit toimivat samalla tavalla Geminissä ja ChatGPT:ssä.</p>
+
+    <h3>🌱 Näillä pääset alkuun</h3>
+    <ol class="ai-list">
+      <li><span class="n" aria-hidden="true">1</span>
+        <strong class="t">Kerro kenelle ja miksi — älä pelkästään mitä.</strong>
+        <span class="ai-say"><span class="lbl">Sen sijaan että</span>"Kirjoita kutsu vertaistukiryhmään."</span>
+        <span class="ai-say"><span class="lbl">Kokeile</span>"Kirjoita kutsu vertaistukiryhmään. Moni lukija tulisi ensimmäistä kertaa ja jännittää. Kutsun pitää madaltaa kynnystä, ei myydä."</span>
+        <span class="ai-why">Kun tiedän syyn, osaan tehdä oikein sata pientä valintaa, joita et ehtisi luetella.</span>
+      </li>
+      <li><span class="n" aria-hidden="true">2</span>
+        <strong class="t">Anna minun kysyä ensin.</strong>
+        <span class="ai-say"><span class="lbl">Lisää pyynnön loppuun</span>"Kysy minulta ensin kolme kysymystä ennen kuin kirjoitat."</span>
+        <span class="ai-why">Muuten täytän puuttuvat kohdat arvaamalla — ja arvaukseni kuulostavat yhtä varmoilta kuin tiedot.</span>
+      </li>
+      <li><span class="n" aria-hidden="true">3</span>
+        <strong class="t">Korjaa minua suoraan.</strong>
+        <span class="ai-say"><span class="lbl">Esimerkiksi</span>"Liian pitkä, puolita." / "Toinen kappale kuulostaa mainokselta." / "Liian virallinen, puhu kuin jäsenelle."</span>
+        <span class="ai-why">En pahastu, eikä sinun tarvitse aloittaa alusta. Mitä tarkemmin sanot, mikä ei toiminut, sitä nopeammin osun.</span>
+      </li>
+      <li><span class="n" aria-hidden="true">4</span>
+        <strong class="t">Puhu, jos kirjoittaminen tuntuu työläältä.</strong>
+        <span class="ai-say"><span class="lbl">Näin</span>Paina mikrofonikuvaketta ja kerro asia kuin kollegalle kahvipöydässä.</span>
+        <span class="ai-why">Kirjoitusvirheet, polveilu ja "tuota noin" eivät haittaa. Jäsennän sen kyllä.</span>
+      </li>
+    </ol>
+
+    <details class="more">
+      <summary>⚡ Käytät jo tekoälyä? Viisi vinkkiä lisää</summary>
+      <div class="more-body">
+        <ol class="ai-list">
+          <li><span class="n" aria-hidden="true">5</span>
+            <strong class="t">Pyydä minua olemaan eri mieltä.</strong>
+            <span class="ai-say"><span class="lbl">Kokeile</span>"Mikä tässä on heikointa? Ole suora, en loukkaannu."</span>
+            <span class="ai-why">Minulla on taipumus olla samaa mieltä kanssasi. Jos haluat rehellisen arvion, pyydä sitä erikseen.</span>
+          </li>
+          <li><span class="n" aria-hidden="true">6</span>
+            <strong class="t">Kysy, mikä on varmaa.</strong>
+            <span class="ai-say"><span class="lbl">Kokeile</span>"Mikä tästä on varmaa tietoa ja mikä omaa päättelyäsi?"</span>
+            <span class="ai-why">Kuulostan yhtä varmalta silloinkin, kun olen väärässä. Tarkista aina itse nimet, luvut, päivämäärät ja määräajat.</span>
+          </li>
+          <li><span class="n" aria-hidden="true">7</span>
+            <strong class="t">Näytä esimerkki, älä kuvaile.</strong>
+            <span class="ai-say"><span class="lbl">Kokeile</span>"Tässä on uutiskirje, josta jäsenet pitivät. Ota siitä sävy, älä sisältöä."</span>
+            <span class="ai-why">Yksi hyvä vanha teksti kertoo minulle enemmän kuin kymmenen adjektiivia. Sano kuitenkin, mitä siitä otetaan — muuten kopioin liian tarkasti.</span>
+          </li>
+          <li><span class="n" aria-hidden="true">8</span>
+            <strong class="t">Pyydä kolme erilaista versiota.</strong>
+            <span class="ai-say"><span class="lbl">Kokeile</span>"Anna kolme versiota: yksi lyhyt, yksi lämmin, yksi asiallinen."</span>
+            <span class="ai-why">Valitseminen on helpompaa kuin yhden version arvioiminen. Usein paras tulos syntyy yhdistämällä kahdesta.</span>
+          </li>
+          <li><span class="n" aria-hidden="true">9</span>
+            <strong class="t">Uusi aihe, uusi keskustelu.</strong>
+            <span class="ai-say"><span class="lbl">Jos keskustelu menee solmuun</span>"Tiivistä tähänastinen keskustelu ohjeeksi, jolla voin aloittaa alusta."</span>
+            <span class="ai-why">Pitkässä keskustelussa vanhat ohjeet sekoittuvat uusiin. Tiivistelmällä pääset puhtaalta pöydältä menettämättä tehtyä työtä.</span>
+          </li>
+        </ol>
+      </div>
+    </details>
+
+    <p class="ai-final"><strong>Ja jos et tiedä, miten jotain kysyisit — kysy sitä minulta.</strong> "Miten minun kannattaisi pyytää tätä sinulta, jotta saisin parhaan tuloksen?" on täysin hyvä kysymys.</p>
+    <p class="ai-sign">— Claude Opus 5.5 (Anthropic), syyskuu 2026</p>
+  </section>
+
   <nav class="section-nav" aria-label="Harjoitukset">
     <a href="#harjoitus1"><span class="sn-time">n. 20 min</span><span class="sn-title">1 · Viestinnän rutiinit</span></a>
     <a href="#harjoitus2"><span class="sn-time">n. 35 min</span><span class="sn-title">2 · Oma tekoälyagentti</span></a>
@@ -207,15 +316,26 @@
     <h2>Viestinnän rutiinit</h2>
     <div class="goal"><strong>Tavoite:</strong> opit antamaan tekoälylle selkeän toimeksiannon, joka tuottaa heti käyttökelpoisen tekstin omalla äänelläsi — ei geneeristä yleistekstiä.</div>
     <div class="tools"><strong>🛠️ Työkalu:</strong>
-      <span class="tool-chip">Gemini</span><span class="tool-chip">Claude</span><span class="tool-chip">ChatGPT</span>
-      <span style="color:#666; font-size:15px; display:block; margin-top:6px;">Kaikki käyvät samalla tavalla — käytä sitä, joka on jo tuttu.</span>
+      <a class="tool-chip rec" href="https://gemini.google.com" target="_blank" rel="noopener">Gemini ↗</a><a class="tool-chip" href="https://claude.ai" target="_blank" rel="noopener">Claude ↗</a><a class="tool-chip" href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT ↗</a><a class="tool-chip" href="https://copilot.microsoft.com" target="_blank" rel="noopener">Copilot ↗</a>
+      <span style="color:#666; font-size:15px; display:block; margin-top:6px;">Kaikki käyvät samalla tavalla — käytä sitä, joka on jo tuttu. Jos et ole käyttänyt mitään, valitse Gemini: tarvitset sitä myös harjoituksessa 2.</span>
     </div>
 
-    <p style="margin-bottom:22px; color:#333; font-size:17px;">Valitse <strong>yksi</strong> kolmesta alla olevasta — se, joka on lähimpänä sinun oikeaa työtäsi tällä hetkellä. Kopioi sen prompti, täytä hakasulkeet ja kokeile.</p>
+    <ol class="roadmap" aria-label="Harjoituksen kulku">
+      <li><span>1</span>Laiska kokeilu</li>
+      <li><span>2</span>Uusi keskustelu (+ äänensävy)</li>
+      <li><span>3</span>Oma prompti A, B tai C</li>
+      <li><span>4</span>Vertaa</li>
+    </ol>
 
-    <div class="bonus-box" style="margin-top:0; margin-bottom:34px;">
-      <h3>🔥 Halutessasi ensin: opeta tekoälylle oma äänensävynne</h3>
-      <p>Harvalla järjestöllä on kirjoitettua äänensävyohjetta — mutta vanhoja tekstejä on lähes aina. Liitä 2–3 omaa aiempaa julkaisua samaan keskusteluun ja pyydä tekoälyä kuvaamaan sävynne sanoin. Käytä sitten sitä kuvausta alla olevan A/B/C-promptin <span class="ph">[SÄVY]</span>-kohdassa — <strong>samassa keskustelussa</strong>, jotta tekoäly muistaa juuri analysoimansa äänen.</p>
+    <div class="phase"><span class="pn">Vaihe 1</span><h3>Laiska kokeilu</h3><span class="pt">1 min</span></div>
+    <p class="phase-p">Klikkaa yllä olevaa tekoälyn nimeä ja kirjoita avautuvaan tekstikenttään pelkästään: <em>"Kirjoita somepostaus [aiheesi]"</em>. Älä anna muuta tietoa. Katso vastaus ja jätä se näkyviin — tarvitset sitä vaiheessa 4.</p>
+
+    <div class="phase"><span class="pn">Vaihe 2</span><h3>Aloita uusi keskustelu</h3><span class="pt">+ halutessasi 5 min</span></div>
+    <p class="phase-p">Avaa <strong>uusi, tyhjä keskustelu</strong> klikkaamalla saman tekoälyn nimeä uudelleen — se aukeaa uuteen välilehteen, ja laiska vastaus jää talteen edelliseen. Tee kaikki loput tässä samassa keskustelussa. Halutessasi voit ensin opettaa tekoälylle järjestönne äänensävyn (alla). Jos et halua, siirry suoraan vaiheeseen 3.</p>
+
+    <div class="bonus-box" style="margin-top:0; margin-bottom:10px;">
+      <h3>🔥 Valinnainen: opeta tekoälylle oma äänensävynne</h3>
+      <p>Harvalla järjestöllä on kirjoitettua äänensävyohjetta — mutta vanhoja tekstejä on lähes aina. Liitä 2–3 omaa aiempaa julkaisua ja pyydä tekoälyä kuvaamaan sävynne sanoin. Kopioi saamasi kuvaus vaiheen 3 promptin <span class="ph">Sävy</span>-kohtaan.</p>
       <div class="prompt-wrap" style="margin-left:0; margin-top:16px;">
         <div class="prompt-label"><span>📝 Äänensävyn analyysi</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi äänensävyn analyysiprompti leikepöydälle">Kopioi</button></div>
         <div class="prompt-text">Tässä on 2–3 esimerkkiä <span class="ph">[JÄRJESTÖSI NIMI]</span> -järjestön aiemmin julkaisemista teksteistä:
@@ -225,6 +345,9 @@
 Kuvaile näiden tekstien äänensävy: millaisia sanavalintoja käytämme, millainen lauserakenne on tyypillinen ja mitä kannattaisi välttää. Tiivistä kuvaus 2–3 lauseeseen, jota voin käyttää sävyohjeena seuraavissa prompteissa.</div>
       </div>
     </div>
+
+    <div class="phase"><span class="pn">Vaihe 3</span><h3>Valitse yksi: A, B tai C</h3><span class="pt">10 min</span></div>
+    <p class="phase-p">Valitse se, joka on lähimpänä oikeaa työtäsi tällä hetkellä. Kopioi prompti samaan keskusteluun, täytä hakasulkeet ja lähetä.</p>
 
     <div class="step">
       <div class="step-head"><div class="step-num">A</div><h3>Some-julkaisu — kutsu mukaan</h3></div>
@@ -265,7 +388,45 @@ Lopuksi: kirjoita yksi lause, josta käy ilmi keneen ja miten toimittaja voi ott
       </div>
     </div>
 
-    <div class="tip" style="margin-left:0;"><strong>💬 Kun olet valmis:</strong> vertaa tulosta vierustoverisi kanssa. Mikä tekstissä toimi, mikä ei? Mitä olisit itse muuttanut ennen kuin lähettäisit sen oikeasti?</div>
+    <div class="phase"><span class="pn">Vaihe 4</span><h3>Vertaa</h3><span class="pt">3 min</span></div>
+    <p class="phase-p">Laita vaiheen 1 laiska vastaus ja tämä uusi rinnakkain. Mikä muuttui? Ja tärkein kysymys: <strong>mitä sinä tiesit, mitä tekoäly ei tiennyt?</strong> Näytä sitten tekstisi vierustoverillesi: mikä toimi, mikä ei, ja mitä muuttaisit ennen kuin lähettäisit sen oikeasti?</p>
+
+    <details class="more">
+      <summary>⚡ Valmis ennen muita? Kolme lisähaastetta</summary>
+      <div class="more-body">
+
+        <div class="adv-item">
+          <h4>1 · Lue teksti kohdelukijan silmin</h4>
+          <p>Jatka samassa keskustelussa. Tekoäly osaa arvioida tekstiä toisen ihmisen näkökulmasta — kunhan kerrot, kuka se ihminen on.</p>
+          <div class="prompt-wrap">
+            <div class="prompt-label"><span>📝 Kohdelukijan arvio</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi kohdelukijan arvio -prompti leikepöydälle">Kopioi</button></div>
+            <div class="prompt-text">Lue yllä oleva teksti niin kuin sen lukisi <span class="ph">[KOHDELUKIJA — esim. 70-vuotias jäsen, joka ei ole koskaan käynyt tilaisuuksissamme / nuori, joka lukee puhelimelta bussissa]</span>.
+
+Mikä jää hänelle epäselväksi? Mikä saattaa ärsyttää tai tuntua vieraalta? Missä kohdassa hän lopettaisi lukemisen?
+
+Älä vielä korjaa tekstiä — kerro ensin havaintosi.</div>
+          </div>
+        </div>
+
+        <div class="adv-item">
+          <h4>2 · Kuvasta alt-teksti ja julkaisu</h4>
+          <p>Ota puhelimella kuva esimerkiksi tapahtumajulisteesta, ilmoitustaulun lapusta tai tilasta, jossa ryhmänne kokoontuu — <strong>ei tunnistettavia ihmisiä</strong>. Lisää kuva keskusteluun (+ tai 📎) ja kopioi prompti mukaan. Jokainen someen julkaistu kuva tarvitsee alt-tekstin, jotta ruudunlukijan käyttäjä saa siitä tiedon.</p>
+          <div class="prompt-wrap">
+            <div class="prompt-label"><span>📝 Alt-teksti + julkaisu</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi alt-teksti-prompti leikepöydälle">Kopioi</button></div>
+            <div class="prompt-text">Kirjoita tälle kuvalle alt-teksti ruudunlukijan käyttäjälle: enintään kaksi lausetta, kerro kuvan olennainen sisältö ja tarkoitus. Älä aloita sanoilla "kuva, jossa".
+
+Kirjoita sen jälkeen kuvan pohjalta lyhyt somejulkaisu <span class="ph">[JÄRJESTÖSI NIMI]</span> -järjestölle.</div>
+          </div>
+          <p style="margin-top:10px; font-size:15px; color:#666;">Tarkista kuvaus aina itse — ruudunlukijan käyttäjä ei pysty tarkistamaan, pitääkö se paikkansa.</p>
+        </div>
+
+        <div class="adv-item">
+          <h4>3 · Sano se ääneen</h4>
+          <p>Paina Geminin mikrofonikuvaketta ja kerro minuutin ajan vapaasti, mitä haluat viestiä ja kenelle — ihan kuin puhuisit kollegalle. Pyydä sitten: <em>"Tee tästä somejulkaisu. Kysy ensin, jos jokin jäi epäselväksi."</em> Huomaat, että puhumalla annat usein enemmän taustaa kuin kirjoittamalla.</p>
+        </div>
+
+      </div>
+    </details>
   </section>
 
   <hr class="divider">
@@ -281,6 +442,13 @@ Lopuksi: kirjoita yksi lause, josta käy ilmi keneen ja miten toimittaja voi ott
     </div>
 
     <div class="tip" style="margin-left:0;"><strong>📱 Jos sinulla on vain puhelin:</strong> Google vahvistaa itse, että uuden Gemin voi <em>luoda</em> vain selaimessa (<a class="link-pill" href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a>) — ei Gemini-mobiilisovelluksessa. Avaa siis puhelimen selain tätä harjoitusta varten. Kun tallennat Gemin, se ilmestyy automaattisesti myös Gemini-sovellukseen — sitä voit sen jälkeen käyttää kummasta tahansa.</div>
+
+    <ol class="roadmap" aria-label="Harjoituksen kulku">
+      <li><span>1–3</span>Avaa Gem-editori</li>
+      <li><span>4–5</span>Nimi ja ohjeet</li>
+      <li><span>6–8</span>Tallenna ja testaa</li>
+      <li><span>9</span>Paranna</li>
+    </ol>
 
     <ol class="steps-list">
       <li>Kirjaudu osoitteessa <a class="link-pill" href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a> Google-tililläsi (selaimella — ks. huomio yllä, jos käytät puhelinta).</li>
@@ -311,7 +479,9 @@ Lopuksi: kirjoita yksi lause, josta käy ilmi keneen ja miten toimittaja voi ott
       <span class="tool-chip">viestinnän runkojen tekijä</span>
       <span class="tool-chip">saavutettavuustarkistaja (selkokieli)</span>
       <span class="tool-chip">vaikuttavuustarinan kirjoittaja</span>
+      <span class="tool-chip">sparraaja, joka ei kirjoita puolestani</span>
     </div>
+    <p style="margin:-10px 0 10px; font-size:15px; color:#666;"><strong>💡 Vinkki sparraajalle:</strong> sille on valmis ohje — <a class="link-pill" href="#sparraaja">avaa sparraajan ohje</a>. Käytä sitä alla olevan pohjan sijaan.</p>
     <p style="margin:-10px 0 10px; font-size:15px; color:#666;"><strong>💡 Vinkki saavutettavuustarkistajalle:</strong> pyydä agenttia tekemään aina kaksi rinnakkaista versiota — "virallinen versio" ja "selkokielinen versio" — niin kumpikaan ei jää tekemättä kiireessä.</p>
     <p style="margin:0 0 20px; font-size:15px; color:#666;"><strong>💡 Vinkki avustushakemuksen tekijälle:</strong> lisää TEHTÄVÄ-kohtaan, että hakemusteksteissä vältetään lihavointeja, listauksia ja toistoa, ja että pituus vastaa hakuilmoituksen merkkimäärää. Yleiskielinen chatti-vastaus ja rahoittajalle kelpaava hakemusteksti eivät ole sama asia.</p>
 
@@ -332,6 +502,17 @@ Taustatietoa, joka kannattaa tietää: <span class="ph">[LIITÄ TÄHÄN ESIM. J�
 
 <em style="color:#888; font-size:14px;">MUOTO</em>
 Vastaa aina tässä muodossa: <span class="ph">[KUVAA HALUTTU RAKENNE — esim. "lyhyt yhteenveto ensin, sitten 3–5 ranskalaista viivaa tärkeimmistä pointeista"]</span>. Jos vastaus venyy pitkäksi, jaa se selkeisiin väliotsikoihin — älä yhtä tekstimöykkyä.</div>
+    </div>
+
+    <div class="bonus-box" style="margin-top:22px;">
+      <h3>🧭 Vaihtoehto vaiheelle 5: anna Geminin haastatella sinut</h3>
+      <p>Jos hakasulkeiden täyttäminen tuntuu vaikealta, avaa toiseen välilehteen tavallinen Gemini-keskustelu (ei Gemiä) ja kopioi tämä sinne. Vastaa kysymyksiin. Saat valmiin ohjeen, jonka liität Gemin Ohjeet-kenttään yllä olevan pohjan sijaan — ja jatkat sitten vaiheesta 6.</p>
+      <div class="prompt-wrap" style="margin-left:0; margin-top:14px;">
+        <div class="prompt-label"><span>📝 Haastattele minut</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi haastatteluprompti leikepöydälle">Kopioi</button></div>
+        <div class="prompt-text">Haluan rakentaa itselleni tekoälyagentin (Gemini Gem) avuksi työhöni järjestössä. Haastattele minua: kysy yksi kysymys kerrallaan siitä, mitä toistuvaa tehtävää agentin pitäisi hoitaa, kenelle lopputulos menee, millä äänellä järjestömme puhuu ja mikä tehtävässä nyt vie eniten aikaa.
+
+Kun tiedät tarpeeksi (enintään kuusi kysymystä), kirjoita valmis Gem-ohje neljällä otsikolla: ROOLI, TEHTÄVÄ, KONTEKSTI, MUOTO. Lisää KONTEKSTIIN ohje, että agentti kysyy tarkentavia kysymyksiä eikä arvaa.</div>
+      </div>
     </div>
 
     <div class="shots">
@@ -372,6 +553,48 @@ Vastaa aina tässä muodossa: <span class="ph">[KUVAA HALUTTU RAKENNE — esim. 
 
     <div class="warn"><strong>Muista myös:</strong> jos agenttisi käsittelee hankeraportteja tai avustushakemuksia, tekoäly ei tiedä rahoittajan lomakkeen ajantasaisia kenttävaatimuksia tai määräaikoja — ne on aina tarkistettava itse rahoittajan omilta sivuilta. Tekoäly on hyvä rakenteen ja jäsentelyn tukena, huono virallisten yksityiskohtien lähteenä.</div>
 
+    <details class="more">
+      <summary>⚡ Gem valmis? Kolme lisähaastetta</summary>
+      <div class="more-body">
+
+        <div class="adv-item">
+          <h4>1 · Yritä rikkoa agenttisi</h4>
+          <p>Kokeile näitä kolmea omalla Gemilläsi:</p>
+          <ol>
+            <li>Kysy jotain, mitä se ei voi tietää: <em>"Milloin rahoittajamme seuraava haku päättyy?"</em> Myöntääkö se, ettei tiedä?</li>
+            <li>Pyydä jotain tehtävän ulkopuolelta: <em>"Kirjoita runo kissasta."</em> Pysyykö se roolissaan?</li>
+            <li>Anna epämääräinen pyyntö: <em>"Tee se juttu."</em> Kysyykö se tarkennusta?</li>
+          </ol>
+          <p>Jos jokin testi menee pieleen, lisää ohjeisiin yksi lause, joka korjaa asian, ja kokeile uudelleen. Näin agentteja rakennetaan oikeastikin: testaa, korjaa yksi lause, testaa uudelleen.</p>
+        </div>
+
+        <div class="adv-item">
+          <h4>2 · Anna agentille oma tietopohja</h4>
+          <p>Muokkaa Gemiä ja lisää klemmarikuvakkeesta (Knowledge) <strong>julkinen</strong> asiakirja — esimerkiksi järjestösi verkkosivun esittelyteksti, julkinen toimintakertomus tai rahoittajan julkinen hakuohje. Kysy sitten jotain, mikä löytyy vain siitä asiakirjasta, ja katso, osaako agentti käyttää sitä. Ei henkilötietoja eikä sisäisiä asiakirjoja.</p>
+        </div>
+
+        <div class="adv-item" id="sparraaja" style="scroll-margin-top:20px;">
+          <h4>3 · Rakenna toinen Gem: sparraaja, joka ei kirjoita puolestasi</h4>
+          <p>Useimmat pyytävät tekoälyä tekemään. Tämä agentti tekee päinvastoin: se kysyy, haastaa ja jättää kirjoittamisen sinulle. Tätä on tekoälyttömyys käytännössä — kone ei ajattele puolestasi, vaan auttaa sinua ajattelemaan tarkemmin.</p>
+          <div class="prompt-wrap">
+            <div class="prompt-label"><span>📝 Sparraaja-Gemin ohje</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi sparraaja-Gemin ohje leikepöydälle">Kopioi</button></div>
+            <div class="prompt-text"><em style="color:#888; font-size:14px;">ROOLI</em>
+Olet kriittinen mutta ystävällinen sparraaja järjestötyöntekijälle. Et kirjoita tekstejä käyttäjän puolesta.
+
+<em style="color:#888; font-size:14px;">TEHTÄVÄ</em>
+Kun käyttäjä tuo luonnoksen, idean tai suunnitelman, kysy siitä ensin kolme tarkentavaa kysymystä. Nimeä vastausten jälkeen sen vahvin kohta ja kaksi heikointa kohtaa perusteluineen.
+
+<em style="color:#888; font-size:14px;">KONTEKSTI</em>
+Tavoite on, että käyttäjä ajattelee itse paremmin — ei se, että sinä ajattelet hänen puolestaan. Älä myötäile. Jos idea on hyvä, sano se lyhyesti ja siirry heikkouksiin. Jos käyttäjä pyytää valmista tekstiä, muistuta ystävällisesti roolistasi ja kysy, mitä hän itse ajattelee.
+
+<em style="color:#888; font-size:14px;">MUOTO</em>
+Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajattelua eteenpäin.</div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+
     <div class="bonus-box">
       <h3>🔎 Kokeile myös: Gemini Notebook <span style="font-weight:400; font-size:14px; opacity:0.75;">(entinen NotebookLM)</span></h3>
       <p>Jos sinulla on paljon taustamateriaalia yhdestä aiheesta — esim. rahoittajan ohjeet, edellisen vuoden hankeraportti, useita muistioita — kokeile <a href="https://notebook.google.com" target="_blank" rel="noopener">Gemini Notebookia</a>. Lataat lähteet sinne, ja tekoäly vastaa kysymyksiisi <strong>vain</strong> niiden pohjalta, viitaten aina siihen kohtaan lähteessä, josta vastaus tulee. Se ei jää pysyväksi agentiksi kuten Gem, vaan on kertaluontoinen syväsukellus yhteen aineistoon — hyvä silloin, kun tarkkuus on tärkeämpää kuin uudelleenkäytettävyys. Sama työkalu tunnetaan monissa oppaissa vielä vanhalla nimellään NotebookLM — Google vaihtoi nimen kesällä 2026, toiminta pysyi samana.</p>
@@ -400,9 +623,14 @@ Vastaa aina tässä muodossa: <span class="ph">[KUVAA HALUTTU RAKENNE — esim. 
         <textarea id="ws2" rows="3" placeholder="Kirjoita oma pieni askeleesi tähän..."></textarea>
       </div>
       <div class="ws-item">
-        <label for="ws3">3. Kerroin vierustoverille</label>
-        <span class="hint">Käännyt vieressä istuvan puoleen ja kerrot molemmat askeleesi (kohdat 1 ja 2). Kysy häneltä sama kysymys, jonka kysyisit tekoälyltä: <em>"Miten sinä muokkaisit tätä ideaa?"</em> Ette ehkä ole samasta järjestöstä — se on hyvä asia, ulkopuolinen näkökulma on arvokas. Muutama jakaa vielä ääneen koko ryhmälle.</span>
-        <textarea id="ws3" rows="2" placeholder="Hän ehdotti... / Muokkaisin ideaani näin..."></textarea>
+        <label for="ws3">3. Kenen kanssa käytän säästyneen ajan?</label>
+        <span class="hint">Jos tämä säästää puoli tuntia viikossa — kenen kohtaamiseen käytät sen?</span>
+        <textarea id="ws3" rows="2" placeholder="Esim. soitan jäsenelle, joka ei ole käynyt pitkään aikaan..."></textarea>
+      </div>
+      <div class="ws-item">
+        <label for="ws4">4. Kerroin vierustoverille</label>
+        <span class="hint">Käännyt vieressä istuvan puoleen ja kerrot vastauksesi (kohdat 1–3). Kysy häneltä sama kysymys, jonka kysyisit tekoälyltä: <em>"Miten sinä muokkaisit tätä ideaa?"</em> Ette ehkä ole samasta järjestöstä — se on hyvä asia, ulkopuolinen näkökulma on arvokas. Muutama jakaa vielä ääneen koko ryhmälle.</span>
+        <textarea id="ws4" rows="2" placeholder="Hän ehdotti... / Muokkaisin ideaani näin..."></textarea>
       </div>
       <div class="ws-copy-row">
         <button class="copy-btn" onclick="copyNotes(this)" aria-label="Kopioi kaikki kirjoittamasi vastaukset leikepöydälle">📋 Kopioi kaikki vastaukseni</button>
@@ -445,11 +673,21 @@ function copyPrompt(btn) {
   });
 }
 
+// Avaa suljettu lisähaastelaatikko, kun siihen linkitetään (esim. #sparraaja)
+function openTarget() {
+  const el = location.hash && document.querySelector(location.hash);
+  const d = el && el.closest('details');
+  if (d) { d.open = true; el.scrollIntoView(); }
+}
+window.addEventListener('hashchange', openTarget);
+openTarget();
+
 function copyNotes(btn) {
   const fields = [
     ['1. Toistuva tehtäväni', 'ws1'],
     ['2. Yksi konkreettinen askel ensi viikolle', 'ws2'],
-    ['3. Kerroin vierustoverille', 'ws3']
+    ['3. Kenen kanssa käytän säästyneen ajan', 'ws3'],
+    ['4. Kerroin vierustoverille', 'ws4']
   ];
   const text = fields.map(([label, id]) => {
     const val = document.getElementById(id).value.trim();
