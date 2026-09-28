@@ -334,14 +334,19 @@
     </ol>
 
     <div class="phase"><span class="pn">Vaihe 1</span><h3>Laiska kokeilu</h3><span class="pt">1 min</span></div>
-    <p class="phase-p">Klikkaa yllä olevaa tekoälyn nimeä ja kirjoita avautuvaan tekstikenttään pelkästään: <em>"Kirjoita somepostaus [aiheesi]"</em>. Älä anna muuta tietoa. Katso vastaus ja jätä se näkyviin — tarvitset sitä vaiheessa 4.</p>
+    <p class="phase-p">Klikkaa yllä olevaa tekoälyn nimeä, kopioi alla oleva lyhyt prompti avautuvaan tekstikenttään ja täytä hakasulkeet. Valitse sama tekstityyppi ja aihe, jonka teet vaiheessa 3. Älä anna muuta tietoa. Katso vastaus ja jätä se näkyviin — tarvitset sitä vaiheessa 4.</p>
+    <div class="prompt-wrap" style="margin:0 0 20px;">
+      <div class="prompt-label"><span>📝 Laiska prompti</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi laiska prompti leikepöydälle">Kopioi</button></div>
+      <div class="prompt-text">Kirjoita <span class="ph">[SOMEPOSTAUS / UUTISKIRJEEN KAPPALE / TIEDOTE]</span> aiheesta <span class="ph">[AIHEESI]</span>.</div>
+    </div>
 
-    <div class="phase"><span class="pn">Vaihe 2</span><h3>Aloita uusi keskustelu</h3><span class="pt">+ halutessasi 5 min</span></div>
+    <div class="phase"><span class="pn">Vaihe 2</span><h3>Aloita uusi keskustelu</h3><span class="pt">+ halutessasi 5–10 min</span></div>
     <p class="phase-p">Avaa <strong>uusi, tyhjä keskustelu</strong> klikkaamalla saman tekoälyn nimeä uudelleen — se aukeaa uuteen välilehteen, ja laiska vastaus jää talteen edelliseen. Tee kaikki loput tässä samassa keskustelussa. Halutessasi voit ensin opettaa tekoälylle järjestönne äänensävyn (alla). Jos et halua, siirry suoraan vaiheeseen 3.</p>
 
     <div class="bonus-box" style="margin-top:0; margin-bottom:10px;">
       <h3>🔥 Valinnainen: opeta tekoälylle oma äänensävynne</h3>
       <p>Harvalla järjestöllä on kirjoitettua äänensävyohjetta — mutta vanhoja tekstejä on lähes aina. Liitä 2–3 omaa aiempaa julkaisua ja pyydä tekoälyä kuvaamaan sävynne sanoin. Kopioi saamasi kuvaus vaiheen 3 promptin <span class="ph">Sävy</span>-kohtaan.</p>
+      <p style="margin-top:10px;"><strong>⚡ Nopein tapa:</strong> avaa järjestönne Facebook-sivu tai verkkosivu ja kopioi kolme uusinta julkaisua.</p>
       <div class="prompt-wrap" style="margin-left:0; margin-top:16px;">
         <div class="prompt-label"><span>📝 Äänensävyn analyysi</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi äänensävyn analyysiprompti leikepöydälle">Kopioi</button></div>
         <div class="prompt-text">Tässä on 2–3 esimerkkiä <span class="ph">[JÄRJESTÖSI NIMI]</span> -järjestön aiemmin julkaisemista teksteistä:
