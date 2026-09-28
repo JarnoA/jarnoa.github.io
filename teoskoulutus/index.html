@@ -153,6 +153,13 @@
   .adv-item ol { padding-left: 22px; margin: 8px 0; }
   .adv-item li { margin-bottom: 6px; }
   .adv-item .prompt-wrap { margin-left: 0; }
+  .h-banner { background: var(--pd); border-left: 12px solid var(--sal); border-radius: 16px; padding: 30px 32px 28px; margin-bottom: 28px; }
+  .h-banner .h-num { display: block; font-size: clamp(40px, 10vw, 76px); font-weight: 900; color: var(--sal); text-transform: uppercase; letter-spacing: 1px; line-height: 1; margin-bottom: 12px; }
+  .harjoitus .h-banner h2 { color: #fff; font-size: clamp(24px, 5vw, 34px); margin-bottom: 10px; }
+  .h-banner .h-time { color: rgba(255,255,255,0.75); font-size: 15px; }
+  .h-end { margin-top: 44px; border: 3px dashed var(--pm); border-radius: 14px; padding: 22px 24px; text-align: center; background: #F3F7FF; }
+  .h-end strong { display: block; font-size: 21px; color: var(--pd); margin-bottom: 6px; }
+  .h-end span { font-size: 16px; color: #444; }
   hr.divider { border: none; border-top: 3px solid var(--lav); margin: 0 0 56px; }
   .closing { background: var(--pd); color: #fff; border-radius: 16px; padding: 36px 32px; text-align: center; margin-top: 8px; }
   .closing p.who { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
@@ -312,8 +319,7 @@
 
   <!-- ============ HARJOITUS 1 ============ -->
   <section class="harjoitus" id="harjoitus1">
-    <div class="h-head"><span class="h-badge">Harjoitus 1</span><span class="h-time">n. 20 min</span></div>
-    <h2>Viestinnän rutiinit</h2>
+    <div class="h-banner"><span class="h-num">Harjoitus 1</span><h2>Viestinnän rutiinit</h2><span class="h-time">⏱ n. 20 min</span></div>
     <div class="goal"><strong>Tavoite:</strong> opit antamaan tekoälylle selkeän toimeksiannon, joka tuottaa heti käyttökelpoisen tekstin omalla äänelläsi — ei geneeristä yleistekstiä.</div>
     <div class="tools"><strong>🛠️ Työkalu:</strong>
       <a class="tool-chip rec" href="https://gemini.google.com" target="_blank" rel="noopener">Gemini ↗</a><a class="tool-chip" href="https://claude.ai" target="_blank" rel="noopener">Claude ↗</a><a class="tool-chip" href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT ↗</a><a class="tool-chip" href="https://copilot.microsoft.com" target="_blank" rel="noopener">Copilot ↗</a>
@@ -427,14 +433,14 @@ Kirjoita sen jälkeen kuvan pohjalta lyhyt somejulkaisu <span class="ph">[JÄRJE
 
       </div>
     </details>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 1 päättyy tähän</strong><span>Odota yhteistä siirtymää ennen harjoitusta 2. Jos olet valmis ennen muita, avaa ⚡-lisähaasteet yllä.</span></div>
   </section>
 
   <hr class="divider">
 
   <!-- ============ HARJOITUS 2 ============ -->
   <section class="harjoitus" id="harjoitus2">
-    <div class="h-head"><span class="h-badge">Harjoitus 2</span><span class="h-time">n. 35 min</span></div>
-    <h2>Oma tekoälyagentti — klooni järjestöllesi</h2>
+    <div class="h-banner"><span class="h-num">Harjoitus 2</span><h2>Oma tekoälyagentti — klooni järjestöllesi</h2><span class="h-time">⏱ n. 35 min</span></div>
     <div class="goal"><strong>Tavoite:</strong> rakennat pysyvän tekoälyagentin (Gemini-termillä <em>Gem</em>), joka jo "tuntee" tehtävänsä — sinun ei tarvitse selittää samaa taustaa joka kerta uudestaan. Sama periaate toimii mihin tahansa toistuvaan tehtävään.</div>
     <div class="tools"><strong>🛠️ Työkalu:</strong> <span class="tool-chip rec">Google Gemini</span>
       <span style="color:#666; font-size:15px; display:block; margin-top:6px;">Gemsin tekeminen on maksutonta Google-tilillä. Ennakkotehtävä: varmista, että sinulla on Google-tili käytössä.</span>
@@ -600,14 +606,14 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
       <p>Jos sinulla on paljon taustamateriaalia yhdestä aiheesta — esim. rahoittajan ohjeet, edellisen vuoden hankeraportti, useita muistioita — kokeile <a href="https://notebook.google.com" target="_blank" rel="noopener">Gemini Notebookia</a>. Lataat lähteet sinne, ja tekoäly vastaa kysymyksiisi <strong>vain</strong> niiden pohjalta, viitaten aina siihen kohtaan lähteessä, josta vastaus tulee. Se ei jää pysyväksi agentiksi kuten Gem, vaan on kertaluontoinen syväsukellus yhteen aineistoon — hyvä silloin, kun tarkkuus on tärkeämpää kuin uudelleenkäytettävyys. Sama työkalu tunnetaan monissa oppaissa vielä vanhalla nimellään NotebookLM — Google vaihtoi nimen kesällä 2026, toiminta pysyi samana.</p>
       <p style="margin-top:14px;"><a href="notebook.html" style="color:var(--pd); font-weight:700; text-decoration:underline;">📖 Kokeile itse — askel askeleelta -demo tälle oppaalle →</a></p>
     </div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 2 päättyy tähän</strong><span>Odota yhteistä siirtymää ennen harjoitusta 3. Jos olet valmis ennen muita, avaa ⚡-lisähaasteet yllä.</span></div>
   </section>
 
   <hr class="divider">
 
   <!-- ============ HARJOITUS 3 ============ -->
   <section class="harjoitus" id="harjoitus3">
-    <div class="h-head"><span class="h-badge">Harjoitus 3</span><span class="h-time">n. 15 min</span></div>
-    <h2>Yksi asia ensi viikolle</h2>
+    <div class="h-banner"><span class="h-num">Harjoitus 3</span><h2>Yksi asia ensi viikolle</h2><span class="h-time">⏱ n. 15 min</span></div>
     <div class="goal"><strong>Tavoite:</strong> tekoäly nopeuttaa ja poistaa pullonkauloja — se ei tee päätöksiä puolestasi eikä ole viisaampi kuin sinä. Kirjaa yksi konkreettinen asia, jonka voit aloittaa omassa työssäsi ensi viikolla ilman erillistä lupaa, lisäbudjettia tai uutta ohjelmistoa.</div>
 
     <div class="worksheet">
@@ -637,6 +643,7 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
         <p class="ws-note">Liitä talteen esim. muistioon tai sähköpostiisi.</p>
       </div>
     </div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitukset päättyvät tähän</strong><span>Kiitos! Seuraavaksi yhteinen keskustelu.</span></div>
   </section>
 
   <hr class="divider">
