@@ -45,6 +45,17 @@
   .kokeilu-intro h2 { font-size: clamp(26px, 5vw, 34px); font-weight: 900; color: var(--pd); line-height: 1.2; margin-bottom: 12px; }
   .kokeilu-intro p { font-size: 19px; color: #333; line-height: 1.6; }
   .kokeilu-intro p + p { margin-top: 10px; }
+  details.tauko { margin: 0 0 28px; scroll-margin-top: 10px; }
+  details.tauko > summary { list-style: none; cursor: pointer; display: block; width: fit-content; margin: 0 auto; background: var(--sal-l); border: 2px solid var(--sal); color: var(--pd); font-weight: 800; font-size: 19px; padding: 12px 24px; border-radius: 30px; }
+  details.tauko > summary::-webkit-details-marker { display: none; }
+  details.tauko > summary:hover, details.tauko > summary:focus { background: var(--sal); }
+  details.tauko[open] > summary { margin-bottom: 18px; }
+  .tauko-box { background: var(--sal-l); border: 3px solid var(--sal); border-radius: 18px; padding: 28px 32px; }
+  .tauko-box h2 { font-size: clamp(26px, 5vw, 36px); font-weight: 900; color: var(--pd); line-height: 1.2; margin-bottom: 8px; }
+  .tauko-box .lead { font-size: 20px; color: #333; margin-bottom: 18px; }
+  .tauko-box ol { padding-left: 28px; }
+  .tauko-box li { font-size: clamp(19px, 3.2vw, 23px); line-height: 1.5; color: var(--pd); margin-bottom: 12px; }
+  .tauko-box .alku { margin-top: 18px; font-size: clamp(20px, 3.5vw, 26px); font-weight: 900; color: var(--pm); }
   .hb-title { text-align: center; margin-bottom: 18px; font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); }
   .hampurilainen { max-width: 660px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,26,26,0.20)); }
   .hamp-layer { padding: 18px 26px; font-size: 20px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
@@ -214,6 +225,20 @@
   </div>
 </header>
 <main id="sisalto">
+
+  <details class="tauko" id="tauko">
+    <summary>☕ Kahvitauolla – lue tämä</summary>
+    <div class="tauko-box">
+      <h2>☕ Tauon aikana</h2>
+      <p class="lead">Harjoituksissa kokeilemme pääasiassa Googlen Gemini-tekoälyä ja sen <strong>Gemejä</strong> eli omia tekoälyagentteja.</p>
+      <ol>
+        <li><strong>Kirjaudu Googleen</strong> osoitteessa <strong>gemini.google.com</strong> ja varmista, että pääset sisään.</li>
+        <li><strong>Pelkkä puhelin?</strong> Käytä puhelimen selainta – Gemin voi luoda vain selaimessa, ei Gemini-sovelluksessa.</li>
+        <li><strong>Ei Google-tiliä?</strong> Etsi pari, jolla on.</li>
+        <li>Pidä tämä sivu auki: <strong>csy.fi/teoskoulutus</strong></li>
+      </ol>
+    </div>
+  </details>
 
   <div class="mission">
     <h2>Miksi harjoittelemme tätä</h2>
