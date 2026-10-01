@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<!--
+  Käyttöoikeus: tämä opas ja sen sisältämät promptit/mallipohjat on tarkoitettu
+  vapaasti kolmannen sektorin järjestöjen ja yhdistysten käyttöön omassa
+  toiminnassaan. Ei kaupalliseen käyttöön, jälleenmyyntiin tai kaupallisten
+  palveluiden/konsultoinnin pohjana ilman tekijän lupaa. Lisenssi: CC BY-NC 4.0.
+  © Jarno Alastalo. Yhteydenotot: jarno@csy.fi
+-->
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tekoälyvideot Google Vidsillä – opas järjestöille</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+  :root { --pd: #1A1A1A; --pm: #3B62E3; --lav: #DCEBFF; --sal: #FFB549; --sal-l: #FFF3E0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Merriweather', Georgia, serif; font-size: 19px; color: #1A1A1A; background: #fff; line-height: 1.6; }
+  .skip-link { position: absolute; left: -999px; top: 0; background: var(--sal); color: var(--pd); padding: 10px 18px; border-radius: 0 0 8px 0; font-weight: 700; z-index: 100; }
+  .skip-link:focus { left: 0; }
+  body > nav { background: var(--pd); padding: 12px 28px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .nav-logo { color: #fff; font-weight: 800; font-size: 16px; margin-right: 16px; }
+  body > nav a { color: rgba(255,255,255,0.85); text-decoration: none; padding: 5px 14px; border-radius: 20px; font-size: 15px; transition: all 0.2s; }
+  body > nav a:hover, body > nav a:focus { background: var(--pm); color: #fff; }
+  header { background: var(--pd); padding: 56px 40px 48px; border-bottom: 5px solid var(--pm); }
+  header .kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--sal); text-transform: uppercase; margin-bottom: 16px; }
+  header h1 { font-size: 42px; color: #fff; font-weight: 900; line-height: 1.18; margin-bottom: 16px; max-width: 720px; }
+  header p { font-size: 19px; color: rgba(255,255,255,0.78); max-width: 560px; line-height: 1.6; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 40px; }
+  .header-text { flex: 1; min-width: 280px; }
+  .header-url { text-align: left; padding: 4px 0; }
+  .header-url .label { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 12px; }
+  .header-url .url { font-size: clamp(26px, 7vw, 60px); font-weight: 900; color: var(--sal); letter-spacing: 1px; line-height: 1.15; overflow-wrap: break-word; }
+  main { max-width: 900px; margin: 0 auto; padding: 56px 28px 90px; }
+  .mission { background: var(--pd); color: #fff; padding: 30px 32px; border-radius: 14px; margin-bottom: 32px; }
+  .mission h2 { font-size: 14px; opacity: 0.7; font-weight: 500; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .mission blockquote { font-size: 22px; font-weight: 700; line-height: 1.45; border-left: 4px solid var(--sal); padding-left: 18px; margin-bottom: 14px; }
+  .mission p { font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.85); }
+  .instructions { background: var(--sal-l); border: 2px solid var(--sal); border-radius: 12px; padding: 24px 28px; margin-bottom: 48px; }
+  .instructions h2 { color: var(--pd); font-size: 19px; margin-bottom: 14px; }
+  .instructions ol { padding-left: 20px; }
+  .instructions li { margin-bottom: 9px; font-size: 17px; color: #333; }
+  .instructions li strong { color: var(--pd); }
+  .kokeilu-intro { text-align: center; max-width: 680px; margin: 8px auto 44px; }
+  .kokeilu-intro h2 { font-size: clamp(26px, 5vw, 34px); font-weight: 900; color: var(--pd); line-height: 1.2; margin-bottom: 12px; }
+  .kokeilu-intro p { font-size: 19px; color: #333; line-height: 1.6; }
+  .kokeilu-intro p + p { margin-top: 10px; }
+  .hb-title { text-align: center; margin-bottom: 18px; font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); }
+  .hampurilainen { max-width: 660px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,26,26,0.20)); }
+  .hamp-layer { padding: 18px 26px; font-size: 20px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
+  .hamp-layer.human-top { background: var(--sal); color: var(--pd); border-radius: 70px 70px 5px 5px; padding-top: 26px; position: relative; animation-delay: 0.2s; }
+  .hamp-layer.human-top::before { content: '●  ●  ●  ●'; position: absolute; top: 9px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.5); font-size: 8px; letter-spacing: 6px; white-space: nowrap; }
+  .hamp-lettuce { height: 11px; background: linear-gradient(90deg, #5D9E5D 0%, #4CAF50 40%, #5D9E5D 100%); opacity: 0; animation: hampIn 0.4s 0.48s ease forwards; border-radius: 2px; margin: 0 4px; }
+  .hamp-layer.ai-mid { background: var(--pd); color: #fff; border-radius: 5px; animation-delay: 0.72s; }
+  .hamp-layer.human-bot { background: #E8956E; color: var(--pd); border-radius: 5px 5px 60px 60px; padding-bottom: 22px; animation-delay: 1.1s; }
+  .hamp-who { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; flex-shrink: 0; min-width: 96px; }
+  .hamp-text { flex: 1; line-height: 1.45; font-weight: 600; }
+  .hamp-text em { font-weight: 400; opacity: 0.85; display: block; font-size: 17px; margin-top: 2px; }
+  @keyframes hampIn { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: translateY(0); } }
+  .ulkoista-tag { text-align: center; font-size: 26px; font-weight: 900; color: var(--pm); margin: 18px 0 44px; letter-spacing: -0.3px; }
+  .section-nav { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 56px; }
+  .section-nav a { flex: 1; min-width: 200px; background: #fff; border: 2px solid var(--lav); border-radius: 12px; padding: 16px 18px; text-decoration: none; color: var(--pd); transition: all 0.2s; }
+  .section-nav a:hover, .section-nav a:focus { border-color: var(--pm); transform: translateY(-2px); }
+  .section-nav .sn-time { display: block; font-size: 13px; font-weight: 700; color: var(--pm); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .section-nav .sn-title { font-size: 16px; font-weight: 700; }
+  .harjoitus { margin-bottom: 64px; scroll-margin-top: 20px; }
+  .h-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+  .h-badge { background: var(--pd); color: #fff; font-size: 13px; font-weight: 700; padding: 4px 12px; border-radius: 12px; letter-spacing: 0.5px; }
+  .h-time { font-size: 14px; color: var(--pm); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .harjoitus h2 { font-size: 28px; color: var(--pd); font-weight: 900; line-height: 1.25; margin-bottom: 18px; }
+  .goal { background: #F3F7FF; border-left: 4px solid var(--pm); padding: 16px 22px; border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 17px; color: #262626; }
+  .goal strong { color: var(--pd); }
+  .tools { margin-bottom: 26px; font-size: 16px; }
+  .tools strong { color: var(--pd); margin-right: 6px; }
+  .tool-chip { background: #fff; border: 1.5px solid var(--pd); color: var(--pd); padding: 3px 12px; border-radius: 14px; font-size: 14px; font-weight: 600; display: inline-block; margin: 3px 4px 3px 0; }
+  .tool-chip.rec { background: var(--sal); border-color: var(--sal); }
+  a.tool-chip { text-decoration: none; font-size: 16px; padding: 6px 16px; border-radius: 18px; }
+  a.tool-chip:hover, a.tool-chip:focus { background: var(--pm); border-color: var(--pm); color: #fff; }
+  .step { margin-bottom: 36px; }
+  .step-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; }
+  .step-num { background: var(--pd); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+  .step h3 { font-size: 19px; color: var(--pd); font-weight: 700; line-height: 1.3; padding-top: 4px; }
+  .step p { color: #333; font-size: 17px; margin: 0 0 10px 46px; }
+  .prompt-wrap { margin: 14px 0 0 46px; }
+  .prompt-label { background: var(--pd); color: #fff; padding: 8px 16px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-radius: 8px 8px 0 0; }
+  .copy-btn { background: var(--sal); color: var(--pd); border: none; padding: 5px 14px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 700; transition: background 0.2s; }
+  .copy-btn:hover, .copy-btn:focus { background: #E6992E; }
+  .copy-btn.copied { background: #90EE90; color: #1a5c1a; }
+  .prompt-text { background: #FAFAFA; border: 2px solid var(--pd); border-top: none; border-radius: 0 0 8px 8px; padding: 18px 20px; font-size: 17px; line-height: 1.8; white-space: pre-wrap; color: #1A1A1A; font-family: 'Merriweather', Georgia, serif; }
+  .ph { background: var(--lav); color: var(--pm); padding: 1px 6px; border-radius: 4px; font-weight: 700; font-size: 15.5px; }
+  .tip { background: #FFFBEA; border-left: 3px solid #DAA520; padding: 13px 16px; border-radius: 8px; margin: 14px 0 0 46px; font-size: 16px; color: #4a4a4a; }
+  .tip strong { color: #8B6914; }
+  .warn { background: #FDEEEE; border-left: 3px solid #D9534F; padding: 13px 16px; border-radius: 8px; margin: 16px 0 0; font-size: 16px; color: #7a2a2a; }
+  .warn strong { color: #a33; }
+  .steps-list { counter-reset: gemstep; margin: 0 0 28px; padding: 0; list-style: none; }
+  .steps-list li { counter-increment: gemstep; position: relative; padding: 4px 0 4px 42px; margin-bottom: 10px; font-size: 17px; color: #262626; }
+  .steps-list li::before { content: counter(gemstep); position: absolute; left: 0; top: 2px; background: var(--lav); color: var(--pd); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+  .steps-list code { background: var(--lav); color: var(--pm); padding: 1px 7px; border-radius: 5px; font-size: 15px; }
+  .link-pill { background: var(--lav); color: var(--pm); padding: 1px 7px; border-radius: 5px; font-size: 15px; font-weight: 700; text-decoration: underline; }
+  .link-pill:hover, .link-pill:focus { background: var(--pm); color: #fff; }
+  .tip .link-pill { font-size: 15px; }
+  .shots { display: flex; flex-direction: column; align-items: center; gap: 24px; margin: 20px 0 28px; }
+  .shot { width: 100%; max-width: 720px; text-align: center; }
+  .shot img { width: 100%; height: auto; border-radius: 10px; border: 2px solid var(--pd); display: block; }
+  .shot figcaption { font-size: 15px; color: #555; margin-top: 10px; line-height: 1.4; }
+  .task-options { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 22px; }
+  .task-options .tool-chip { border-color: var(--pm); color: var(--pm); }
+  .bonus-box { background: var(--lav); border-radius: 12px; padding: 22px 26px; margin-top: 30px; }
+  .bonus-box h3 { color: var(--pd); font-size: 19px; margin-bottom: 10px; }
+  .bonus-box p { font-size: 16.5px; color: #262626; line-height: 1.65; }
+  .bonus-box a { color: var(--pm); font-weight: 700; }
+  .worksheet { background: #F3F7FF; border: 2px solid var(--lav); border-radius: 14px; padding: 28px 30px; }
+  .ws-item { margin-bottom: 20px; }
+  .ws-item:last-child { margin-bottom: 0; }
+  .ws-item label { display: block; font-weight: 700; color: var(--pd); font-size: 17px; margin-bottom: 6px; }
+  .ws-item span.hint { display: block; font-weight: 400; color: #555; font-size: 16px; margin-bottom: 8px; }
+  .ws-item textarea { width: 100%; min-height: 54px; border: 2px solid var(--lav); border-radius: 8px; padding: 10px 14px; font-family: 'Merriweather', Georgia, serif; font-size: 17px; color: #1A1A1A; resize: vertical; }
+  .ws-item textarea:focus { outline: 2px solid var(--pm); border-color: var(--pm); }
+  .ws-note { font-size: 15px; color: #777; margin-top: 14px; }
+  .ws-note-top { background: #FFFBEA; border-left: 3px solid #DAA520; padding: 12px 16px; border-radius: 8px; font-size: 16px; color: #4a4a4a; margin-bottom: 22px; }
+  .ws-note-top strong { color: #8B6914; }
+  .ws-copy-row { margin-top: 22px; text-align: center; }
+  .ws-copy-row .copy-btn { padding: 10px 22px; font-size: 16px; }
+  .ai-tips { background: #F3F7FF; border: 2px solid var(--pm); border-radius: 14px; padding: 30px 32px; margin-bottom: 48px; scroll-margin-top: 20px; }
+  .ai-tips .ai-kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); margin-bottom: 8px; }
+  .ai-tips h2 { font-size: 26px; color: var(--pd); font-weight: 900; line-height: 1.25; margin-bottom: 12px; }
+  .ai-tips .ai-intro { font-size: 17px; color: #333; margin-bottom: 24px; }
+  .ai-tips h3 { font-size: 17px; color: var(--pd); margin-bottom: 14px; }
+  .ai-list { list-style: none; padding: 0; margin: 0 0 8px; }
+  .ai-list li { position: relative; padding-left: 46px; margin-bottom: 22px; font-size: 17px; color: #262626; }
+  .ai-list li .n { position: absolute; left: 0; top: 0; background: var(--pm); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+  .ai-list li strong.t { display: block; font-size: 18px; color: var(--pd); margin-bottom: 6px; }
+  .ai-say { display: block; background: #fff; border-left: 4px solid var(--sal); border-radius: 0 8px 8px 0; padding: 9px 14px; margin: 6px 0 8px; font-size: 16px; line-height: 1.6; }
+  .ai-say .lbl { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8B6914; display: block; }
+  .ai-why { display: flex; align-items: flex-end; gap: 10px; margin-top: 10px; }
+  .ai-avatar { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--lav); border: 2px solid var(--pm); display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1; }
+  .ai-bubble { background: #fff; border: 2px solid var(--pm); border-radius: 16px 16px 16px 4px; padding: 10px 14px; font-size: 16px; color: #262626; line-height: 1.55; }
+  .ai-sign { text-align: right; font-style: italic; color: #555; font-size: 16px; margin-top: 18px; }
+  .ai-final { background: var(--pd); color: #fff; border-radius: 10px; padding: 16px 20px; font-size: 17px; margin-top: 8px; }
+  .roadmap { list-style: none; padding: 0; margin: 20px 0 30px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .roadmap li { background: var(--lav); color: var(--pd); font-size: 15px; font-weight: 700; padding: 6px 14px 6px 6px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
+  .roadmap li span { background: var(--pd); color: #fff; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 13px; white-space: nowrap; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .phase { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 38px 0 10px; padding-top: 18px; border-top: 2px solid var(--lav); }
+  .phase .pn { background: var(--sal); color: var(--pd); font-weight: 900; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; }
+  .phase h3 { font-size: 22px; color: var(--pd); font-weight: 900; line-height: 1.25; }
+  .phase .pt { font-size: 14px; color: var(--pm); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .phase-p { font-size: 17px; color: #333; margin-bottom: 20px; }
+  details.more { margin-top: 26px; border: 2px dashed var(--pm); border-radius: 12px; background: #fff; }
+  details.more > summary { cursor: pointer; padding: 16px 22px; font-weight: 700; font-size: 17px; color: var(--pm); list-style: none; }
+  details.more > summary::-webkit-details-marker { display: none; }
+  details.more > summary::before { content: '＋ '; }
+  details.more[open] > summary::before { content: '－ '; }
+  details.more > summary:hover, details.more > summary:focus { background: var(--lav); border-radius: 10px; }
+  details.more .more-body { padding: 4px 22px 22px; }
+  .adv-item { margin-bottom: 30px; }
+  .adv-item:last-child { margin-bottom: 0; }
+  .adv-item h4 { font-size: 18px; color: var(--pd); margin-bottom: 8px; }
+  .adv-item p, .adv-item li { font-size: 16.5px; color: #333; }
+  .adv-item ol { padding-left: 22px; margin: 8px 0; }
+  .adv-item li { margin-bottom: 6px; }
+  .adv-item .prompt-wrap { margin-left: 0; }
+  .h-banner { background: var(--pd); border-left: 12px solid var(--sal); border-radius: 16px; padding: 30px 32px 28px; margin-bottom: 28px; }
+  .h-banner .h-num { display: block; font-size: clamp(40px, 10vw, 76px); font-weight: 900; color: var(--sal); text-transform: uppercase; letter-spacing: 1px; line-height: 1; margin-bottom: 12px; }
+  .harjoitus .h-banner h2 { color: #fff; font-size: clamp(24px, 5vw, 34px); margin-bottom: 10px; }
+  .h-banner .h-time { color: rgba(255,255,255,0.75); font-size: 16px; text-transform: none; letter-spacing: 0.5px; }
+  .h-end { margin-top: 44px; border: 3px dashed var(--pm); border-radius: 14px; padding: 22px 24px; text-align: center; background: #F3F7FF; }
+  .h-end strong { display: block; font-size: 21px; color: var(--pd); margin-bottom: 6px; }
+  .h-end span { font-size: 16px; color: #444; }
+  hr.divider { border: none; border-top: 3px solid var(--lav); margin: 0 0 56px; }
+  .closing { background: var(--pd); color: #fff; border-radius: 16px; padding: 36px 32px; text-align: center; margin-top: 8px; }
+  .closing p.who { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+  .closing p.name { font-size: 23px; font-weight: 900; color: #fff; margin-bottom: 18px; }
+  .closing p.link-note { font-size: 16px; color: rgba(255,255,255,0.65); }
+  .credits { margin-top: 40px; text-align: center; }
+  .credits p { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-bottom: 18px; }
+  .credits-logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 28px; }
+  .credits-logos img { height: 72px; width: auto; max-width: 200px; object-fit: contain; }
+  .credits .usage-note { margin-top: 22px; font-size: 13px; letter-spacing: normal; text-transform: none; color: #999; }
+  .credits .usage-note a { color: #999; }
+  @media (max-width: 640px) {
+    header { padding: 40px 20px; } header h1 { font-size: 30px; } main { padding: 40px 16px 60px; }
+    .prompt-wrap, .step p, .tip { margin-left: 0; }
+    .section-nav { flex-direction: column; }
+    .hamp-layer { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .ai-tips { padding: 24px 18px; }
+    .ai-list li { padding-left: 40px; }
+    details.more .more-body { padding: 4px 14px 18px; }
+  }
+  .quota { width: 100%; border-collapse: collapse; margin: 14px 0 6px; font-size: 17px; }
+  .quota th, .quota td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #e3d6b8; vertical-align: top; }
+  .quota th { font-size: 14px; letter-spacing: 1px; text-transform: uppercase; color: #8B6914; }
+  .quota td.n { font-weight: 800; color: var(--pd); white-space: nowrap; }
+  .quota tr.hot td { background: #FFE7C2; }
+  .video-embed { max-width: 300px; margin: 16px auto 0; aspect-ratio: 9 / 16; border-radius: 14px; overflow: hidden; border: 3px solid var(--pd); }
+  .video-embed iframe { width: 100%; height: 100%; border: 0; display: block; }
+</style>
+<script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+<a class="skip-link" href="#sisalto">Siirry sisältöön</a>
+<nav aria-label="Sivun osiot">
+  <span class="nav-logo">Vids-koulutus</span>
+  <a href="#alku">Etusivu</a>
+  <a href="#rajat">Rajat</a>
+  <a href="#harjoitus1">Harjoitus 1</a>
+  <a href="#harjoitus2">Harjoitus 2</a>
+  <a href="#harjoitus3">Harjoitus 3</a>
+  <a href="#harjoitus4">Harjoitus 4</a>
+  <a href="#valmis">Valmis video</a>
+  <a href="#demo">Notebook</a>
+</nav>
+<header id="alku">
+  <div class="header-top">
+    <div class="header-text">
+      <div class="kicker">Tekoälyä ja aitoa osallisuutta -hanke · Humak</div>
+      <h1>Tekoälyvideot Google Vidsillä</h1>
+      <p>Käytännön opas aloittelijalle: tarina, tunnistamaton hahmo ja oma ääni. Kouluttaja Jarno Alastalo.</p>
+    </div>
+    <div class="header-url">
+      <div class="label">Avaa omalla laitteella</div>
+      <div class="url">csy.fi/vidskoulutus</div>
+    </div>
+  </div>
+</header>
+<main id="sisalto">
+
+  <div class="mission">
+    <h2>Mitä tänään teemme</h2>
+    <blockquote>Tarina ensin, tekoäly vasta sitten.</blockquote>
+    <p>Teet lyhyen pystyvideon järjestöllesi. Kenenkään kasvoja ei tarvitse näyttää: päähenkilönä on itse luotu hahmo, jota ei voi tunnistaa, ja kertojana oma äänesi. Tekoäly tekee kuvat ja liikkeen – tarina, tunne ja ääni tulevat sinulta.</p>
+  </div>
+
+  <div class="kokeilu-intro">
+    <h2>Tärkeintä on kokeilu</h2>
+    <p>Valmista videota ei tarvitse saada tänään. Tärkeintä on oppia, miten Vids toimii, jotta voit jatkaa itsenäisesti.</p>
+    <div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/iKaYLEq9qOA" title="Esimerkkivideo: Tekoälyä ja aitoa osallisuutta -hankkeelle Google Vidsillä tehty lyhytvideo" loading="lazy" allow="encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+    <p style="font-size:16px; color:#555; margin-top:10px;">Esimerkki: Google Vidsillä tehty video TeOs-hankkeelle.</p>
+  </div>
+
+  <div class="instructions">
+    <h2>📋 Ennen kuin aloitat</h2>
+    <ol>
+      <li>Käytä <strong>tietokonetta</strong> ja Chrome-selainta. Puhelimella voi katsoa valmiita videoita, mutta ei muokata.</li>
+      <li>Kirjaudu <strong>järjestösi Google-tilillä</strong> ja avaa <a class="link-pill" href="https://vids.google.com" target="_blank" rel="noopener">vids.google.com</a>.</li>
+      <li>Avaa uusi video kirjoittamalla osoiteriville <strong>vids.new</strong>. Jos oikean reunan valikossa näkyy <strong>AI Video</strong>, tekoälyominaisuudet ovat käytössä. Jos ei, tee harjoitukset 1, 2 ja 4 – arkistokuvat ja oma ääni toimivat ilman tekoälyäkin.</li>
+      <li>Älä käytä videoissa henkilötietoja äläkä tunnistettavia ihmisiä ilman lupaa.</li>
+      <li>Tutustu <a href="https://www.google.com/nonprofits/" target="_blank" rel="noopener">Google for Nonprofits</a> -ohjelmaan, jos järjestönne ei vielä käytä sitä. Siitä järjestöt voivat saada mm. Google Workspacen, Ad Grants -mainostukea ja YouTuben järjestöohjelman – tarkista, täyttääkö järjestönne ehdot.</li>
+    </ol>
+  </div>
+
+  <!-- ============ RAJAT ============ -->
+  <section class="harjoitus" id="rajat">
+    <div class="h-banner"><span class="h-num">Tunne rajat</span><h2>Tekoälyä on kuukaudessa rajallisesti</h2><span class="h-time">⏱ n. 5 min</span></div>
+    <div class="goal"><strong>Miksi tämä ensin:</strong> Google rajoittaa, montako tekoälyvideota ja -kuvaa voit tehdä kuukaudessa. Kiintiö on henkilökohtainen. Jos kokeilet summassa, se loppuu kesken – siksi tässä oppaassa suunnitellaan ensin ja käytetään valmiita, hiottuja prompteja.</div>
+    <div class="instructions" style="margin-bottom:0;">
+      <h2>Google Workspace yleishyödyllisille yhteisöille – kuukausikiintiöt (lokakuussa 2026)</h2>
+      <table class="quota">
+        <thead><tr><th>Ominaisuus</th><th>Kiintiö</th></tr></thead>
+        <tbody>
+          <tr class="hot"><td>Tekoälyvideoklipit</td><td class="n">20 / kk</td></tr>
+          <tr class="hot"><td>Kuvien luonti ja muokkaus <span style="font-size:15px;color:#666;">(yhteinen kiintiö Slidesin ja Docsin kanssa)</span></td><td class="n">5 / kk</td></tr>
+          <tr><td>Tekoälyavatarit <span style="font-size:15px;color:#666;">(puhuvat suomea)</span></td><td class="n">10 / kk</td></tr>
+          <tr><td>Musiikki: 30 s klipit / kokonaiset kappaleet (n. 3 min)</td><td class="n">20 / 10 kk</td></tr>
+          <tr><td>Auta minua luomaan</td><td class="n">rajaton</td></tr>
+          <tr><td>Taustanpoisto</td><td class="n">rajaton</td></tr>
+          <tr><td>Tekoälyselostus <span style="font-size:15px;color:#666;">(ei suomeksi)</span></td><td class="n">rajaton</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:15px; color:#666; margin-top:6px;">Lähde: <a href="https://support.google.com/docs/answer/15609411?hl=fi-fi#zippy=%2Cgoogle-workspace-yleishy%C3%B6dyllisille-yhteis%C3%B6ille-paketit" target="_blank" rel="noopener">Googlen ohje, Gemini-ominaisuuksien saatavuus Vidsissä</a></p>
+      <p style="font-size:16px; color:#444;"><strong>Käytännössä:</strong> saat tehdä <strong>20 tekoälyvideoklippiä kuukaudessa</strong>, ja kuvia saat luoda vain viisi. Muu – arkistokuvat, oma ääni, tekstit, logo, siirtymät – ei kuluta kiintiötä lainkaan.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ HARJOITUS 1 ============ -->
+  <section class="harjoitus" id="harjoitus1">
+    <div class="h-banner"><span class="h-num">Harjoitus 1</span><h2>Tarina ensin – ilman tekoälyä</h2><span class="h-time">⏱ n. 15 min</span></div>
+    <div class="goal"><strong>Tavoite:</strong> hyvä video syntyy tarinasta, ei työkalusta. Kirjoita kolmen kohtauksen tarina, ennen kuin avaat yhtään tekoälytoimintoa. Kun tiedät mitä haluat, ensimmäinen tekoälykokeilu osuu – eikä kiintiö kulu arvailuun.</div>
+
+    <div class="worksheet">
+      <p class="ws-note-top"><strong>💡 Muista:</strong> tämä sivu ei tallenna mitään. Kopioi vastauksesi lopuksi napilla talteen – tarvitset niitä harjoituksessa 2.</p>
+      <div class="ws-item">
+        <label for="ws1">1. Kenelle video on?</label>
+        <span class="hint">Yksi ihminen, ei "kaikki". Esim. "nuori aikuinen, joka miettii, uskaltaako tulla ryhmään".</span>
+        <textarea id="ws1" rows="2"></textarea>
+      </div>
+      <div class="ws-item">
+        <label for="ws2">2. Mitä katsojan pitäisi tehdä videon jälkeen?</label>
+        <span class="hint">Yksi teko: tulla, soittaa, ilmoittautua, lähteä vapaaehtoiseksi…</span>
+        <textarea id="ws2" rows="2"></textarea>
+      </div>
+      <div class="ws-item">
+        <label for="ws3">3. Alku – tilanne tai tunne, johon katsoja samaistuu</label>
+        <textarea id="ws3" rows="2" placeholder="Esim. Ilta, ikkuna, yksin kotona…"></textarea>
+      </div>
+      <div class="ws-item">
+        <label for="ws4">4. Käänne – mitä järjestösi tarjoaa</label>
+        <textarea id="ws4" rows="2" placeholder="Esim. Joku odottaa ovella, valo syttyy…"></textarea>
+      </div>
+      <div class="ws-item">
+        <label for="ws5">5. Loppu – kutsu ja järjestön nimi</label>
+        <textarea id="ws5" rows="2" placeholder="Esim. Tule torstaina klo 17 – ovi on auki."></textarea>
+      </div>
+      <div class="ws-copy-row">
+        <button class="copy-btn" onclick="copyNotes(this)" aria-label="Kopioi tarinasi leikepöydälle">📋 Kopioi tarinani</button>
+      </div>
+    </div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 1 päättyy tähän</strong><span>Tarinasi on valmis – seuraavaksi se viedään Vidsiin.</span></div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ HARJOITUS 2 ============ -->
+  <section class="harjoitus" id="harjoitus2">
+    <div class="h-banner"><span class="h-num">Harjoitus 2</span><h2>Ensimmäinen tekoälyklippi</h2><span class="h-time">⏱ n. 15 min</span></div>
+    <div class="goal"><strong>Tavoite:</strong> opit kirjoittamaan videopromptin, joka onnistuu kerralla. Teet tarinasi <strong>alun</strong> (harjoituksen 1 kohta 3) 10 sekunnin klipiksi. Kuvassa on vain esineitä ja ympäristö – ei ihmisiä, joten anonymiteetti on kunnossa heti alusta.</div>
+
+    <div class="phase"><span class="pn">Vaihe 1</span><h3>Näin hyvä videoprompti rakentuu</h3></div>
+    <p class="phase-p">Tekoäly ei näe päähäsi. Mitä tarkemmin kerrot, sitä vähemmän se arvaa – ja sitä vähemmän kiintiötä kuluu uusintoihin. Hyvä prompti vastaa näihin:</p>
+    <ol class="roadmap" aria-label="Videopromptin osat" style="margin-top:0;">
+      <li><span>1</span>Mitä kuvassa on</li>
+      <li><span>2</span>Mitä tapahtuu</li>
+      <li><span>3</span>Missä</li>
+      <li><span>4</span>Kamera</li>
+      <li><span>5</span>Valo ja tunnelma</li>
+      <li><span>6</span>Mitä EI saa olla</li>
+    </ol>
+    <div class="ai-say" style="margin:0 0 8px;"><span class="lbl">Sen sijaan että</span>"Video vertaistuesta."</div>
+    <div class="ai-say" style="margin:0 0 24px;"><span class="lbl">Kirjoita</span>"Kaksi höyryävää kahvikuppia puupöydällä ikkunan ääressä. Sade valuu hitaasti lasia pitkin. Kamera liukuu hitaasti lähemmäs kuppeja. Pehmeä harmaa iltapäivän valo, rauhallinen ja hieman yksinäinen tunnelma. Ei ihmisiä, ei tekstiä."</div>
+
+    <div class="phase"><span class="pn">Vaihe 2</span><h3>Tee klippi</h3><span class="pt">1 klippi = 1/20 kuukaudesta</span></div>
+    <ol class="steps-list">
+      <li>Kirjoita osoiteriville <strong>vids.new</strong>. Valitse ylhäältä <strong>Portrait</strong> (pysty) ja sitten <strong>Blank vid</strong>.</li>
+      <li>Avaa oikean reunan valikosta <strong>AI Video</strong>. Laatikon yläreunassa pitää olla valittuna <strong>Create</strong>.</li>
+      <li>Säädä laatikon alareunasta klipin <strong>kesto</strong> (esim. <em>Omni · 720p · pysty · 10s</em>). Kiintiö lasketaan klippeinä, ei sekunteina.</li>
+      <li>Kopioi alla oleva prompti, täytä hakasulkeet tarinasi alulla ja paina sinistä <strong>nuolta</strong>.</li>
+      <li>Katso tulos. Jos se melkein osuu, korjaa yksi asia promptissa ennen kuin teet uuden.</li>
+    </ol>
+    <figure class="shot" style="max-width:900px; margin:20px auto 28px;"><img src="images/vids-vidsnew.jpg" alt="Vidsin aloitusnäkymä: Landscape, Portrait, Square sekä Create AI videos, Edit videos, Record, Upload ja Blank vid" loading="lazy"><figcaption>Aloitusnäkymä: Portrait valittuna, tyhjä video oikealta (Blank vid).</figcaption></figure>
+    <div class="prompt-wrap" style="margin-left:0;">
+      <div class="prompt-label"><span>📝 Ensimmäinen klippi</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi ensimmäisen klipin prompti leikepöydälle">Kopioi</button></div>
+      <div class="prompt-text"><span class="ph">[MITÄ KUVASSA ON – esine tai ympäristö, esim. tyhjä keinu puistossa / avoin ovi valoisaan huoneeseen]</span>.
+<span class="ph">[MITÄ TAPAHTUU – yksi liike, esim. keinu heilahtaa hiljaa tuulessa]</span>.
+Paikka: <span class="ph">[MISSÄ – esim. syksyinen puisto]</span>.
+Kamera: <span class="ph">[esim. pysyy paikallaan / liukuu hitaasti lähemmäs]</span>.
+Valo ja tunnelma: <span class="ph">[esim. pehmeä iltavalo, toiveikas]</span>.
+Tyyli: <span class="ph">[esim. elokuvamainen / lämmin animaatio]</span>.
+Ei ihmisiä, ei tekstiä, ei logoja.</div>
+    </div>
+    <figure class="shot" style="max-width:560px; margin:20px auto 28px;"><img src="images/vids-create.png" alt="Vidsin Create-laatikko: prompti, Avatar- ja Ingredients-kohdat, asetukset Omni 720p pysty 7s ja lähetysnuoli" loading="lazy"><figcaption>Create-laatikko: prompti ylhäällä, kesto vasemmassa alakulmassa, lähetys sinisestä nuolesta.</figcaption></figure>
+    <div class="tip" style="margin-left:0;"><strong>💡 Yksi liike per klippi.</strong> Jos kirjoitat kolme tapahtumaa kymmeneen sekuntiin, tekoäly sotkee ne. Seuraavan liikkeen teet seuraavaan klippiin.</div>
+    <div class="tip" style="margin-left:0;"><strong>👥 Tehkää yhdessä:</strong> jaa video kollegalle (<strong>Share</strong>, kuten Google Drivessa), niin voitte muokata samaa videota yhtä aikaa. Tekoälykiintiö on henkilökohtainen, joten kumpikin voi luoda klippejä omastaan.</div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 2 päättyy tähän</strong><span>Sinulla on runko. Seuraavaksi oma päähenkilö.</span></div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ HARJOITUS 3 ============ -->
+  <section class="harjoitus" id="harjoitus3">
+    <div class="h-banner"><span class="h-num">Harjoitus 3</span><h2>Hahmo, jota ei voi tunnistaa</h2><span class="h-time">⏱ n. 30 min</span></div>
+    <div class="goal"><strong>Tavoite:</strong> luot videolle päähenkilön, jonka kasvoja ei tunnista – ja saat sen pysymään samana kaikissa klipeissä. Konsti on <strong>viitekuva</strong>: lataat hahmon kuvan Vidsiin ja viittaat siihen promptissa merkinnällä <strong>@Image1</strong>.</div>
+
+    <div class="phase"><span class="pn">Vaihe 1</span><h3>Hanki hahmon kuva</h3><span class="pt">valitse yksi tapa</span></div>
+    <p class="phase-p"><strong>A) Valokuvaa (ei kuluta kiintiötä):</strong> pehmolelu, figuuri, käsinukke tai esine pöydällä, vaalea tausta, hyvä valo. Valmis anonyymi hahmo.</p>
+    <p class="phase-p"><strong>B) Luo tekoälyllä (kuluttaa 1/5 kuukauden kuvista):</strong> käytä tätä promptia, niin onnistut ensimmäisellä kerralla.</p>
+    <div class="prompt-wrap" style="margin:0 0 20px;">
+      <div class="prompt-label"><span>📝 Hahmokuva</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi hahmokuvan prompti leikepöydälle">Kopioi</button></div>
+      <div class="prompt-text">Luo kuva hahmosta, joka on järjestömme videoiden päähenkilö.
+Hahmo: <span class="ph">[esim. pieni kettu villapaidassa / pyöreä villasukkahahmo / ihminen selin kameraan keltaisessa sadetakissa]</span>.
+Hahmon kasvoja ei voi tunnistaa: se ei ole oikea ihminen eikä muistuta ketään tunnettua.
+Tyyli: <span class="ph">[esim. lämmin 3D-animaatio / vesiväripiirros / paperinukke]</span>.
+Koko hahmo näkyy, kuvattu edestä, tasainen vaalea tausta, ei tekstiä eikä logoja. Pystykuva.</div>
+    </div>
+    <div class="tip" style="margin:0 0 8px;"><strong>Miksi tasainen tausta?</strong> Silloin videomalli tunnistaa, mikä kuvassa on hahmo, eikä tausta valu jokaiseen klippiin.</div>
+
+    <div class="phase"><span class="pn">Vaihe 2</span><h3>Tee klippi hahmolla</h3><span class="pt">1 klippi = 1/20 kuukaudesta</span></div>
+    <ol class="steps-list">
+      <li>Valitse otos ja avaa oikean reunan valikosta <strong>AI Video</strong> → <strong>Create</strong>.</li>
+      <li><strong>Raahaa</strong> hahmon kuva laatikon <strong>Ingredients</strong>-kohtaan. Se saa nimen <strong>@Image1</strong>. (Jos <strong>+ Add</strong> ei toimi, raahaus toimii.)</li>
+      <li>Tarkista asetukset: pystykuva, 10s. Kopioi prompti, täytä ja paina sinistä <strong>nuolta</strong>.</li>
+    </ol>
+    <figure class="shot" style="max-width:1000px; margin:20px auto 28px;"><img src="images/vids-hahmo-image1.jpg" alt="Vidsin AI video clip -paneeli: prompti, viitekuva @Image1 ja Add-painike" loading="lazy"><figcaption>Viitekuva näkyy promptin alla nimellä @Image1. Kuvassa kouluttajan omat kasvot – järjestön videossa käytä tunnistamatonta hahmoa.</figcaption></figure>
+    <div class="prompt-wrap" style="margin-left:0;">
+      <div class="prompt-label"><span>📝 Klippi hahmolla</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi videoklipin prompti leikepöydälle">Kopioi</button></div>
+      <div class="prompt-text">@Image1 <span class="ph">[MITÄ TAPAHTUU – yksi selkeä teko, esim. kävelee hitaasti kohti valaistua ovea ja pysähtyy]</span>.
+Paikka: <span class="ph">[MISSÄ – esim. syksyinen kaupunkikatu illalla]</span>.
+Kamera: <span class="ph">[esim. hidas ajo hahmon perässä, kamera hahmon korkeudella]</span>.
+Valo ja tunnelma: <span class="ph">[esim. lämmin katuvalo, toiveikas]</span>.
+Hahmo pysyy täsmälleen samannäköisenä kuin @Image1, samassa tyylissä.
+Ei tekstiä, ei logoja, ei muita ihmisiä joiden kasvot näkyvät.
+<span class="ph">[VALINNAINEN: Hahmo sanoo suomeksi: "LYHYT REPLIIKKI, ENINTÄÄN 6–8 SANAA"]</span></div>
+    </div>
+    <div class="tip" style="margin-left:0;"><strong>🗣️ Hahmo voi puhua suomea:</strong> kun pyydät, klipin hahmo sanoo repliikin suomeksi. Pidä repliikki todella lyhyenä – yksi lause per klippi – eikä se aina mene sanatarkasti niin kuin kirjoitit. Pidemmät tekstit kannattaa spiikata itse (harjoitus 4).</div>
+    <div class="tip" style="margin-left:0;"><strong>💡 Säästä kiintiötä:</strong> yksi teko per klippi. Jos tulos melkein osuu, kokeile korjata sitä <strong>Edit</strong>-toiminnolla tai jatkaa <strong>Extend</strong>-toiminnolla. Videomallit ymmärtävät usein englantia tarkemmin: pyydä tavallista Geminiä kääntämään prompti – se ei kuluta Vidsin kiintiötä.</div>
+
+    <div class="phase"><span class="pn">Vaihe 3</span><h3>Lisää logo</h3><span class="pt">valitse yksi tapa</span></div>
+    <p class="phase-p"><strong>A) Tavallisena kuvana</strong> (ei kuluta kiintiötä): raahaa logo koneeltasi viimeiseen kohtaukseen. Jos logo on Google Drivessa, löydät sen oikean reunan valikosta <strong>Uploads</strong> (Drive &amp; Photos). Logo pysyy tarkkana.</p>
+    <p class="phase-p"><strong>B) Osana kohtausta</strong> (kuluttaa klippikiintiötä): logo näkyy itse videossa, esim. suurella mainosnäytöllä kadulla. Create-laatikkoon voi lisätä enintään kolme kuvaa: raahaa ensin hahmo (@Image1) Ingredients-kohtaan, sitten logo (@Image2).</p>
+    <div class="prompt-wrap" style="margin:0 0 20px;">
+      <div class="prompt-label"><span>📝 Logo kohtauksessa</span><button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi logokohtauksen prompti leikepöydälle">Kopioi</button></div>
+      <div class="prompt-text">@Image1 <span class="ph">[MITÄ TAPAHTUU – esim. pysähtyy kadulla ja katsoo ylös]</span>.
+Taustalla suuri mainosnäyttö, jossa näkyy @Image2-logo.
+Paikka: <span class="ph">[esim. vilkas kaupunkikatu illalla]</span>.
+Kamera: <span class="ph">[esim. hidas nousu hahmosta mainosnäyttöön]</span>.
+Hahmo pysyy samannäköisenä kuin @Image1. Logo pysyy täsmälleen samannäköisenä kuin @Image2: samat värit ja kirjaimet.
+Ei muuta tekstiä, ei muita logoja, ei tunnistettavia kasvoja.</div>
+    </div>
+    <p class="phase-p">Tekoäly voi vääristää logon kirjaimia ja värejä. Tarkista tulos, ja jos logo ei pysy tarkkana, käytä tapaa A.</p>
+    <p class="phase-p">Muut kohtaukset voit kuvittaa <strong>arkistokuvilla ja -videoilla</strong> (oikean reunan valikosta <strong>Stock</strong>). Samasta paneelista löytyy myös musiikkia, tarroja ja äänitehosteita – nekään eivät kuluta kiintiötä.</p>
+    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:24px; margin:20px 0 28px;">
+      <figure class="shot" style="max-width:300px; margin:0;"><img src="images/vids-uploads.jpg" alt="Vidsin Uploads-paneeli: Drive &amp; Photos, välilehdet Google Drive ja Google Photos" loading="lazy"><figcaption>Uploads: kuvat Drivesta tai Google Kuvista.</figcaption></figure>
+      <figure class="shot" style="max-width:300px; margin:0;"><img src="images/vids-stocks.jpg" alt="Vidsin Stock &amp; web -paneeli: Videos, Stock images, Music, Stickers, Sound effects" loading="lazy"><figcaption>Stock: arkistovideot, -kuvat, musiikki ja äänitehosteet.</figcaption></figure>
+    </div>
+    <div class="tip" style="margin-left:0;"><strong>⚖️ Käyttöoikeudet:</strong> Vidsin arkistomediaa (Stock) saa Googlen mukaan käyttää myös järjestön julkisissa videoissa. Sitä ei kuitenkaan saa käyttää logossa tai tunnuksessa, eikä sitä saa jakaa tai myydä erikseen ilman videota. <strong>Google-kuvahaun kuvat</strong> ovat eri asia: tarkista jokaisen kuvan käyttöoikeus itse, ja useimmiten tekijä pitää mainita. <a href="https://support.google.com/docs/answer/15001094?hl=fi" target="_blank" rel="noopener">Googlen ohje</a></div>
+
+    <details class="more">
+      <summary>🐱 Nopeille: hauskat kokeilut</summary>
+      <div class="more-body">
+        <div class="adv-item"><h4>Hahmo järjestön paidassa</h4><p>Raahaa viitekuviksi sekä hahmo (@Image1) että logo (@Image2): "@Image1 heiluttaa kättä, päällä paita jossa on @Image2-logo". Logo ei välttämättä pysy tarkkana – siksi tämä on kokeilu, ei loppukuva.</p></div>
+        <div class="adv-item"><h4>Oma kuva viitteeksi</h4><p>Huvin vuoksi: lisää viitekuvaksi oma kasvokuvasi ja katso, miten malli sen tulkitsee. Ei järjestön julkiseen videoon.</p></div>
+        <div class="adv-item"><h4>Animate</h4><p>Herätä valokuvattu pehmolelu henkiin: valitse <strong>Animate</strong>, lisää kuva ja kirjoita yksi liike, esim. "nostaa kättään ja katsoo kameraan".</p></div>
+      </div>
+    </details>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 3 päättyy tähän</strong><span>Kuvat ovat paikallaan. Seuraavaksi ääni.</span></div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ HARJOITUS 4 ============ -->
+  <section class="harjoitus" id="harjoitus4">
+    <div class="h-banner"><span class="h-num">Harjoitus 4</span><h2>Oma ääni</h2><span class="h-time">⏱ n. 15 min</span></div>
+    <div class="goal"><strong>Tavoite:</strong> video saa sielun omasta äänestä. Vidsin tekoälyselostus ei puhu suomea – oma spiikki on tässä paras ratkaisu, eikä äänesi paljasta kasvojasi. (Lyhyet repliikit hahmo voi sanoa itse tekoälyklipissä, ks. harjoitus 3.)</div>
+    <ol class="steps-list">
+      <li>Avaa oikean reunan valikosta <strong>Record</strong>. Valitse ylhäältä <strong>Current scene</strong> (tämä kohtaus).</li>
+      <li>Kirjoita kohtaukselle yksi tai kaksi lyhyttä lausetta kenttään <strong>Enter a script for this scene</strong> – teksti näkyy sinulle tallentaessa. Puhu niin kuin puhuisit katsojalle kahden kesken.</li>
+      <li>Valitse <strong>Recording options</strong> -kohdasta <strong>Voiceover</strong>. Se tallentaa vain äänesi – kasvosi eivät näy.</li>
+      <li>Paina <strong>Start recording</strong>. Äänitä hiljaisessa huoneessa, ja siirry seuraavaan kohtaukseen nuolella.</li>
+      <li>Muut vaihtoehdot (<strong>Camera</strong>, <strong>Camera &amp; screen</strong>, <strong>Screen</strong>) kuvaavat kamerasi tai näyttösi. Käytä niitä vain, jos haluat itse näkyä videossa.</li>
+      <li>Kuuntele, ja tallenna tarvittaessa uudelleen – tämä ei kuluta kiintiötä.</li>
+    </ol>
+    <figure class="shot" style="max-width:340px; margin:20px auto 28px;"><img src="images/vids-record.png" alt="Vidsin Record-paneeli: Current scene, käsikirjoituskenttä, Recording options ja Start recording" loading="lazy"><figcaption>Record-paneeli: käsikirjoitus ylhäällä, Voiceover valittuna, Start recording alhaalla.</figcaption></figure>
+    <div class="phase"><span class="pn">Tekstitys</span><h3>Captions</h3><span class="pt">ei kuluta kiintiötä</span></div>
+    <p class="phase-p">Moni katsoo somevideon ilman ääntä. Avaa oikean reunan valikosta <strong>Captions</strong>: Vids tekee tekstityksen automaattisesti myös suomenkielisestä puheesta. Valitse <strong>Apply to</strong> -kohdasta <strong>All scenes</strong> (koko video) tai <strong>Current scene</strong> (tämä kohtaus) ja sitten tyyli listasta. Katso tekstitys läpi ja korjaa väärin kuullut sanat.</p>
+    <figure class="shot" style="max-width:1000px; margin:20px auto 28px;"><img src="images/vids-captions.jpg" alt="Vidsin Captions-paneeli: Apply to All scenes tai Current scene, tekstitystyylit, tekstitys videon päällä ja Caption-raita aikajanalla" loading="lazy"><figcaption>Captions: valitse, koskeeko tekstitys koko videota vai yhtä kohtausta, ja valitse tyyli.</figcaption></figure>
+
+    <div class="phase"><span class="pn">Ajoitus</span><h3>Show timing</h3><span class="pt">ei kuluta kiintiötä</span></div>
+    <p class="phase-p">Paina aikajanan vasemmasta reunasta <strong>Show timing</strong>. Kohtausten alle avautuu aikajana, jossa jokainen osa – tekstit, kuvat, tekstitys, video ja ääni – on omalla raidallaan. Siellä voit säätää, milloin mikin alkaa ja loppuu, esimerkiksi sovittaa oman äänesi kuvaan. <strong>Hide timing</strong> piilottaa aikajanan taas.</p>
+    <figure class="shot" style="max-width:1000px; margin:20px auto 28px;"><img src="images/vids-aikajana.jpg" alt="Vidsin aikajana Show timing -tilassa: kohtaukset ylimpänä, alla raidat teksteille, kuville, tekstitykselle ja videolle" loading="lazy"><figcaption>Aikajana auki: ylimpänä kohtaukset, alla tekstit (Aa), kuva, tekstitys (punainen) ja video (keltainen) omilla raidoillaan.</figcaption></figure>
+        <div class="h-end" role="note"><strong>🏁 Harjoitus 4 päättyy tähän</strong><span>Video on koossa.</span></div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ VALMIS ============ -->
+  <section class="harjoitus" id="valmis">
+    <div class="h-banner"><span class="h-num">Valmis video</span><h2>Katso, jaa, julkaise</h2><span class="h-time">⏱ n. 10 min</span></div>
+    <ol class="steps-list">
+      <li>Katso video kerran alusta loppuun ääni päällä ja kerran ilman ääntä (<strong>Play</strong> oikeassa yläkulmassa).</li>
+      <li>Jaa työkaverille: <strong>Share</strong> → lisää vastaanottaja → valitse <strong>Viewer</strong>, <strong>Commenter</strong> tai <strong>Editor</strong> → <strong>Send</strong>.</li>
+      <li>Lataa valmis video somea varten: <strong>File → Download → MP4 video (.mp4)</strong>. Samasta valikosta voit viedä videon myös suoraan YouTubeen (<strong>Export to YouTube</strong>).</li>
+      <li><strong>Kerro julkaisussa, että video on tehty tekoälyn avulla.</strong> EU:n tekoälyasetus vaatii merkinnän erityisesti silloin, kun video näyttää todelta (esim. realistiset ihmiset tai tapahtumat), ja somealustat vaativat sitä omissa säännöissään. Selvästi piirretty hahmo ei lain mukaan vaadi merkintää – mutta avoimuus rakentaa luottamusta, joten merkitse aina.</li>
+    </ol>
+    <figure class="shot" style="max-width:1000px; margin:20px auto 28px;"><img src="images/vids-valmis.jpg" alt="Vidsin muokkausnäkymä: valikot ylhäällä, Play ja Share oikeassa yläkulmassa, työkalut oikeassa reunassa, kohtaukset aikajanalla" loading="lazy"><figcaption>Muokkausnäkymä: Play ja Share oikealla ylhäällä, kohtaukset aikajanalla alhaalla.</figcaption></figure>
+    <figure class="shot" style="max-width:560px; margin:20px auto 28px;"><img src="images/vids-shareroles.jpg" alt="Vidsin Share-ikkuna: vastaanottaja, roolit Viewer, Commenter ja Editor, Send-painike" loading="lazy"><figcaption>Share: valitse rooli ja paina Send.</figcaption></figure>
+    <figure class="shot" style="max-width:640px; margin:20px auto 28px;"><img src="images/vids-download.png" alt="Vidsin valikko: Share, Download → MP4 video (.mp4) tai GIF animation (.gif), Export to Drive, Export to YouTube" loading="lazy"><figcaption>Download → MP4 video (.mp4).</figcaption></figure>
+    <div class="bonus-box">
+      <h3>🌍 Yleisö voi reagoida tekoälyvideoon vahvasti</h3>
+      <p>Kohdeyleisö voi suhtautua voimakkaasti siihen, että video on tehty tekoälyllä. Syitä on monia, ja yksi niistä on energiankulutus: arvioiden mukaan viiden sekunnin tekoälyvideo voi kuluttaa saman verran energiaa kuin mikroaaltouuni tunnissa.</p>
+      <p style="margin-top:10px;">Toisaalta tekoälyvideo voi joskus olla tehokkaampi tapa kuin tuottaa video itse kuvauksineen, matkoineen ja editointitunteineen – silloin saavutettu hyöty voi olla suurempi kuin energiankulutus. Asia ei ole mustavalkoinen. Mieti etukäteen, miten vastaat, jos joku kysyy. Suunnittelu ennen generointia säästää sekä kiintiötä että energiaa.</p>
+      <p style="margin-top:10px; font-size:15px;">Lähde: UN University (UNU-INWEH), <em>Environmental Cost of AI's Energy Use</em>, 2026. Vertaile itse: <a href="https://csy.fi/ai-energy-calculator/" target="_blank" rel="noopener">AI Energy Calculator</a>.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ============ DEMO ============ -->
+  <section class="harjoitus" id="demo">
+    <div class="h-banner"><span class="h-num">Kokeile myöhemmin</span><h2>Gemini Notebook – omasta aineistosta</h2></div>
+    <div class="goal"><strong>Kun ehdit, kokeile itse.</strong> Vids tekee videon siitä, mitä kerrot sille. Gemini Notebook tekee sisältöä siitä aineistosta, jonka annat sille.</div>
+    <div class="bonus-box">
+      <h3>🔎 Gemini Notebook <span style="font-weight:400; font-size:14px; opacity:0.75;">(entinen NotebookLM)</span></h3>
+      <p><a href="https://notebook.google.com" target="_blank" rel="noopener">Gemini Notebookiin</a> ladataan ensin oma aineisto, esimerkiksi järjestönne esittely tai toimintakertomus. Se vastaa vain sen pohjalta.</p>
+      <p style="margin-top:10px;">Aineiston kanssa voi keskustella, ja siitä voi luoda podcastin, esityksen, videon, raportin ja paljon muuta. Monet ominaisuudet ovat ilmaisia, mutta niissäkin on rajoituksia.</p>
+      <p style="margin-top:10px;">Lataa vain julkista aineistoa, ei henkilötietoja.</p>
+      <p style="margin-top:10px;">👉 Katso esimerkki: <a href="https://csy.fi/teoskoulutus/notebook.html" target="_blank" rel="noopener">Gemini Notebook -demo</a></p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <div class="instructions">
+    <h2>📌 Muista jatkossa</h2>
+    <ol>
+      <li><strong>Tarina ensin.</strong> Suunnittele kohtaukset ennen kuin luot klippejä – kiintiö on 20 klippiä ja 5 kuvaa kuukaudessa.</li>
+      <li><strong>Hahmo viitekuvana.</strong> Sama @Image1 jokaisessa klipissä pitää hahmon samana.</li>
+      <li><strong>Logo:</strong> tavallisena kuvana pysyy tarkkana eikä kuluta kiintiötä. Kohtauksen osana (@Image2) se kuluttaa kiintiötä, joten tarkista, että logo pysyi oikeannäköisenä.</li>
+      <li><strong>Oma ääni suomeksi</strong> – tekoälyselostus ei tue suomea. Tekoälyklipin hahmo voi sanoa lyhyen repliikin suomeksi, mutta ei aina sanatarkasti.</li>
+      <li><strong>Ei henkilötietoja, ei tunnistettavia ihmisiä ilman lupaa.</strong></li>
+    </ol>
+    <div class="tip" style="margin:24px 0 0;"><strong>🧭 Tämä on vain pieni osa.</strong> Vidsillä voi tehdä paljon muutakin kuin tässä oppaassa näytetään. Opas perustuu lokakuun 2026 tietoon, ja ohjelmat muuttuvat jatkuvasti – tarkista ajantasaiset tiedot <a href="https://support.google.com/docs/topic/14950067?hl=fi" target="_blank" rel="noopener">Googlen omista Vids-ohjeista</a>.</div>
+    <div class="tip" style="margin:16px 0 0;"><strong>💡 Tee itsellesi Vids-apuri.</strong> Anna tekoälylle (esim. Gemini) linkki Googlen Vids-ohjeisiin tai tähän oppaaseen, ja kysy siltä aina tarkemmin, miten jokin toimii. Se antaa joskus hyviä ja joskus huonompia ohjeita – kokeile, ja tarkista epäselvät kohdat Googlen ohjeesta.</div>
+  </div>
+
+  <div class="closing">
+    <p class="who">Kouluttaja</p>
+    <p class="name">Jarno Alastalo</p>
+    <p class="link-note" style="margin-bottom:6px;">Tekno-filosofi · Puhuja · kirjailija</p>
+    <p class="link-note"><a href="mailto:jarno@csy.fi" style="color:inherit; text-decoration:underline;">jarno@csy.fi</a></p>
+  </div>
+
+  <div class="credits">
+    <p>Yhteistyössä</p>
+    <div class="credits-logos">
+      <img src="../teoskoulutus/images/logo-teos.png" alt="Tekoälyä ja aitoa osallisuutta -hanke">
+      <img src="../teoskoulutus/images/logo-humak.png" alt="Humak">
+      <img src="../teoskoulutus/images/logo-valo-valmennus.png" alt="Valo-Valmennusyhdistys">
+      <img src="../teoskoulutus/images/logo-silta-valmennus.png" alt="Silta-Valmennusyhdistys">
+      <img src="../teoskoulutus/images/logo-eu.png" alt="Euroopan unionin osarahoittama">
+    </div>
+    <p class="usage-note">Aineisto on vapaasti järjestöjen ja yhdistysten käyttöön omassa toiminnassaan (<a href="https://creativecommons.org/licenses/by-nc/4.0/deed.fi" target="_blank" rel="noopener">CC BY-NC 4.0</a>) — ei kaupalliseen käyttöön ilman lupaa. Kiintiöt: Googlen tiedot 10/2026, tarkista ajantasaiset <a href="https://support.google.com/docs/answer/15609411?hl=fi-fi#zippy=%2Cgoogle-workspace-yleishy%C3%B6dyllisille-yhteis%C3%B6ille-paketit" target="_blank" rel="noopener">Googlen ohjeesta</a>.</p>
+  </div>
+
+</main>
+<script>
+function copyPrompt(btn) {
+  const text = btn.closest('.prompt-label').nextElementSibling.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    btn.setAttribute('aria-live', 'polite');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+  });
+}
+function copyNotes(btn) {
+  const fields = [['Kenelle', 'ws1'], ['Mitä katsoja tekee', 'ws2'], ['Alku', 'ws3'], ['Käänne', 'ws4'], ['Loppu', 'ws5']];
+  const text = fields.map(([label, id]) => label + ': ' + (document.getElementById(id).value.trim() || '(ei kirjoitettu)')).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = '✓ Kopioitu!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
