@@ -45,17 +45,6 @@
   .kokeilu-intro h2 { font-size: clamp(26px, 5vw, 34px); font-weight: 900; color: var(--pd); line-height: 1.2; margin-bottom: 12px; }
   .kokeilu-intro p { font-size: 19px; color: #333; line-height: 1.6; }
   .kokeilu-intro p + p { margin-top: 10px; }
-  details.tauko { margin: 0 0 28px; scroll-margin-top: 10px; }
-  details.tauko > summary { list-style: none; cursor: pointer; display: block; width: fit-content; margin: 0 auto; background: var(--sal-l); border: 2px solid var(--sal); color: var(--pd); font-weight: 800; font-size: 19px; padding: 12px 24px; border-radius: 30px; }
-  details.tauko > summary::-webkit-details-marker { display: none; }
-  details.tauko > summary:hover, details.tauko > summary:focus { background: var(--sal); }
-  details.tauko[open] > summary { margin-bottom: 18px; }
-  .tauko-box { background: var(--sal-l); border: 3px solid var(--sal); border-radius: 18px; padding: 28px 32px; }
-  .tauko-box h2 { font-size: clamp(26px, 5vw, 36px); font-weight: 900; color: var(--pd); line-height: 1.2; margin-bottom: 8px; }
-  .tauko-box .lead { font-size: 20px; color: #333; margin-bottom: 18px; }
-  .tauko-box ol { padding-left: 28px; }
-  .tauko-box li { font-size: clamp(19px, 3.2vw, 23px); line-height: 1.5; color: var(--pd); margin-bottom: 12px; }
-  .tauko-box .alku { margin-top: 18px; font-size: clamp(20px, 3.5vw, 26px); font-weight: 900; color: var(--pm); }
   .hb-title { text-align: center; margin-bottom: 18px; font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--pm); }
   .hampurilainen { max-width: 660px; margin: 0 auto 8px; display: flex; flex-direction: column; gap: 3px; filter: drop-shadow(0 8px 24px rgba(26,26,26,0.20)); }
   .hamp-layer { padding: 18px 26px; font-size: 20px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: hampIn 0.5s ease forwards; }
@@ -216,40 +205,22 @@
     <div class="header-text">
       <div class="kicker">Tekoälyä ja aitoa osallisuutta -hanke · Humak</div>
       <h1>Tekoälyllä lisää aikaa kohtaamiselle</h1>
-      <p>Harjoitusosuuden opas — kolme käytännön harjoitusta tekoälyn parissa. Kouluttaja Jarno Alastalo.</p>
-    </div>
-    <div class="header-url">
-      <div class="label">Avaa omalla laitteella</div>
-      <div class="url">csy.fi/teoskoulutus</div>
+      <p>Opas kolmeen käytännön harjoitukseen tekoälyn parissa. Kouluttaja Jarno Alastalo.</p>
     </div>
   </div>
 </header>
 <main id="sisalto">
 
-  <details class="tauko" id="tauko">
-    <summary>☕ Kahvitauolla – lue tämä</summary>
-    <div class="tauko-box">
-      <h2>☕ Tauon aikana</h2>
-      <p class="lead">Harjoituksissa kokeilemme pääasiassa Googlen Gemini-tekoälyä ja sen <strong>Gemejä</strong> eli omia tekoälyagentteja.</p>
-      <ol>
-        <li><strong>Kirjaudu Googleen</strong> osoitteessa <strong>gemini.google.com</strong> ja varmista, että pääset sisään.</li>
-        <li><strong>Pelkkä puhelin?</strong> Käytä puhelimen selainta – Gemin voi luoda vain selaimessa, ei Gemini-sovelluksessa.</li>
-        <li><strong>Ei Google-tiliä?</strong> Etsi pari, jolla on.</li>
-        <li>Pidä tämä sivu auki: <strong>csy.fi/teoskoulutus</strong></li>
-      </ol>
-    </div>
-  </details>
-
   <div class="mission">
     <h2>Miksi harjoittelemme tätä</h2>
     <blockquote>Tekoälyttömyys: kyky käyttää tekoälyä viisaasti niin, että oma harkinta ja ajattelu säilyvät.</blockquote>
-    <p>Ei tekoälyn hylkäämistä, vaan sen käyttöä ilman että lakkaat ajattelemasta itse. Se, mitä kone ei pysty jäljittelemään, jää ihmiselle: aito kohtaaminen. Kun rutiinit ja paperityö siirtyvät koneen tehtäväksi, aikaa jää enemmän juuri siihen, missä olet korvaamaton. Sitä tänä iltapäivänä harjoitellaan — ei teoriassa, vaan käytännössä, omalla laitteellasi.</p>
+    <p>Ei tekoälyn hylkäämistä, vaan sen käyttöä ilman että lakkaat ajattelemasta itse. Se, mitä kone ei pysty jäljittelemään, jää ihmiselle: aito kohtaaminen. Kun rutiinit ja paperityö siirtyvät koneen tehtäväksi, aikaa jää enemmän juuri siihen, missä olet korvaamaton. Sitä tässä oppaassa harjoitellaan — ei teoriassa, vaan käytännössä, omalla laitteellasi.</p>
   </div>
 
   <div class="kokeilu-intro">
-    <h2>Tänään tärkeintä on kokeilu</h2>
-    <p>Tänään lähdetään liikkeelle yhdessä, omaan tahtiin.</p>
-    <p>Ei ole tärkeää, mitä tekoälylle annat tai saatko tänään mitään valmista. Tärkeintä on oppia tekemään, jotta voit jatkaa itsenäisesti – omassa järjestössäsi tai yksin.</p>
+    <h2>Tärkeintä on kokeilu</h2>
+    <p>Lähde liikkeelle omaan tahtiisi.</p>
+    <p>Ei ole tärkeää, mitä tekoälylle annat tai saatko heti mitään valmista. Tärkeintä on oppia tekemään, jotta voit jatkaa itsenäisesti – omassa järjestössäsi tai yksin.</p>
   </div>
 
   <p class="hb-title">Mitä annat tekoälylle — ja mitä et</p>
@@ -439,7 +410,7 @@ Lopuksi: kirjoita yksi lause, josta käy ilmi keneen ja miten toimittaja voi ott
     </div>
 
     <div class="phase"><span class="pn">Vaihe 4</span><h3>Vertaa</h3><span class="pt">3 min</span></div>
-    <p class="phase-p">Laita vaiheen 1 laiska vastaus ja tämä uusi rinnakkain. Mikä muuttui? Ja tärkein kysymys: <strong>mitä sinä tiesit, mitä tekoäly ei tiennyt?</strong> Näytä sitten tekstisi vierustoverillesi: mikä toimi, mikä ei, ja mitä muuttaisit ennen kuin lähettäisit sen oikeasti? Sopikaa talossa myös, milloin kerrotte lukijalle tekoälyn käytöstä.</p>
+    <p class="phase-p">Laita vaiheen 1 laiska vastaus ja tämä uusi rinnakkain. Mikä muuttui? Ja tärkein kysymys: <strong>mitä sinä tiesit, mitä tekoäly ei tiennyt?</strong> Näytä sitten tekstisi kollegalle: mikä toimi, mikä ei, ja mitä muuttaisit ennen kuin lähettäisit sen oikeasti? Sopikaa talossa myös, milloin kerrotte lukijalle tekoälyn käytöstä.</p>
 
     <details class="more">
       <summary>🐱 Valmis ennen muita? Kolme lisähaastetta</summary>
@@ -477,7 +448,7 @@ Kirjoita sen jälkeen kuvan pohjalta lyhyt somejulkaisu <span class="ph">[JÄRJE
 
       </div>
     </details>
-    <div class="h-end" role="note"><strong>🏁 Harjoitus 1 päättyy tähän</strong><span>Odota yhteistä siirtymää ennen harjoitusta 2. Jos olet valmis ennen muita, avaa 🐱-lisähaasteet yllä.</span></div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 1 päättyy tähän</strong><span>Jatka harjoitukseen 2 – tai kokeile ensin 🐱-lisähaasteita yllä.</span></div>
   </section>
 
   <hr class="divider">
@@ -655,7 +626,7 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
       <p>Jos sinulla on paljon taustamateriaalia yhdestä aiheesta — esim. rahoittajan ohjeet, edellisen vuoden hankeraportti, useita muistioita — kokeile <a href="https://notebook.google.com" target="_blank" rel="noopener">Gemini Notebookia</a>. Lataat lähteet sinne, ja tekoäly vastaa kysymyksiisi <strong>vain</strong> niiden pohjalta, viitaten aina siihen kohtaan lähteessä, josta vastaus tulee. Se ei jää pysyväksi agentiksi kuten Gem, vaan on kertaluontoinen syväsukellus yhteen aineistoon — hyvä silloin, kun tarkkuus on tärkeämpää kuin uudelleenkäytettävyys. Sama työkalu tunnetaan monissa oppaissa vielä vanhalla nimellään NotebookLM — Google vaihtoi nimen kesällä 2026, toiminta pysyi samana.</p>
       <p style="margin-top:14px;"><a href="notebook.html" style="color:var(--pd); font-weight:700; text-decoration:underline;">📖 Kokeile itse — askel askeleelta -demo tälle oppaalle →</a></p>
     </div>
-    <div class="h-end" role="note"><strong>🏁 Harjoitus 2 päättyy tähän</strong><span>Odota yhteistä siirtymää ennen harjoitusta 3. Jos olet valmis ennen muita, avaa 🐱-lisähaasteet yllä.</span></div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitus 2 päättyy tähän</strong><span>Jatka harjoitukseen 3 – tai kokeile ensin 🐱-lisähaasteita yllä.</span></div>
   </section>
 
   <hr class="divider">
@@ -683,8 +654,8 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
         <textarea id="ws3" rows="2" placeholder="Esim. soitan jäsenelle, joka ei ole käynyt pitkään aikaan..."></textarea>
       </div>
       <div class="ws-item">
-        <label for="ws4">4. Kerroin vierustoverille</label>
-        <span class="hint">Käännyt vieressä istuvan puoleen ja kerrot vastauksesi (kohdat 1–3). Kysy häneltä sama kysymys, jonka kysyisit tekoälyltä: <em>"Miten sinä muokkaisit tätä ideaa?"</em> Ette ehkä ole samasta järjestöstä — se on hyvä asia, ulkopuolinen näkökulma on arvokas. Muutama jakaa vielä ääneen koko ryhmälle.</span>
+        <label for="ws4">4. Kerroin jollekulle</label>
+        <span class="hint">Kerro vastauksesi (kohdat 1–3) kollegalle tai jollekulle oman työsi ulkopuolelta. Kysy häneltä sama kysymys, jonka kysyisit tekoälyltä: <em>"Miten sinä muokkaisit tätä ideaa?"</em> Ulkopuolinen näkökulma on arvokas.</span>
         <textarea id="ws4" rows="2" placeholder="Hän ehdotti... / Muokkaisin ideaani näin..."></textarea>
       </div>
       <div class="ws-copy-row">
@@ -692,7 +663,7 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
         <p class="ws-note">Liitä talteen esim. muistioon tai sähköpostiisi.</p>
       </div>
     </div>
-    <div class="h-end" role="note"><strong>🏁 Harjoitukset päättyvät tähän</strong><span>Kiitos! Seuraavaksi yhteinen keskustelu.</span></div>
+    <div class="h-end" role="note"><strong>🏁 Harjoitukset päättyvät tähän</strong><span>Kiitos! Jatka tästä omassa työssäsi.</span></div>
   </section>
 
   <hr class="divider">
@@ -705,7 +676,7 @@ Lyhyitä kappaleita. Päätä jokainen vastaus yhteen kysymykseen, joka vie ajat
   </div>
 
   <div class="credits">
-    <p>Tapahtuman järjestäjät</p>
+    <p>Yhteistyössä</p>
     <div class="credits-logos">
       <img src="images/logo-teos.png" alt="Tekoälyä ja aitoa osallisuutta -hanke">
       <img src="images/logo-humak.png" alt="Humak">
@@ -743,7 +714,7 @@ function copyNotes(btn) {
     ['1. Toistuva tehtäväni', 'ws1'],
     ['2. Yksi konkreettinen askel ensi viikolle', 'ws2'],
     ['3. Kenen kanssa käytän säästyneen ajan', 'ws3'],
-    ['4. Kerroin vierustoverille', 'ws4']
+    ['4. Kerroin jollekulle', 'ws4']
   ];
   const text = fields.map(([label, id]) => {
     const val = document.getElementById(id).value.trim();
