@@ -340,7 +340,7 @@ const HAHMOKERROKSET = [
   { x: 2640, kuva: 'kuvat/ada.png', pehmea: true, kiintea: true, puoli: 'oikea', pysty: 'ala', korkeusProsentti: 0.70, syvyysSuhde: 0.85  },
   { x: 2040, kuva: 'kuvat/evolution.png', pehmea: true, kiintea: true, puoli: 'keski', pysty: 'ala', korkeusProsentti: 0.50 },
   { x: 855, kuva: 'kuvat/pesukone2.png', pehmea: true, kiintea: true, puoli: 'keski', pysty: 'keski', korkeusProsentti: 0.3 },
-  { x: 5040, kuva: 'kuvat/otsikot.png', pehmea: true, kiintea: true, puoli: 'vasen', pysty: 'keski', korkeusProsentti: 0.5 },
+  { x: 5040, kuva: 'kuvat/otsikot-ilman-muskia.png', pehmea: true, kiintea: true, puoli: 'vasen', pysty: 'keski', korkeusProsentti: 0.38 },   // Jämsä 8.10: Musk-uutinen leikattu pois (6.-luokkalaiset), alkuperäinen kuvat/otsikot.png
   { x: 6246, kuva: 'kuvat/ouro.png', pehmea: true, kiintea: true, puoli: 'keski', pysty: 'keski', korkeusProsentti: 0.5 },
   { x: 6540, kuva: 'kuvat/nursedoc.png', pehmea: true, kiintea: true, puoli: 'keski', pysty: 'keski', korkeusProsentti: 0.5 },
   // JÄMSÄ 8.10.2026: tekoälyn video jämsäläisistä koululaisista (Jarnon Gemini-video, ääni päällä)

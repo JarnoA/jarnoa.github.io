@@ -309,7 +309,7 @@ const PYSAHDYKSET = [
 //SIIRTO?    { x: 4740, otsikko:'Ihminen määrittelee usein itsensä työnsä kautta. Jos tekoäly tekee raportin, koemmeko siitä onnistumista', puoli:'oikea', savy:'kelta' },
 //SIIRTO=    { x: 4890, otsikko:'Jos työ voidaan pilkkoa toistettaviksi osatehtäviksi, se voidaan automatisoida.', puoli:'vasen', savy:'kelta' },
     // 8.10.2026 VASTUUN KETJU (esitys-2d-vastuu.js): otsikko -> Ruotsalaisen sitaatti -> ketju klikkaus kerrallaan
-    { x: 5040, otsikko:'Elon Muskin tekoälybotti riisuu', koko: 8, puoli:'oikea', savy:'kelta', kortti:true, vastuu: 0, },
+    { x: 5040, otsikko:'Tekoäly tekee', koko: 8, puoli:'oikea', savy:'kelta', kortti:true, vastuu: 0, },
     { x: 5041, teksti:'"Kun puhutaan siitä, miten \'tekoäly teki jotain\', niin unohdamme, että todellisuudessa tekoäly on aina ihmisen luomaa."', lahde:'Laura Ruotsalainen, professori', kortti:true,  koko: 7, lahdeKoko: 4, muistiinpanot:'meidän kielellämme on iso merkitys – tapa, jolla puhumme tekoälystä, antaa sille enemmän valtaa kuin sillä todellisuudessa on.', puoli:'oikea', savy:'kelta', hahmoAnimaatio:'Sit', vastuu: 0, },
     { x: 5042, otsikko:'<span style="white-space:nowrap">Elon Muskin tekoälybotti</span>', koko: 3, puoli:'vasen', savy:'kelta', kortti:true, vastuu: 1, },
     { x: 5043, otsikko:'<span style="white-space:nowrap">Elon Muskin tekoälybotti</span>', koko: 3, puoli:'vasen', savy:'kelta', kortti:true, vastuu: 2, },

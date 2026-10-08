@@ -4,7 +4,7 @@
 // taustalla on päällikkö. Ja päällikön taustalla on lopulta Elon." Vaiheittain
 // klikkauksilla, EI emojeita, EI koodilla piirrettyjä ihmisiä -> pikseliesineet
 // kodinkonehyllyn tyyliin + esityksen omat kuvat (robottoy-pix, olig.png).
-// Riisumista EI näytetä: kuva sumenee ja saa leiman VÄÄRENNÖS.
+// Riisumista EI näytetä. 8.10 ilta: kupla "tee hänestä valekuva", kuva häiriintyy ja kasvot vaihtuvat -> VÄÄRENNÖS.
 //
 // Käyttö esitys-data.js:ssä: `vastuu: n` (0 = ei vielä ketjua, 1..6 = montako
 // lenkkiä näkyy). Uusin lenkki ilmestyy animoiden, aiemmat ovat jo paikallaan.
@@ -56,7 +56,9 @@ function kuvaSprite(iho, paita, housut, kengat){
   });
 }
 const KUVA = kuvaSprite('#e8b48a', '#3d7bd9', '#2f3b5c', '#161922');
-const KUVA_VAARENNOS = kuvaSprite('#f2a7bd', '#f2a7bd', '#f2a7bd', '#f2a7bd');
+// 8.10.2026 (Jarno, 6.-luokkalaiset): ei enää pinkkiä siluettia. Kuva häiriintyy, kasvot vaihtuvat
+// toisen ihmisen kasvoiksi ja kuva nykii -> lopuksi sekoitus kahdesta ihmisestä + VÄÄRENNÖS.
+const KUVA_TOINEN = kuvaSprite('#8d5a3b', '#c43c3c', '#3a2f22', '#d9a62e');
 const PUHELIN = sprite(16, 28, r => {
   r(0,0,16,28,'#161922'); r(1,1,14,26,'#2a2e3a'); r(2,3,12,21,'#0f1218'); r(6,25,4,1,'#566074');
   r(3,5,9,3,'#3d7bd9'); r(5,10,8,3,'#4a4f5c'); r(3,15,10,3,'#3d7bd9');
@@ -118,11 +120,22 @@ function piirra(){
     }
     if (i === 1) {
       const b = piirraSprite(KUVA, x, pohja - nousu, 1.15);
-      if (vaihe >= 3) {   // väärennös: siluetti vaaleanpunaiseksi + leima
-        const e = Math.min(1, vaihe > 3 || edVaihe >= 3 ? 1 : (nyt - vaiheAlku - .6) / .6);
+      if (vaihe >= 3) {   // väärennös: kuva häiriintyy, kasvot vaihtuvat, kuva nykii + leima
+        const valmis = vaihe > 3 || edVaihe >= 3, k = valmis ? 9 : nyt - vaiheAlku;
+        const hairio = valmis ? 0 : Math.max(0, Math.min(1, (k - .2) / .3)) * (1 - Math.max(0, Math.min(1, (k - 1.6) / .4)));
+        const e = Math.min(1, valmis ? 1 : (k - 1.6) / .5);
+        if (k > .2) {          // viipaleet: osa alkuperäistä, osa toista ihmistä, nykien sivuttain
+          const n = 8, vh = b.h / n, sh = KUVA.height / n, sw = KUVA.width;
+          for (let j = 0; j < n; j++) {
+            const toinen = valmis || k > 1.6 ? (j < 3) : Math.random() < .5;   // lopuksi ylhäällä (kasvot) toisen ihmisen
+            const siirto = hairio > 0 && Math.random() < .5 ? (Math.random() - .5) * b.w * .35 * hairio : (valmis || k > 1.6) && j % 3 === 1 ? b.w*.06 : 0;
+            ctx.drawImage(toinen ? KUVA_TOINEN : KUVA, 0, j*sh, sw, sh, b.x + siirto, b.y + j*vh, b.w, vh + .5);
+          }
+          if (hairio > 0) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .35*hairio;
+            ctx.drawImage(KUVA, b.x - P*1.5, b.y, b.w, b.h); ctx.restore(); }
+        }
         if (e > 0) {
           ctx.save(); ctx.globalAlpha = a * e;
-          ctx.drawImage(KUVA_VAARENNOS, b.x, b.y, b.w, b.h);
           ctx.translate(b.x + b.w/2, b.y + b.h*.52); ctx.rotate(-.35);
           ctx.strokeStyle = '#e0283c'; ctx.lineWidth = P*.9; const lw = b.w*1.15, lh = b.h*.24;
           ctx.fillStyle = 'rgba(241,234,216,.9)'; ctx.fillRect(-lw/2, -lh/2, lw, lh);
@@ -137,10 +150,10 @@ function piirra(){
       // chat-kupla
       const kx = b.x + b.w*.5, ky = b.y - H*.05, koko = H*.028;
       ctx.font = `700 ${Math.round(koko)}px Georgia,Garamond,"Times New Roman",serif`;
-      const tw = ctx.measureText('"riisu hänet"').width + koko;
+      const tw = ctx.measureText('"tee hänestä valekuva"').width + koko;
       ctx.fillStyle = '#f4f6fa'; ctx.fillRect(kx - tw/2, ky - koko*.9, tw, koko*1.8);
       ctx.beginPath(); ctx.moveTo(kx - koko*.3, ky + koko*.9); ctx.lineTo(kx + koko*.3, ky + koko*.9); ctx.lineTo(kx, ky + koko*1.5); ctx.fill();
-      ctx.fillStyle = '#161922'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('"riisu hänet"', kx, ky);
+      ctx.fillStyle = '#161922'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('"tee hänestä valekuva"', kx, ky);
     } else if (i === 3) {
       if (robo.complete && robo.naturalWidth) {
         const s = P*.55, w = robo.naturalWidth*s, h = robo.naturalHeight*s;   // 8.10: pienennetty muiden esineiden kokoon (kuva 64 px korkea)
