@@ -10,7 +10,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gemini Notebook -demo – TeOs-koulutuksen älykäs kaveri</title>
+<title>Kokeile myös: Gemini Notebook – TeOs-koulutus</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;0,900;1,400&display=swap');
   :root { --pd: #1A1A1A; --pm: #3B62E3; --lav: #DCEBFF; --sal: #FFB549; --sal-l: #FFF3E0; }
@@ -69,6 +69,49 @@
     header { padding: 28px 20px; } header h1 { font-size: 24px; } main { padding: 28px 16px 60px; }
     .step .why, .step p, .tip, .how-steps, .prompt-wrap, .highlight-box, .why-grid, .bonus-badge { margin-left: 0; }
   }
+  .closing { background: var(--pd); color: #fff; border-radius: 16px; padding: 36px 32px; text-align: center; margin-top: 8px; }
+  .closing p.who { font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+  .closing p.name { font-size: 23px; font-weight: 900; color: #fff; margin-bottom: 18px; }
+  .closing p.link-note { font-size: 16px; color: rgba(255,255,255,0.65); }
+  .credits { margin-top: 40px; text-align: center; }
+  .credits p { font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: #999; margin-bottom: 18px; }
+  .credits-logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 28px; }
+  .credits-logos img { height: 72px; width: auto; max-width: 200px; object-fit: contain; }
+  .credits .usage-note { margin-top: 22px; font-size: 13px; letter-spacing: normal; text-transform: none; color: #999; }
+  .credits .usage-note a { color: #999; }
+
+  .kb { position: sticky; top: 0; z-index: 50; background: #1A1A1A; color: #fff; font-family: 'Merriweather', Georgia, serif; }
+  .kb-in { max-width: 900px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; position: relative; }
+  .kb a.kb-home { color: #fff; font-weight: 800; font-size: 16px; text-decoration: none; }
+  .kb-prog { flex: 1; min-width: 110px; height: 8px; background: rgba(255,255,255,.22); border-radius: 4px; overflow: hidden; }
+  .kb-prog span { display: block; height: 100%; width: 0; background: #FFB549; transition: width .3s; }
+  .kb-count { font-size: 15px; white-space: nowrap; }
+  .kb-menu summary { cursor: pointer; font-size: 15px; font-weight: 700; padding: 6px 14px; border-radius: 20px; background: #3B62E3; list-style: none; }
+  .kb-menu summary::-webkit-details-marker { display: none; }
+  .kb-menu ol { position: absolute; right: 20px; top: 100%; background: #fff; color: #1A1A1A; border: 2px solid #1A1A1A; border-radius: 10px; padding: 8px; list-style: none; min-width: 280px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+  .kb-menu li a { display: flex; gap: 10px; padding: 9px 12px; border-radius: 8px; color: #1A1A1A; text-decoration: none; font-size: 16px; }
+  .kb-menu li a:hover, .kb-menu li a:focus { background: #DCEBFF; }
+  .kb-menu li a.cur { background: #FFF3E0; font-weight: 700; }
+  .kb-menu li .ck { width: 1.2em; color: #1a7a1a; font-weight: 800; }
+  .kv { margin: 0 0 36px; }
+  .kv-frame { position: relative; padding-top: 56.25%; background: #1A1A1A; border-radius: 12px; overflow: hidden; }
+  .kv-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .kv-note { font-size: 15px; color: #555; margin: 8px 0 0; }
+  .kv-note a { color: #3B62E3; }
+  .kmod { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #3B62E3; margin: 0 0 6px; }
+  .kn { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; margin: 48px 0 8px; padding-top: 28px; border-top: 2px solid #DCEBFF; font-family: 'Merriweather', Georgia, serif; }
+  .kn a, .kn button { flex: 1 1 200px; min-height: 52px; padding: 12px 18px; border-radius: 10px; font: inherit; font-size: 16px; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .kn button.kdone { background: #fff; color: #1A1A1A; border: 2px solid #1A1A1A; }
+  .kn button.kdone[aria-pressed="true"] { background: #90EE90; border-color: #1a5c1a; color: #1a5c1a; }
+  .kn a.knext { background: #FFB549; color: #1A1A1A; border: 2px solid #1A1A1A; }
+  .kn a span small { display: block; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; opacity: .8; margin-bottom: 2px; }
+  .kn-hint { font-size: 15px; color: #555; margin: 8px 0 0; }
+  .kwin { display: none; margin: 20px 0 0; padding: 26px 28px; background: #1A1A1A; color: #fff; border-radius: 14px; border-left: 6px solid #FFB549; font-family: 'Merriweather', Georgia, serif; font-size: 22px; font-weight: 700; line-height: 1.45; animation: kwin .6s ease-out; }
+  .kwin.show { display: block; }
+  .kwin span { color: #FFB549; }
+  @keyframes kwin { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .kwin { animation: none; } }
+  .kn a.kprev { background: #fff; color: #3B62E3; border: 2px solid #3B62E3; }
 </style>
 <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
 <meta name="description" content="Tekoäly, joka vastaa vain sinun antamistasi lähteistä. TeOs-koulutuksen bonusosio.">
@@ -76,30 +119,27 @@
 <meta property="og:locale" content="fi_FI">
 <meta property="og:site_name" content="CSY Lab · Jarno Alastalo">
 <meta property="og:url" content="https://csy.fi/teoskoulutus/notebook.html">
-<meta property="og:title" content="Gemini Notebook – oppaan älykäs kaveri">
+<meta property="og:title" content="Kokeile myös: Gemini Notebook – TeOs-koulutus">
 <meta property="og:description" content="Tekoäly, joka vastaa vain sinun antamistasi lähteistä. TeOs-koulutuksen bonusosio.">
 <meta property="og:image" content="https://csy.fi/teoskoulutus/og-notebook.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Gemini Notebook – oppaan älykäs kaveri">
+<meta property="og:image:alt" content="Kokeile myös: Gemini Notebook – TeOs-koulutus">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Gemini Notebook – oppaan älykäs kaveri">
+<meta name="twitter:title" content="Kokeile myös: Gemini Notebook – TeOs-koulutus">
 <meta name="twitter:description" content="Tekoäly, joka vastaa vain sinun antamistasi lähteistä. TeOs-koulutuksen bonusosio.">
 <meta name="twitter:image" content="https://csy.fi/teoskoulutus/og-notebook.jpg">
 </head>
 <body>
-<nav>
-  <span class="nav-logo">TeOs-koulutus</span>
-  <a href="index.html">Etusivu</a>
-  <a href="index.html#harjoitus2">Harjoitus 2</a>
-  <a href="notebook.html" class="active">Bonus: Notebook</a>
-</nav>
+<a class="skip-link" href="#sisalto">Siirry sisältöön</a>
+<div class="kb"><div class="kb-in"><a class="kb-home" href="index.html">TeOs-koulutus</a><div class="kb-prog" aria-hidden="true"><span></span></div><span class="kb-count" aria-live="polite"></span><details class="kb-menu"><summary>☰ Sisällys</summary><ol><li data-id="alustus"><a href="index.html"><span class="ck" aria-hidden="true"></span>Alustus</a></li><li data-id="vinkit"><a href="vinkit.html"><span class="ck" aria-hidden="true"></span>Vinkit tekoälyltä</a></li><li data-id="h1"><a href="harjoitus-1.html"><span class="ck" aria-hidden="true"></span>Harjoitus 1</a></li><li data-id="h2"><a href="harjoitus-2.html"><span class="ck" aria-hidden="true"></span>Harjoitus 2</a></li><li data-id="h3"><a href="harjoitus-3.html"><span class="ck" aria-hidden="true"></span>Harjoitus 3</a></li><li data-id="nb"><a href="notebook.html" class="cur" aria-current="page"><span class="ck" aria-hidden="true"></span>Bonus: Notebook</a></li></ol></details></div></div>
 <header>
   <div class="kicker">Työkalu · Harjoituksen 2 bonus</div>
   <h1>Gemini Notebook — oppaan älykäs kaveri</h1>
   <p class="subtitle">Tekoälypohjainen tutkimusassistentti, joka perustaa vastauksensa vain sinun antamiisi lähteisiin.</p>
 </header>
-<main>
+<main id="sisalto">
+<p class="kmod">Moduuli 6 / 6</p><div class="kv"><div class="kv-frame"><iframe src="https://www.youtube-nocookie.com/embed/GJCTYUz-_ok?rel=0" title="Kokeile myös: Gemini Notebook" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><p class="kv-note"><a href="https://www.youtube.com/watch?v=GJCTYUz-_ok" target="_blank" rel="noopener">Avaa video YouTubessa ↗</a></p></div>
 
 <div class="intro-box">
   <h2>Mikä on Gemini Notebook?</h2>
@@ -116,14 +156,14 @@
     <li>Mene osoitteeseen: <strong><a href="https://notebook.google.com" target="_blank" rel="noopener" style="color:var(--pm);">notebook.google.com</a></strong></li>
     <li>Luo uusi muistikirja: klikkaa <strong>New Notebook</strong> / <strong>Luo uusi</strong></li>
     <li>Valitse lähteeksi: <strong>Website</strong></li>
-    <li>Liitä lähteeksi <strong>pääoppaan</strong> osoite alta – ei tämän sivun osoitetta selaimen osoiteriviltä</li>
+    <li>Liitä lähteeksi <strong>kurssin tekstisivun</strong> osoite alta – ei tämän sivun osoitetta selaimen osoiteriviltä</li>
   </ul>
   <div class="prompt-wrap">
     <div class="prompt-label">
       <span>🔗 Lähteen osoite</span>
       <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Kopioi oppaan osoite leikepöydälle">Kopioi</button>
     </div>
-    <div class="prompt-text">https://csy.fi/teoskoulutus/index.html</div>
+    <div class="prompt-text">https://csy.fi/teoskoulutus/kaikki.html</div>
   </div>
   <div class="tip"><strong>💡 Vinkki:</strong> jos teet myöhemmin oman Gemini Notebookin oikeaa hanketta varten, lisää lähteeksi jokainen tarvitsemasi asiakirja erikseen (esim. hakuilmoitus, rahoittajan ohjeet, edellisen vuoden raportti) — tekoäly ei osaa itse etsiä lisämateriaalia, vaan lukee vain sen, minkä sille annat.</div>
 </div>
@@ -242,9 +282,27 @@
   <p>Voit jakaa Audio Overview -podcastin muillekin — esimerkiksi kollegalle, joka ei ehtinyt lukea pitkää raporttia. Se on loistava tapa kerrata asioita vaikkapa työmatkalla.</p>
 </div>
 
-<hr>
-<p style="font-size:15px; color:#666; text-align:center;"><a href="index.html" style="color:var(--pm);">← Takaisin oppaaseen</a></p>
 
+
+<div class="kn"><a class="kprev" href="harjoitus-3.html"><span><small>Edellinen</small>← Harjoitus 3</span></a><button type="button" class="kdone" aria-pressed="false">Merkitse tehdyksi</button></div><p class="kn-hint">Merkitse tehdyksi päivittää yläpalkin edistymisen. Merkintä tallentuu vain tähän selaimeen.</p><div class="kwin" role="status"><span>Onneksi olkoon.</span> Olet astunut viisaan tekoälyttömyyden aikaan!</div>
+<div class="closing">
+    <p class="who">Kouluttaja</p>
+    <p class="name">Jarno Alastalo</p>
+    <p class="link-note" style="margin-bottom:6px;">Tekno-filosofi · Puhuja · kirjailija</p>
+    <p class="link-note"><a href="mailto:jarno@csy.fi" style="color:inherit; text-decoration:underline;">jarno@csy.fi</a></p>
+  </div>
+
+  <div class="credits">
+    <p>Yhteistyössä</p>
+    <div class="credits-logos">
+      <img src="images/logo-teos.png" alt="Tekoälyä ja aitoa osallisuutta -hanke">
+      <img src="images/logo-humak.png" alt="Humak">
+      <img src="images/logo-valo-valmennus.png" alt="Valo-Valmennusyhdistys">
+      <img src="images/logo-silta-valmennus.png" alt="Silta-Valmennusyhdistys">
+      <img src="images/logo-eu.png" alt="Euroopan unionin osarahoittama">
+    </div>
+    <p class="usage-note">Aineisto on vapaasti järjestöjen ja yhdistysten käyttöön omassa toiminnassaan (<a href="https://creativecommons.org/licenses/by-nc/4.0/deed.fi" target="_blank" rel="noopener">CC BY-NC 4.0</a>) — ei kaupalliseen käyttöön ilman lupaa.</p>
+  </div>
 </main>
 <script>
 function copyPrompt(btn) {
@@ -255,6 +313,26 @@ function copyPrompt(btn) {
     setTimeout(() => { btn.textContent = 'Kopioi'; btn.classList.remove('copied'); }, 2000);
   });
 }
+
+const MODS = [{"id": "alustus", "href": "index.html"}, {"id": "vinkit", "href": "vinkit.html"}, {"id": "h1", "href": "harjoitus-1.html"}, {"id": "h2", "href": "harjoitus-2.html"}, {"id": "h3", "href": "harjoitus-3.html"}, {"id": "nb", "href": "notebook.html"}], CUR = "nb", KEY = "teos-kurssi-tehty-v1";
+let done = [];
+try { done = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+function kSave() { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} }
+function kRender() {
+  const n = MODS.filter(m => done.includes(m.id)).length;
+  document.querySelector('.kb-count').textContent = n + '/' + MODS.length + ' tehty';
+  document.querySelector('.kb-prog span').style.width = (100 * n / MODS.length) + '%';
+  document.querySelectorAll('.kb-menu li').forEach(li => { li.querySelector('.ck').textContent = done.includes(li.dataset.id) ? '✓' : ''; });
+  const w = document.querySelector('.kwin'); if (w) w.classList.toggle('show', n === MODS.length);
+  const b = document.querySelector('.kdone');
+  if (b) { const d = done.includes(CUR); b.setAttribute('aria-pressed', d); b.textContent = d ? '✓ Tehty' : 'Merkitse tehdyksi'; }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.kdone'); if (!b) return;
+  done = done.includes(CUR) ? done.filter(x => x !== CUR) : done.concat(CUR);
+  kSave(); kRender();
+});
+kRender();
 </script>
 </body>
 </html>
