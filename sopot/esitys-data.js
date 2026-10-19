@@ -197,7 +197,7 @@ const PYSAHDYKSET = [
 
     // 3 Muhos (TODO: siirtymä + hakattu metsä)
     { x: 1357, otsikko:'<span style="color:#B0CB40;font-weight:700">Over 500 hectares</span>', lahde:'', lahdeKoko: 2, puoli:'keski', pysty:'yla', savy:'valko', koko: 7,   // 17.10: otsikko ylös, alla satelliittikuva (esitys-2d-satelliitti.js)
-      muistiinpanot:"► Over five hundred hectares. (pause)" },
+      muistiinpanot:"► Over five hundred hectares. = 700 football fields" },
 
     // 4 (tyhjä) - tarina jatkuu, sanotaan ääneen
     { x: 1450, lisaAnim: 'setripalvelin', otsikko:'Four thousand years later, the story has not changed', puoli:'keski', pysty:'keski', savy:'valko', koko: 6, 
