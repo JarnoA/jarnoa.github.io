@@ -11,10 +11,10 @@ const OSOITE = 'csy.fi/toolfair';
 
 const el = document.createElement('div');
 el.id = 'qr-toolfair';
-el.style.cssText = 'position:fixed;right:2.2vw;bottom:7vh;z-index:6;pointer-events:none;opacity:0;transform:translateY(12px);transition:opacity .8s ease,transform .8s ease;' +
-  'background:#fff;border-radius:1.2vh;padding:1.2vh 1.2vh .8vh;box-shadow:0 1vh 3vh rgba(0,0,0,.45);text-align:center;';
-el.innerHTML = '<img src="kuvat/qr-toolfair.png" alt="" style="display:block;width:20vh;height:20vh;image-rendering:pixelated;">' +
-  '<div style="font:700 2.1vh Georgia,serif;color:#111;margin-top:.6vh;letter-spacing:.02em;">' + OSOITE + '</div>';
+el.style.cssText = 'position:fixed;right:2.2vw;bottom:6vh;z-index:6;pointer-events:none;opacity:0;transform:translateY(12px);transition:opacity .8s ease,transform .8s ease;' +
+  'background:#fff;border-radius:1.6vh;padding:1.6vh 1.6vh 1vh;box-shadow:0 1vh 3vh rgba(0,0,0,.45);text-align:center;';
+el.innerHTML = '<img src="kuvat/qr-toolfair.png" alt="" style="display:block;width:30vh;height:30vh;image-rendering:pixelated;">' +
+  '<div style="font:700 3.4vh Georgia,serif;color:#111;margin-top:.8vh;letter-spacing:.02em;">' + OSOITE + '</div>';
 function liita(){ document.body.appendChild(el); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', liita); else liita();
 
