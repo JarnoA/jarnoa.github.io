@@ -13,8 +13,8 @@ const VIIVE_MS = 1800, PYYHKAISY_MS = 2600;   // 17.10 Jarno: 1300/1800 liian no
 
 const tyyli = document.createElement('style');
 tyyli.textContent = `
-#satelliitti{position:fixed;left:50%;top:22vh;transform:translateX(-50%) translateY(14px);height:65vh;aspect-ratio:990/779;max-width:92vw;z-index:5;pointer-events:none;opacity:0;transition:opacity .6s ease,transform .6s ease}
-#satelliitti.nakyy{opacity:1;transform:translateX(-50%)}
+#satelliitti{position:fixed;left:4vw;top:22vh;transform:translateY(14px);height:62vh;aspect-ratio:990/779;max-width:50vw;z-index:5;pointer-events:none;opacity:0;transition:opacity .6s ease,transform .6s ease}
+#satelliitti.nakyy{opacity:1;transform:none}
 #satelliitti .kehys{position:relative;width:100%;height:100%;border:.55vh solid #f6efe4;border-radius:1vh;overflow:hidden;box-shadow:0 1.6vh 4vh rgba(0,0,0,.6);background:#1b2a1b}
 #satelliitti img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 #satelliitti .jalkeen{clip-path:inset(0 100% 0 0)}
@@ -29,9 +29,40 @@ tyyli.textContent = `
 const el = document.createElement('div');
 el.id = 'satelliitti';
 el.innerHTML = '<div class="kehys"><img class="ennen" src="' + ENNEN + '" alt=""><img class="jalkeen" src="' + JALKEEN + '" alt="">'
-  + '<div class="viiva"></div><div class="pvm"></div><div class="ha">330 ha</div></div>'
-  + '<div class="kuvateksti">Muhos, Finland · Contains modified Copernicus Sentinel data 2025–2026 · Yle, 2026</div>';
-function liita(){ document.head.appendChild(tyyli); document.body.appendChild(el); }
+  + '<div class="viiva"></div><div class="pvm"></div></div>'
+  + '<div class="kuvateksti">Muhos, one of the two sites · Contains modified Copernicus Sentinel data 2025–2026 · Yle, 2026</div>';
+// --- 700 jalkapallokenttää oikealla (19.10 Jarno: "on right football fields, equal to 700") ---
+// 500 ha / 0,714 ha (105 x 68 m) ≈ 700. Kentät täyttyvät riveittäin pyyhkäisyn jälkeen.
+const KENTAT = 700, SARAKKEET = 28, RIVIT = 25, TAYTTO_MS = 2600;
+const kentatTyyli = document.createElement('style');
+kentatTyyli.textContent = `
+#kentat{position:fixed;left:57vw;top:24vh;width:39vw;z-index:5;pointer-events:none;opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;text-align:center}
+#kentat.nakyy{opacity:1;transform:none}
+#kentat canvas{display:block;width:100%;image-rendering:pixelated}
+#kentat .luku{margin-top:2vh;font:900 6.2vh/1 Georgia,serif;color:#f2c94c;text-shadow:0 .4vh 1.6vh rgba(0,0,0,.7)}
+#kentat .selite{margin-top:1vh;font:600 2vh/1.3 Georgia,serif;color:#f6efe4;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+`;
+const kentatEl = document.createElement('div');
+kentatEl.id = 'kentat';
+kentatEl.innerHTML = '<canvas width="' + (SARAKKEET*15) + '" height="' + (RIVIT*11) + '"></canvas><div class="luku">= 700 football fields</div><div class="selite">1 football field ≈ 0.7 ha</div>';
+const kentat = { alku: null, raf: 0 };
+function piirraKentat(osuus){
+  const c = kentatEl.querySelector('canvas'), g = c.getContext('2d'), n = Math.round(KENTAT * osuus);
+  g.clearRect(0, 0, c.width, c.height);
+  for (let i = 0; i < n; i++) {
+    const x = (i % SARAKKEET) * 15, y = Math.floor(i / SARAKKEET) * 11;
+    g.fillStyle = '#3f8f4f'; g.fillRect(x + 1, y + 1, 13, 9);           // nurmi
+    g.fillStyle = 'rgba(255,255,255,.75)'; g.fillRect(x + 7, y + 1, 1, 9); // keskiviiva
+    g.fillRect(x + 1, y + 1, 13, 1); g.fillRect(x + 1, y + 9, 13, 1); g.fillRect(x + 1, y + 1, 1, 9); g.fillRect(x + 13, y + 1, 1, 9);
+  }
+}
+function taytaKentat(){
+  kentatEl.classList.add('nakyy');
+  const alku = performance.now();
+  const askel = t => { const k = Math.min(1, (t - alku) / TAYTTO_MS); piirraKentat(k); if (k < 1) kentat.raf = requestAnimationFrame(askel); };
+  kentat.raf = requestAnimationFrame(askel);
+}
+function liita(){ document.head.appendChild(tyyli); document.head.appendChild(kentatTyyli); document.body.appendChild(el); document.body.appendChild(kentatEl); }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', liita); else liita();
 
 const jalkeen = () => el.querySelector('.jalkeen'), viiva = () => el.querySelector('.viiva'), pvm = () => el.querySelector('.pvm');
@@ -40,7 +71,7 @@ function nollaa(){
   cancelAnimationFrame(raf); clearTimeout(ajastin);
   jalkeen().style.clipPath = 'inset(0 100% 0 0)'; viiva().style.opacity = 0; viiva().style.left = '0';
   pvm().innerHTML = 'October <span>2025</span>';
-  el.querySelector('.ha').classList.remove('esiin');
+  kentat.alku = null; piirraKentat(0); kentatEl.classList.remove('nakyy');
 }
 function pyyhi(){
   const alku = performance.now();
@@ -51,7 +82,7 @@ function pyyhi(){
     jalkeen().style.clipPath = 'inset(0 ' + (100 - pros) + '% 0 0)';
     viiva().style.left = 'calc(' + pros + '% - .25vh)';
     if (k > .5) pvm().innerHTML = 'October <span>2026</span>';
-    if (k < 1) raf = requestAnimationFrame(askel); else { viiva().style.opacity = 0; ajastin = setTimeout(() => el.querySelector('.ha').classList.add('esiin'), 350); }
+    if (k < 1) raf = requestAnimationFrame(askel); else { viiva().style.opacity = 0; ajastin = setTimeout(taytaKentat, 350); }
   };
   raf = requestAnimationFrame(askel);
 }
@@ -62,8 +93,8 @@ setInterval(() => {
   paalla = pitaa;
   if (pitaa) {
     nollaa(); el.classList.add('nakyy');
-    if (typeof ESIKATSELU !== 'undefined' && ESIKATSELU) { jalkeen().style.clipPath = 'none'; pvm().innerHTML = 'October <span>2026</span>'; el.querySelector('.ha').classList.add('esiin'); return; }
+    if (typeof ESIKATSELU !== 'undefined' && ESIKATSELU) { jalkeen().style.clipPath = 'none'; pvm().innerHTML = 'October <span>2026</span>'; kentatEl.classList.add('nakyy'); piirraKentat(1); return; }
     ajastin = setTimeout(pyyhi, VIIVE_MS);
-  } else { el.classList.remove('nakyy'); clearTimeout(ajastin); cancelAnimationFrame(raf); }
+  } else { el.classList.remove('nakyy'); kentatEl.classList.remove('nakyy'); clearTimeout(ajastin); cancelAnimationFrame(raf); cancelAnimationFrame(kentat.raf); }
 }, 150);
 })();
