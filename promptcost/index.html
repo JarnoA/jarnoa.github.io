@@ -183,6 +183,11 @@ ol.aikajana li:last-child::after{display:none}
 .tarina-kortti .lahde{margin-top:auto;padding-top:10px}
 blockquote.iskulause{font-family:Fraunces,serif;font-weight:900;font-size:1.4rem;line-height:1.15;margin:4px 0 12px;color:var(--puna)}
 
+.opas{display:grid;gap:22px;align-items:center;background:#fff;border-radius:22px;box-shadow:var(--varjo);padding:22px;margin-top:34px}
+.opas img{width:100%;max-width:220px;height:auto;border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.25);justify-self:center}
+.opas h3{margin:.2em 0 .3em}
+.opas .tiedot2{color:var(--himmea);font-size:.92rem;margin-bottom:12px}
+@media (min-width:720px){.opas{grid-template-columns:220px 1fr}}
 /* ---------- lähteet + footer ---------- */
 details.lahteet summary{cursor:pointer;font-weight:700;font-size:1.1rem;padding:6px 0}
 details.lahteet ul{padding-left:1.1em;margin:14px 0 0;color:#3a3f50;font-size:.95rem}
@@ -559,6 +564,17 @@ footer a{color:#c5cbe0}
 
     </div>
     <p style="margin-top:26px">More examples from around the world: <a href="https://airesistlist.org/">airesistlist.org</a></p>
+
+    <div class="opas">
+      <a href="https://mediakasvatus.fi/materiaali/80-perspectives-on-ai-a-guide-to-youth-work/"><img src="img/80-perspectives.jpg" alt="Cover: 80 Perspectives on Artificial Intelligence – A Guide to Youth Work" width="220" height="273" loading="lazy"></a>
+      <div>
+        <span class="kicker">More for youth work</span>
+        <h3>80 Perspectives on Artificial Intelligence</h3>
+        <p>Reflections on AI for those working with young people. A guide by Jarno Alastalo, made with City of Helsinki Youth Services, Into and the Finnish Society on Media Education.</p>
+        <p class="tiedot2">2025 · free PDF · CC BY 4.0 · English, Finnish and Swedish</p>
+        <a class="nappi" href="https://mediakasvatus.fi/materiaali/80-perspectives-on-ai-a-guide-to-youth-work/">Get the free guide →</a>
+      </div>
+    </div>
   </div>
 </section>
 
