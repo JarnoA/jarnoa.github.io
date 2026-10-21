@@ -39,6 +39,7 @@ h1{font:900 clamp(1.6rem,4.6vw,2.2rem)/1.05 Fraunces,Georgia,serif;margin:.35em 
 .vaiheet button i{width:11px;height:11px;border-radius:50%;display:inline-block}
 .vaiheet button[aria-pressed="false"]{opacity:.38}
 .vaiheet button[aria-pressed="false"] i{background:transparent!important;border:1.5px solid currentColor}
+.lisaotsake{margin:12px 0 6px;font:700 .7rem/1 Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--himmea)}
 .huom{margin:12px 0 0;font-size:.78rem;color:var(--himmea);line-height:1.4}
 .huom a{color:var(--teksti)}
 .pienennä{display:none;position:absolute;right:12px;top:12px;background:transparent;border:0;color:var(--himmea);font-size:1.3rem;cursor:pointer;line-height:1}
@@ -79,6 +80,8 @@ h1{font:900 clamp(1.6rem,4.6vw,2.2rem)/1.05 Fraunces,Georgia,serif;margin:.35em 
   </div>
   <div class="piilo">
     <div class="vaiheet" id="vaiheet"></div>
+    <div class="lisaotsake">Also show</div>
+    <div class="vaiheet" id="lisat"></div>
     <p class="huom">Circle size = investment. Each circle sits at the centre of its municipality, not at the exact site. Click a circle for details. Ask of each one: what is it for, who pays, who decides — and whose river?</p>
     <p class="huom">Data: <a href="https://ek.fi/en/green-investments-in-finland/">EK – Green investments in Finland</a>, 19 Oct 2026.</p>
   </div>
@@ -97,6 +100,12 @@ const VAIHEET = [
   { v: 5, nimi: 'Discontinued', vari: '#7d8297', paalla: false }
 ];
 const vaihe = v => VAIHEET.find(x => x.v === v) || VAIHEET[0];
+// 21.10 Jarno: "insert these as choices too" - muut datakeskuksiin liittyvät hankkeet omina valintoinaan
+const LISAT = [
+  { k: 'lampo', nimi: 'Uses data-centre waste heat', vari: '#ff8a3d', paalla: false },
+  { k: 'muu', nimi: 'Other projects linked to data centres', vari: '#c58bff', paalla: false }
+];
+const lisa = k => LISAT.find(x => x.k === k);
 
 const kartta = L.map('kartta', { zoomControl: false, attributionControl: true, zoomSnap: 0.25 });
 L.control.zoom({ position: 'bottomleft' }).addTo(kartta);
@@ -119,12 +128,12 @@ const sade = e => 5 + Math.sqrt(e) * (innerWidth > 640 ? 0.36 : 0.26);
 const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
 const ympyrat = [...DC].sort((a, b) => b.e - a.e).map(d => {
-  const vv = vaihe(d.v);
-  const m = L.circleMarker([d.la, d.lo], { radius: sade(d.e), color: vv.vari, weight: 1.5, fillColor: vv.vari, fillOpacity: d.v === 3 ? 0.5 : 0.38, opacity: 0.95 });
+  const vv = vaihe(d.v), kk = d.k !== 'dc' ? lisa(d.k) : null, vari = kk ? kk.vari : vv.vari;
+  const m = L.circleMarker([d.la, d.lo], { radius: Math.max(kk ? 7 : 0, sade(d.e)), color: vari, weight: kk ? 2.5 : 1.5, fillColor: vari, fillOpacity: kk ? 0.55 : (d.v === 3 ? 0.5 : 0.38), opacity: 0.95 });
   m.bindPopup(
-    '<span class="v" style="background:' + vv.vari + '">' + vv.nimi + '</span>'
+    (kk ? '<span class="v" style="background:' + kk.vari + '">' + kk.nimi + '</span> ' : '') + '<span class="v" style="background:' + vv.vari + '">' + vv.nimi + '</span>'
     + '<h3>' + esc(d.i || 'Investor not named') + '</h3>'
-    + '<table><tr><td>Where</td><td>' + esc(d.p) + '</td></tr>'
+    + '<table><tr><td>Where</td><td>' + esc(d.p) + '</td></tr>' + (kk ? '<tr><td>EK theme</td><td>' + esc(d.t) + '</td></tr>' : '')
     + '<tr><td>Investment</td><td>' + (d.e > 0 ? eur(d.e) : 'not published') + '</td></tr>'
     + '<tr><td>Capacity</td><td>' + (d.mw > 0 ? mw(d.mw) : 'not published') + '</td></tr>'
     + (pvm(d.d) ? '<tr><td>Listed</td><td>' + pvm(d.d) + '</td></tr>' : '') + '</table>'
@@ -137,7 +146,7 @@ function paivita(){
   const paalla = new Set(VAIHEET.filter(x => x.paalla).map(x => x.v));
   let n = 0, e = 0, w = 0;
   ympyrat.forEach(m => {
-    const nakyy = paalla.has(m.data.v);
+    const nakyy = paalla.has(m.data.v) && (m.data.k === 'dc' || lisa(m.data.k).paalla);
     if (nakyy) { if (!kartta.hasLayer(m)) m.addTo(kartta); n++; e += m.data.e; w += m.data.mw; }
     else if (kartta.hasLayer(m)) kartta.removeLayer(m);
   });
@@ -150,9 +159,17 @@ const nappirivi = document.getElementById('vaiheet');
 VAIHEET.forEach(x => {
   const b = document.createElement('button');
   b.type = 'button'; b.setAttribute('aria-pressed', x.paalla);
-  b.innerHTML = '<i style="background:' + x.vari + '"></i>' + x.nimi + ' <span style="opacity:.6">' + DC.filter(d => d.v === x.v).length + '</span>';
+  b.innerHTML = '<i style="background:' + x.vari + '"></i>' + x.nimi + ' <span style="opacity:.6">' + DC.filter(d => d.k === 'dc' && d.v === x.v).length + '</span>';
   b.addEventListener('click', () => { x.paalla = !x.paalla; b.setAttribute('aria-pressed', x.paalla); paivita(); });
   nappirivi.appendChild(b);
+});
+const lisarivi = document.getElementById('lisat');
+LISAT.forEach(x => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.setAttribute('aria-pressed', x.paalla);
+  b.innerHTML = '<i style="background:' + x.vari + '"></i>' + x.nimi + ' <span style="opacity:.6">' + DC.filter(d => d.k === x.k).length + '</span>';
+  b.addEventListener('click', () => { x.paalla = !x.paalla; b.setAttribute('aria-pressed', x.paalla); paivita(); });
+  lisarivi.appendChild(b);
 });
 paivita();
 
