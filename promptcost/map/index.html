@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Data centres planned in Finland · map</title>
+<meta name="description" content="160 data-centre projects in Finland on one map: where they are, how big they are and how far they have got. Data: EK, October 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://csy.fi/promptcost/map/">
+<meta property="og:title" content="Data centres planned in Finland">
+<meta property="og:description" content="160 projects, about €77 billion, over 11,000 MW. Where are they, and who decides?">
+<meta property="og:image" content="https://csy.fi/promptcost/map/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b1020">
+<link rel="canonical" href="https://csy.fi/promptcost/map/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+<style>
+:root{--yo:#0b1020;--yo2:#121a33;--kelta:#f2c94c;--teksti:#eef1f8;--himmea:#9aa3c2;
+  --v0:#8a9bff;--v1:#45c47a;--v2:#f2c94c;--v3:#ffffff;--v5:#7d8297}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--yo);color:var(--teksti);font:400 16px/1.5 Inter,system-ui,sans-serif}
+.leaflet-tile-pane{filter:saturate(.9)}
+#kartta{position:fixed;inset:0;background:#262626}
+.leaflet-container{background:#262626;font-family:Inter,sans-serif}
+.kortti{position:fixed;z-index:500;left:16px;top:16px;width:min(380px,calc(100vw - 32px));background:rgba(11,16,32,.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:20px 20px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.kicker{font:700 .72rem/1 Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--kelta)}
+h1{font:900 clamp(1.6rem,4.6vw,2.2rem)/1.05 Fraunces,Georgia,serif;margin:.35em 0 .3em}
+.luvut{display:flex;flex-wrap:wrap;gap:6px 18px;margin:4px 0 14px}
+.luvut div b{display:block;font:900 1.55rem/1.05 Fraunces,serif;color:var(--kelta)}
+.luvut div span{font-size:.78rem;color:var(--himmea)}
+.vaiheet{display:flex;flex-wrap:wrap;gap:7px}
+.vaiheet button{display:inline-flex;align-items:center;gap:7px;font:600 .82rem Inter;color:var(--teksti);background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:7px 11px;cursor:pointer}
+.vaiheet button i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.vaiheet button[aria-pressed="false"]{opacity:.38}
+.vaiheet button[aria-pressed="false"] i{background:transparent!important;border:1.5px solid currentColor}
+.huom{margin:12px 0 0;font-size:.78rem;color:var(--himmea);line-height:1.4}
+.huom a{color:var(--teksti)}
+.pienennä{display:none;position:absolute;right:12px;top:12px;background:transparent;border:0;color:var(--himmea);font-size:1.3rem;cursor:pointer;line-height:1}
+.kortti.pieni .piilo{display:none}
+.lahde{position:fixed;z-index:500;right:12px;bottom:22px;max-width:calc(100vw - 24px);font-size:.75rem;color:var(--himmea);background:rgba(11,16,32,.8);padding:6px 10px;border-radius:10px;text-align:right}
+.lahde a{color:var(--teksti)}
+.paluu{position:fixed;z-index:500;right:12px;top:16px;background:var(--kelta);color:var(--yo);font:700 .85rem Inter;text-decoration:none;padding:9px 14px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.leaflet-popup-content-wrapper{background:#fff;color:#16181f;border-radius:14px}
+.leaflet-popup-content{margin:14px 16px;font:400 .92rem/1.45 Inter}
+.leaflet-popup-content h3{font:800 1.1rem/1.2 Fraunces,serif;margin:0 0 4px}
+.leaflet-popup-content .v{display:inline-block;font:700 .72rem Inter;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:6px;color:#0b1020}
+.leaflet-popup-content table{border-collapse:collapse;margin:4px 0 6px}
+.leaflet-popup-content td{padding:1px 10px 1px 0;vertical-align:top}
+.leaflet-popup-content td:first-child{color:#6a6f80}
+.leaflet-control-attribution{background:rgba(11,16,32,.7)!important;color:#9aa3c2!important}
+.leaflet-control-attribution a{color:#cfd5ea!important}
+@media (max-width:640px){
+  .kortti{top:auto;bottom:12px;left:12px;width:calc(100vw - 24px);padding:16px 16px 12px;max-height:60vh;overflow:auto}
+  .pienennä{display:block}
+  .lahde{display:none}
+  .paluu{top:12px;right:12px}
+}
+</style>
+</head>
+<body>
+<div id="kartta" role="region" aria-label="Map of data-centre projects in Finland"></div>
+
+<a class="paluu" href="../">← What does a prompt cost?</a>
+
+<section class="kortti" id="kortti">
+  <button class="pienennä" id="pienenna" aria-label="Minimise">–</button>
+  <div class="kicker">Finland · October 2026</div>
+  <h1>Data centres planned in Finland</h1>
+  <div class="luvut" aria-live="polite">
+    <div><b id="nProj">–</b><span>projects</span></div>
+    <div><b id="nEur">–</b><span>investment</span></div>
+    <div><b id="nMw">–</b><span>capacity</span></div>
+  </div>
+  <div class="piilo">
+    <div class="vaiheet" id="vaiheet"></div>
+    <p class="huom">Circle size = investment. Each circle sits at the centre of its municipality, not at the exact site. Click a circle for details. Ask of each one: what is it for, who pays, who decides — and whose river?</p>
+    <p class="huom">Data: <a href="https://ek.fi/en/green-investments-in-finland/">EK – Green investments in Finland</a>, 19 Oct 2026.</p>
+  </div>
+</section>
+
+<div class="lahde">Data: <a href="https://ek.fi/en/green-investments-in-finland/">EK</a>, 19.10.2026 · Map: Jarno Alastalo · <a href="../">csy.fi/promptcost</a></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="data.js"></script>
+<script>
+const VAIHEET = [
+  { v: 0, nimi: 'Feasibility study', vari: '#8a9bff', paalla: true },
+  { v: 1, nimi: 'Planning', vari: '#45c47a', paalla: true },
+  { v: 2, nimi: 'Investment decision', vari: '#f2c94c', paalla: true },
+  { v: 3, nimi: 'Operating', vari: '#ffffff', paalla: true },
+  { v: 5, nimi: 'Discontinued', vari: '#7d8297', paalla: false }
+];
+const vaihe = v => VAIHEET.find(x => x.v === v) || VAIHEET[0];
+
+const kartta = L.map('kartta', { zoomControl: false, attributionControl: true, zoomSnap: 0.25 });
+L.control.zoom({ position: 'bottomleft' }).addTo(kartta);
+// Esri Dark Gray Canvas (ei API-avainta; CARTO vaatii nykyään avaimen)
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors', maxZoom: 12, minZoom: 4
+}).addTo(kartta);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', { maxZoom: 12, minZoom: 4, opacity: 0.7 }).addTo(kartta);
+
+function sovita(){
+  const leve = innerWidth > 640;
+  kartta.fitBounds([[59.75, 20.4], [70.05, 31.5]], { paddingTopLeft: leve ? [410, 20] : [10, 60], paddingBottomRight: leve ? [20, 20] : [10, 215] });
+}
+sovita();
+
+const eur = v => v >= 1000 ? '€' + (v/1000).toLocaleString('en-GB', { maximumFractionDigits: v >= 10000 ? 0 : 1 }) + ' bn' : '€' + Math.round(v).toLocaleString('en-GB') + ' M';
+const mw = v => Math.round(v).toLocaleString('en-GB') + ' MW';
+const pvm = d => { const t = new Date(d); return isNaN(t) ? '' : t.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }); };
+const sade = e => 5 + Math.sqrt(e) * (innerWidth > 640 ? 0.36 : 0.26);
+const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+const ympyrat = [...DC].sort((a, b) => b.e - a.e).map(d => {
+  const vv = vaihe(d.v);
+  const m = L.circleMarker([d.la, d.lo], { radius: sade(d.e), color: vv.vari, weight: 1.5, fillColor: vv.vari, fillOpacity: d.v === 3 ? 0.5 : 0.38, opacity: 0.95 });
+  m.bindPopup(
+    '<span class="v" style="background:' + vv.vari + '">' + vv.nimi + '</span>'
+    + '<h3>' + esc(d.i || 'Investor not named') + '</h3>'
+    + '<table><tr><td>Where</td><td>' + esc(d.p) + '</td></tr>'
+    + '<tr><td>Investment</td><td>' + (d.e > 0 ? eur(d.e) : 'not published') + '</td></tr>'
+    + '<tr><td>Capacity</td><td>' + (d.mw > 0 ? mw(d.mw) : 'not published') + '</td></tr>'
+    + (pvm(d.d) ? '<tr><td>Listed</td><td>' + pvm(d.d) + '</td></tr>' : '') + '</table>'
+    + (d.l ? '<a href="' + esc(d.l) + '" target="_blank" rel="noopener">Source →</a>' : ''),
+    { maxWidth: 280 });
+  m.data = d; return m;
+});
+
+function paivita(){
+  const paalla = new Set(VAIHEET.filter(x => x.paalla).map(x => x.v));
+  let n = 0, e = 0, w = 0;
+  ympyrat.forEach(m => {
+    const nakyy = paalla.has(m.data.v);
+    if (nakyy) { if (!kartta.hasLayer(m)) m.addTo(kartta); n++; e += m.data.e; w += m.data.mw; }
+    else if (kartta.hasLayer(m)) kartta.removeLayer(m);
+  });
+  document.getElementById('nProj').textContent = n;
+  document.getElementById('nEur').textContent = eur(e);
+  document.getElementById('nMw').textContent = mw(w);
+}
+
+const nappirivi = document.getElementById('vaiheet');
+VAIHEET.forEach(x => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.setAttribute('aria-pressed', x.paalla);
+  b.innerHTML = '<i style="background:' + x.vari + '"></i>' + x.nimi + ' <span style="opacity:.6">' + DC.filter(d => d.v === x.v).length + '</span>';
+  b.addEventListener('click', () => { x.paalla = !x.paalla; b.setAttribute('aria-pressed', x.paalla); paivita(); });
+  nappirivi.appendChild(b);
+});
+paivita();
+
+if (innerWidth <= 640) { document.getElementById('kortti').classList.add('pieni'); document.getElementById('pienenna').textContent = '+'; }   // puhelimella kortti alkaa pienenä
+document.getElementById('pienenna').addEventListener('click', () => {
+  const k = document.getElementById('kortti'); k.classList.toggle('pieni');
+  document.getElementById('pienenna').textContent = k.classList.contains('pieni') ? '+' : '–';
+});
+addEventListener('resize', () => { ympyrat.forEach(m => m.setRadius(sade(m.data.e))); });
+</script>
+</body>
+</html>
