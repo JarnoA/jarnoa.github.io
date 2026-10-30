@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Huonemalli</title>
+<style>
+  :root { --bg:#f6f4f1; --panel:#fff; --line:#ddd8d2; --text:#222; --muted:#777; --accent:#d9462b; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; background:var(--bg); color:var(--text);
+    font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  #app { display:flex; height:100%; }
+  #panel { width:300px; flex:none; overflow-y:auto; background:var(--panel);
+    border-right:1px solid var(--line); padding:14px 16px 40px; }
+  #view { flex:1; position:relative; min-width:0; }
+  #view canvas { display:block; width:100%; height:100%; touch-action:none; }
+  #dropHint { position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    background:rgba(217,70,43,.12); border:3px dashed var(--accent); font-size:20px; pointer-events:none; }
+  #view.drag #dropHint { display:flex; }
+  #help { position:absolute; left:12px; bottom:10px; font-size:12px; color:var(--muted);
+    background:rgba(255,255,255,.85); padding:4px 8px; border-radius:4px; pointer-events:none; }
+  h1 { font-size:17px; margin:0 0 4px; }
+  h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+    margin:20px 0 8px; border-top:1px solid var(--line); padding-top:12px; }
+  .row { display:flex; align-items:center; gap:8px; margin:6px 0; }
+  .row label { flex:1; }
+  .row input[type=number] { width:72px; padding:3px 5px; }
+  .row input[type=range] { flex:1.4; }
+  .row select { flex:1.4; padding:3px; }
+  .row input[type=color] { width:44px; height:26px; padding:0; border:1px solid var(--line); background:none; }
+  .val { width:52px; text-align:right; font-variant-numeric:tabular-nums; color:var(--muted); }
+  .btns { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
+  button { padding:6px 10px; border:1px solid var(--line); background:#faf9f7; border-radius:4px;
+    cursor:pointer; font:inherit; }
+  button:hover { border-color:#bbb; }
+  button.main { background:var(--accent); color:#fff; border-color:var(--accent); }
+  button.danger { color:#b3261e; }
+  .note { font-size:12px; color:var(--muted); margin:4px 0; }
+  #area { font-weight:600; }
+  #sel[hidden] { display:none; }
+  #sel { background:#fbf3ef; margin:0 -16px; padding:2px 16px 10px; }
+  #sel h2 { border-top-color:#f0d4ca; }
+  details { margin:20px -16px 0; padding:0 16px 8px; border-top:1px solid var(--line); }
+  summary { cursor:pointer; margin:0 -16px; padding:12px 16px; font-size:12px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--muted); }
+  details h2 { border-top:none; padding-top:4px; margin-top:10px; }
+  #selThumb { max-width:100%; max-height:80px; display:block; margin:4px 0; background:#ddd; }
+</style>
+<script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+</head>
+<body>
+<div id="app">
+  <div id="panel">
+    <h1>Huonemalli</h1>
+
+    <h2>Lisää kuva tai 3D-malli</h2>
+    <div class="note">Huoneeseen (patsas, ripustus):</div>
+    <div class="btns">
+      <button data-add="stand">Seisoo lattialla…</button>
+      <button data-add="hang">Roikkuu katosta…</button>
+    </div>
+    <div class="note">Pintaan (maalaus, tarra):</div>
+    <div class="row">
+      <select id="addWall" aria-label="Seinä">
+        <option value="back">Takaseinä</option>
+        <option value="left">Vasen seinä</option>
+        <option value="right">Oikea seinä</option>
+        <option value="front">Etuseinä</option>
+      </select>
+      <button data-add="wall">Seinään…</button>
+    </div>
+    <div class="btns">
+      <button data-add="floor">Lattiaan…</button>
+      <button data-add="ceil">Kattoon…</button>
+      <input id="fileIn" type="file" accept="image/*,.glb" multiple hidden>
+    </div>
+    <div class="note">Kuva (PNG/JPG) tai 3D-malli (.glb). Läpinäkyvä PNG toimii hahmona tai esineenä. Tiedoston voi myös raahata suoraan näkymään sille pinnalle, johon sen haluaa. Klikkaa valitaksesi, raahaa siirtääksesi.</div>
+
+    <div id="sel" hidden>
+      <h2 id="selTitle">Valittu kuva</h2>
+      <div id="selImg">
+      <img id="selThumb" alt="">
+      <div class="row"><label for="selSurf">Pinta</label><select id="selSurf"></select></div>
+      <div class="row"><label for="selW">Leveys</label><input id="selW" type="range" min="0.05" max="8" step="0.01"><span class="val" id="selWv"></span></div>
+      <div class="row"><label for="selRot">Kierto</label><input id="selRot" type="range" min="-180" max="180" step="1"><span class="val" id="selRotv"></span></div>
+      <div class="row" id="selYrow"><label for="selY">Korkeus lattiasta</label><input id="selY" type="range" min="0" max="3" step="0.01"><span class="val" id="selYv"></span></div>
+      <div class="btns">
+        <button id="selFlip">Peilaa</button>
+        <button id="selFront">Tuo eteen</button>
+        <button id="selBack">Vie taakse</button>
+        <button id="selDup">Monista</button>
+        <button id="selDel" class="danger">Poista</button>
+      </div>
+      <div class="note">Pinta "Huoneessa" = kuva seisoo tai roikkuu vapaasti, kuten veistos. Delete-näppäin poistaa.</div>
+      </div>
+      <div id="selModel">
+        <div class="note" id="mName"></div>
+        <div class="btns">
+          <button data-tmode="translate">Siirrä</button>
+          <button data-tmode="rotate">Käännä</button>
+          <button data-tmode="scale">Koko</button>
+        </div>
+        <div class="row"><label for="mH">Korkeus (m)</label><input id="mH" type="number" step="0.05" min="0.01"></div>
+        <div class="row"><label for="mY">Nosto lattiasta</label><input id="mY" type="range" min="-2" max="8" step="0.01"><span class="val" id="mYv"></span></div>
+        <div class="row"><label for="mRy">Kierto</label><input id="mRy" type="range" min="-180" max="180" step="1"><span class="val" id="mRyv"></span></div>
+        <div class="row"><label for="mRx">Kallistus eteen</label><input id="mRx" type="range" min="-180" max="180" step="1"><span class="val" id="mRxv"></span></div>
+        <div class="row"><label for="mRz">Kallistus sivulle</label><input id="mRz" type="range" min="-180" max="180" step="1"><span class="val" id="mRzv"></span></div>
+        <div class="btns">
+          <button id="mFloor">Lattialle</button>
+          <button id="mCeil">Kattoon</button>
+          <button id="mReset">Nollaa kierto</button>
+          <button id="mDup">Monista</button>
+          <button id="mDel" class="danger">Poista</button>
+        </div>
+        <div class="note">Vedä nuolista, renkaista tai kahvoista suoraan näkymässä. Mallin saa työntää seinään, lattiaan tai kattoon, jolloin osa jää pinnan taakse.</div>
+      </div>
+    </div>
+
+    <details id="roomBox" open>
+    <summary>Huone: mitat, värit, ovi, valo</summary>
+    <h2>Mitat</h2>
+    <div class="row"><label for="dimW">Leveys (m)</label><input id="dimW" type="number" step="0.1" min="1" max="20" value="3.5"></div>
+    <div class="row"><label for="dimD">Syvyys (m)</label><input id="dimD" type="number" step="0.1" min="1" max="20" value="5"></div>
+    <div class="row"><label for="dimH">Korkeus (m)</label><input id="dimH" type="number" step="0.1" min="1.8" max="8" value="3"></div>
+    <div class="note">Pinta-ala <span id="area"></span></div>
+
+    <h2>Värit</h2>
+    <div class="row"><label for="colAll">Kaikki seinät</label><input id="colAll" type="color" value="#f3e4d8"></div>
+    <div class="row"><label for="col_back">Takaseinä</label><input id="col_back" type="color"></div>
+    <div class="row"><label for="col_left">Vasen seinä</label><input id="col_left" type="color"></div>
+    <div class="row"><label for="col_right">Oikea seinä</label><input id="col_right" type="color"></div>
+    <div class="row"><label for="col_front">Etuseinä (ovi)</label><input id="col_front" type="color"></div>
+    <div class="row"><label for="col_floor">Lattia</label><input id="col_floor" type="color"></div>
+    <div class="row"><label for="col_ceil">Katto</label><input id="col_ceil" type="color"></div>
+
+    <h2>Ovi ja ikkuna</h2>
+    <div class="row"><label for="doorWall">Ovi</label><select id="doorWall"></select></div>
+    <div class="row"><label for="doorPos">Oven paikka</label><input id="doorPos" type="range" min="0" max="1" step="0.01" value="0.5"></div>
+    <div class="row"><label for="winWall">Ikkuna</label><select id="winWall"></select></div>
+    <div class="row"><label for="winPos">Ikkunan paikka</label><input id="winPos" type="range" min="0" max="1" step="0.01" value="0.5"></div>
+    <div class="row"><label for="winW">Ikkunan leveys</label><input id="winW" type="range" min="0.4" max="4" step="0.05" value="1.2"><span class="val" id="winWv"></span></div>
+
+    <h2>Valaistus</h2>
+    <div class="row"><label for="light">Kirkkaus</label><input id="light" type="range" min="0.1" max="1.3" step="0.01" value="1"></div>
+    <div class="row"><label for="shade">Varjostus</label><input id="shade" type="range" min="0" max="1" step="0.01" value="0.3"></div>
+
+    </details>
+
+    <h2>Näkymä</h2>
+    <div class="btns">
+      <button data-cam="door">Ovelta</button>
+      <button data-cam="corner">Nurkasta</button>
+      <button data-cam="outside">Ulkoa</button>
+      <button data-cam="top">Ylhäältä</button>
+    </div>
+    <div class="row"><label for="fov">Polttoväli (laajakulma)</label><input id="fov" type="range" min="30" max="100" step="1" value="70"></div>
+
+    <h2>Tallennus</h2>
+    <div class="btns">
+      <button id="savePng" class="main">Tallenna kuva (PNG)</button>
+      <button id="savePlan">Pohjapiirros (PNG)</button>
+    </div>
+    <div class="btns">
+      <button id="saveJson">Tallenna malli</button>
+      <button id="loadJson">Avaa malli…</button>
+      <input id="jsonIn" type="file" accept=".json,application/json" hidden>
+    </div>
+    <div class="note">"Tallenna malli" tallentaa kaiken (kuvat mukaan lukien) yhteen .json-tiedostoon, jonka voi avata myöhemmin jatkaakseen.</div>
+  </div>
+
+  <div id="view">
+    <div id="dropHint">Pudota kuva pinnalle</div>
+    <div id="help">Vedä: kierrä · Oikea nappi / shift+vedä: siirrä · Rulla: zoomaa · 3D-malli: W siirrä, E käännä, R koko</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/TransformControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const SURF = {
+  back:  'Takaseinä', left: 'Vasen seinä', right: 'Oikea seinä', front: 'Etuseinä',
+  floor: 'Lattia', ceil: 'Katto'
+};
+const WALLS = ['back', 'left', 'right', 'front'];
+const DOOR_W = 0.9, DOOR_H = 2.1, WIN_H = 1.3, WIN_CY = 1.6;
+
+const state = {
+  W: 3.5, D: 5, H: 3,
+  colors: { back:'#f3e4d8', left:'#f3e4d8', right:'#f3e4d8', front:'#f3e4d8', floor:'#ece6df', ceil:'#f6f2ee' },
+  door: { wall:'front', pos:0.5 },
+  win: { wall:'none', pos:0.5, w:1.2 },
+  light: 1, shade: 0.3, fov: 70
+};
+
+// --- three.js ---
+// Värit sRGB-tilassa, jotta värivalitsimen sävy, kuvat ja GLB-tekstuurit näkyvät oikein.
+THREE.ColorManagement.legacyMode = false;
+const view = $('view');
+const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.localClippingEnabled = true;
+// Huoneen kuusi tasoa: kuvista ja malleista leikataan pois kaikki, mikä jää seinien, lattian tai katon taakse.
+const roomClip = [
+  new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
+  new THREE.Plane(new THREE.Vector3(1, 0, 0), 0), new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0),
+  new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)
+];
+view.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#dcd8d3');
+// Pehmeä ympäristövalo GLB-mallien (PBR) pinnoille; ei vaikuta seiniin eikä kuviin.
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+const camera = new THREE.PerspectiveCamera(70, 1, 0.05, 200);
+const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+const sun = new THREE.DirectionalLight(0xffffff, 0.3);
+scene.add(ambient, sun, sun.target);
+
+const items = [];
+let selected = null, nextId = 1;
+
+// Pinnat: jokaisella oma ryhmä, jonka paikallinen xy on pinnan taso ja +z osoittaa huoneeseen sisään.
+const surfaces = {};
+for (const k of Object.keys(SURF)) {
+  const group = new THREE.Group();
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
+    new THREE.MeshLambertMaterial({ color: state.colors[k] }));
+  mesh.userData.surface = k;
+  group.add(mesh);
+  scene.add(group);
+  surfaces[k] = { group, mesh, sw:1, sh:1 };
+}
+const door = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshLambertMaterial({ color:'#5a524c' }));
+const win = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshLambertMaterial({ color:'#cfe0ea' }));
+const winFrame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)),
+  new THREE.LineBasicMaterial({ color:'#8a8580' }));
+win.add(winFrame);
+
+function surfaceDefs() {
+  const { W, D, H } = state, P = Math.PI;
+  return {
+    floor: { pos:[0, 0, 0],     rot:[-P/2, 0, 0], sw:W, sh:D },
+    ceil:  { pos:[0, H, 0],     rot:[ P/2, 0, 0], sw:W, sh:D },
+    back:  { pos:[0, H/2, -D/2], rot:[0, 0, 0],   sw:W, sh:H },
+    front: { pos:[0, H/2,  D/2], rot:[0, P, 0],   sw:W, sh:H },
+    left:  { pos:[-W/2, H/2, 0], rot:[0, P/2, 0], sw:D, sh:H },
+    right: { pos:[ W/2, H/2, 0], rot:[0, -P/2, 0], sw:D, sh:H }
+  };
+}
+
+function layoutRoom() {
+  const defs = surfaceDefs();
+  for (const [k, d] of Object.entries(defs)) {
+    const s = surfaces[k];
+    s.group.position.set(...d.pos);
+    s.group.rotation.set(...d.rot);
+    s.mesh.scale.set(d.sw, d.sh, 1);
+    s.sw = d.sw; s.sh = d.sh;
+    s.group.updateMatrixWorld(true);
+  }
+  placeOpening(door, state.door.wall, state.door.pos, DOOR_W, DOOR_H, DOOR_H / 2);
+  const wh = Math.min(WIN_H, state.H - 0.4);
+  placeOpening(win, state.win.wall, state.win.pos, state.win.w, wh, Math.min(WIN_CY, state.H - wh / 2 - 0.15));
+  const cl = [0, state.H, state.W / 2, state.W / 2, state.D / 2, state.D / 2];
+  roomClip.forEach((p, i) => { p.constant = cl[i]; });
+  items.forEach(placeItem);
+  sun.position.set(state.W * 0.4, state.H * 3, state.D * 0.8);
+  const a = state.W * state.D;
+  const cls = a < 15 ? 'alle 15 m²' : a <= 20 ? 'luokka 15–20 m²' : a <= 30 ? 'luokka 20–30 m²' : a <= 50 ? 'luokka 30–50 m²' : 'yli 50 m²';
+  $('area').textContent = fmt(a, 1) + ' m² (' + cls + ')';
+}
+
+function placeOpening(mesh, wall, pos, w, h, cy) {
+  if (!wall || wall === 'none') { mesh.parent && mesh.parent.remove(mesh); return; }
+  const s = surfaces[wall];
+  w = Math.min(w, s.sw - 0.1);
+  s.group.add(mesh);
+  mesh.position.set((pos - 0.5) * (s.sw - w), -s.sh / 2 + cy, 0.002);
+  mesh.scale.set(w, h, 1);
+}
+
+// --- kuvat ---
+function makeItem(src, img, opts = {}) {
+  const tex = new THREE.Texture(img);
+  tex.encoding = THREE.sRGBEncoding;
+  tex.needsUpdate = true;
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  const mat = new THREE.MeshLambertMaterial({ map:tex, transparent:true, alphaTest:0.02, clippingPlanes:roomClip });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
+  const outline = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)),
+    new THREE.LineBasicMaterial({ color:'#ff2d7a', depthTest:false }));
+  outline.renderOrder = 999;
+  outline.visible = false;
+  mesh.add(outline);
+  const it = Object.assign({
+    id: nextId++, src, mesh, outline, aspect: img.width / img.height,
+    surface:'back', u:0.5, v:0.5, w:1, rot:0, flip:false, order: nextOrder(),
+    fx:0, fz:0, fy:0
+  }, opts);
+  mesh.userData.item = it;
+  items.push(it);
+  placeItem(it);
+  return it;
+}
+
+function nextOrder() { return items.reduce((m, i) => Math.max(m, i.order), 0) + 1; }
+
+function placeItem(it) {
+  if (it.kind === 'model') { placeModel(it); return; }
+  const h = it.w / it.aspect;
+  const m = it.mesh;
+  m.scale.set(it.flip ? -it.w : it.w, h, 1);
+  if (it.surface === 'free') {
+    scene.add(m);
+    m.material.side = THREE.DoubleSide;
+    m.position.set(it.fx * state.W, it.fy + h / 2, it.fz * state.D);
+    m.rotation.set(0, it.rot, 0);
+  } else {
+    const s = surfaces[it.surface];
+    s.group.add(m);
+    m.material.side = THREE.FrontSide;
+    m.position.set((it.u - 0.5) * s.sw, (it.v - 0.5) * s.sh, 0.004 + it.order * 0.0012);
+    m.rotation.set(0, 0, it.rot);
+  }
+  m.material.needsUpdate = true;
+}
+
+function loadImage(src) {
+  return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+}
+function readFile(f) {
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(f); });
+}
+
+// --- 3D-mallit (GLB) ---
+// Malli kääritään juuriryhmään, jonka origo on mallin pohjan keskellä: y = 0 tarkoittaa "seisoo lattialla".
+const gltfLoader = new THREE.GLTFLoader();
+
+async function makeModel(src, name, opts = {}) {
+  const buf = await (await fetch(src)).arrayBuffer();
+  const gltf = await new Promise((res, rej) => gltfLoader.parse(buf, '', res, rej));
+  const inner = gltf.scene;
+  inner.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { m.clippingPlanes = roomClip; }); });
+  const box = new THREE.Box3().setFromObject(inner);
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  inner.position.set(-c.x, -box.min.y, -c.z);
+  const root = new THREE.Group();
+  root.add(inner);
+  scene.add(root);
+  const h0 = size.y || 1;
+  // Jos mallin yksiköt ovat selvästi pielessä (mm tai km), skaalataan n. 1,2 m korkeaksi.
+  const auto = (h0 > 6 || h0 < 0.05) ? 1.2 / h0 : 1;
+  const helper = new THREE.BoxHelper(root, '#ff2d7a');
+  helper.visible = false;
+  scene.add(helper);
+  const it = Object.assign({
+    id: nextId++, kind:'model', src, name, mesh: root, helper, h0,
+    x:0, y:0, z:0, rx:0, ry:0, rz:0, s:auto, order:0
+  }, opts);
+  root.userData.item = it;
+  items.push(it);
+  placeModel(it);
+  return it;
+}
+
+function placeModel(it) {
+  const r = it.mesh;
+  r.position.set(it.x, it.y, it.z);
+  r.rotation.set(it.rx, it.ry, it.rz);
+  r.scale.setScalar(it.s);
+  r.updateMatrixWorld(true);
+  it.helper.update();
+}
+
+function readModelFromRoot(it) {
+  const r = it.mesh;
+  it.x = r.position.x; it.y = r.position.y; it.z = r.position.z;
+  it.rx = r.rotation.x; it.ry = r.rotation.y; it.rz = r.rotation.z;
+  it.s = Math.max(0.0001, r.scale.x);
+  r.scale.setScalar(it.s);
+  it.helper.update();
+}
+
+// Nostaa mallin niin, että sen ylin kohta koskettaa kattoa nykyisessä asennossa.
+function hangFromCeiling(it) {
+  placeModel(it);
+  it.y += state.H - new THREE.Box3().setFromObject(it.mesh).max.y;
+}
+
+function floorPoint(e) {
+  setRay(e);
+  const p = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Vector3());
+  if (!p) return { x:0, z:0 };
+  return { x: clamp(p.x, -state.W / 2, state.W / 2), z: clamp(p.z, -state.D / 2, state.D / 2) };
+}
+
+async function addFiles(files, hit, e) {
+  let n = 0;
+  for (const f of files) {
+    if (/\.glb$/i.test(f.name)) {
+      // Lattialle tai kattoon pudotettu malli menee osumakohtaan; seinälle pudotettu lattialle seinän eteen.
+      let p = e ? floorPoint(e) : { x:0, z:0 };
+      if (hit && (hit.surface === 'floor' || hit.surface === 'ceil') && e)
+        p = { x:(hit.u - 0.5) * state.W, z:(hit.v - 0.5) * (hit.surface === 'floor' ? -state.D : state.D) };
+      try {
+        const it = await makeModel(await readFile(f), f.name, { x:p.x + n * 0.2, z:p.z });
+        if (hit && (hit.surface === 'ceil' || hit.surface === 'hang')) { hangFromCeiling(it); placeModel(it); }
+        select(it);
+      }
+      catch (err) { alert('GLB-mallia ' + f.name + ' ei voitu avata.'); }
+      n++;
+      continue;
+    }
+    if (!f.type.startsWith('image/')) continue;
+    const src = await readFile(f);
+    const img = await loadImage(src);
+    if (hit && (hit.surface === 'stand' || hit.surface === 'hang')) {
+      // Pystyssä seisova tai katosta roikkuva kuva, n. 1,5 m korkea (enintään 60 % huoneen korkeudesta).
+      const aspect = img.width / img.height;
+      const h = Math.min(1.5, state.H * 0.6);
+      const fy = hit.surface === 'hang' ? state.H - h : 0;
+      select(makeItem(src, img, { surface:'free', w:h * aspect, fx:n * 0.06, fz:0, fy }));
+      n++;
+      continue;
+    }
+    const surface = hit ? hit.surface : 'back';
+    const s = surfaces[surface];
+    const aspect = img.width / img.height;
+    let w = Math.min(s.sw * 0.4, 1.2);
+    if (w / aspect > s.sh * 0.6) w = s.sh * 0.6 * aspect;
+    const u = (hit ? hit.u : 0.5) + n * 0.04, v = (hit ? hit.v : 0.5) - n * 0.04;
+    select(makeItem(src, img, { surface, u, v, w }));
+    n++;
+  }
+}
+
+// --- valinta ja paneeli ---
+function highlight(it, on) {
+  (it.kind === 'model' ? it.helper : it.outline).visible = on;
+}
+
+function select(it) {
+  if (selected) highlight(selected, false);
+  selected = it;
+  $('sel').hidden = !it;
+  if (it && it.kind === 'model') tcontrols.attach(it.mesh); else tcontrols.detach();
+  if (!it) return;
+  highlight(it, true);
+  syncSel();
+}
+
+function syncSel() {
+  const it = selected;
+  if (!it) return;
+  const isModel = it.kind === 'model';
+  $('selTitle').textContent = isModel ? 'Valittu 3D-malli' : 'Valittu kuva';
+  $('selImg').style.display = isModel ? 'none' : '';
+  $('selModel').style.display = isModel ? '' : 'none';
+  if (isModel) { syncModel(); return; }
+  $('selThumb').src = it.src;
+  $('selSurf').value = it.surface;
+  $('selW').value = it.w; $('selWv').textContent = fmt(it.w, 2) + ' m';
+  const deg = Math.round(it.rot * 180 / Math.PI);
+  $('selRot').value = deg; $('selRotv').textContent = deg + '°';
+  $('selYrow').style.display = it.surface === 'free' ? '' : 'none';
+  $('selY').max = state.H; $('selY').value = it.fy; $('selYv').textContent = fmt(it.fy, 2) + ' m';
+}
+
+function setSurface(it, surf) {
+  if (surf === it.surface) return;
+  if (surf === 'free') { it.fx = 0; it.fz = 0; it.fy = 0; it.rot = 0; }
+  else { it.u = 0.5; it.v = 0.5; if (it.surface === 'free') it.rot = 0; }
+  it.surface = surf;
+  placeItem(it);
+  syncSel();
+}
+
+function syncModel() {
+  const it = selected;
+  const deg = r => Math.round(r * 180 / Math.PI);
+  $('mName').textContent = it.name || '';
+  if (document.activeElement !== $('mH')) $('mH').value = (+(it.h0 * it.s).toFixed(2));
+  $('mY').max = Math.max(8, state.H + 1);
+  $('mY').value = it.y; $('mYv').textContent = fmt(it.y, 2) + ' m';
+  for (const k of ['Rx', 'Ry', 'Rz']) {
+    const d = deg(it[k.toLowerCase()]);
+    $('m' + k).value = d; $('m' + k + 'v').textContent = d + '°';
+  }
+  document.querySelectorAll('[data-tmode]').forEach(b =>
+    b.classList.toggle('main', b.dataset.tmode === tcontrols.getMode()));
+}
+
+function removeItem(it) {
+  it.mesh.parent && it.mesh.parent.remove(it.mesh);
+  if (selected === it) select(null);
+  if (it.kind === 'model') {
+    scene.remove(it.helper);
+    it.mesh.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) [].concat(o.material).forEach(m => { for (const v of Object.values(m)) if (v && v.isTexture) v.dispose(); m.dispose(); });
+    });
+    items.splice(items.indexOf(it), 1);
+    return;
+  }
+  it.mesh.material.map.dispose(); it.mesh.material.dispose();
+  items.splice(items.indexOf(it), 1);
+  if (selected === it) select(null);
+}
+
+// --- hiiri: valinta ja raahaus ---
+const raycaster = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+function setRay(e) {
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
+}
+function hitSurface(e) {
+  setRay(e);
+  const hit = raycaster.intersectObjects(Object.values(surfaces).map(s => s.mesh), false)[0];
+  if (!hit) return null;
+  const k = hit.object.userData.surface, s = surfaces[k];
+  const p = s.group.worldToLocal(hit.point.clone());
+  return { surface:k, u: clamp(p.x / s.sw + 0.5, 0, 1), v: clamp(p.y / s.sh + 0.5, 0, 1) };
+}
+
+let drag = null, downAt = null;
+const tmpV = new THREE.Vector3();
+
+function dragPlanePoint(e) {
+  setRay(e);
+  return raycaster.ray.intersectPlane(drag.plane, tmpV) ? tmpV.clone() : null;
+}
+
+renderer.domElement.addEventListener('pointerdown', e => {
+  // 3D-ohjaimen kahvaan osuva painallus kuuluu ohjaimelle, ei valinnalle.
+  if (tcontrols.object && tcontrols.axis) { downAt = null; return; }
+  downAt = { x:e.clientX, y:e.clientY };
+  if (e.button !== 0 || e.shiftKey) return;
+  setRay(e);
+  const hits = [
+    ...raycaster.intersectObjects(items.filter(i => i.kind !== 'model').map(i => i.mesh), false),
+    ...raycaster.intersectObjects(items.filter(i => i.kind === 'model').map(i => i.mesh), true)
+  ].sort((a, b) => a.distance - b.distance);
+  const hit = hits[0];
+  if (!hit) return;
+  let o = hit.object;
+  while (!o.userData.item) o = o.parent;
+  const it = o.userData.item;
+  select(it);
+  if (it.kind === 'model') return;
+  let plane, start;
+  if (it.surface === 'free') {
+    plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -hit.point.y);
+    start = { a: it.fx * state.W - hit.point.x, b: it.fz * state.D - hit.point.z };
+  } else {
+    const s = surfaces[it.surface];
+    const n = new THREE.Vector3(0, 0, 1).applyQuaternion(s.group.getWorldQuaternion(new THREE.Quaternion()));
+    plane = new THREE.Plane().setFromNormalAndCoplanarPoint(n, s.group.getWorldPosition(new THREE.Vector3()));
+    const p = s.group.worldToLocal(hit.point.clone());
+    start = { a: it.u - (p.x / s.sw + 0.5), b: it.v - (p.y / s.sh + 0.5) };
+  }
+  drag = { it, plane, start };
+  controls.enabled = false;
+  renderer.domElement.setPointerCapture(e.pointerId);
+}, true);
+
+renderer.domElement.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const p = dragPlanePoint(e);
+  if (!p) return;
+  const it = drag.it;
+  if (it.surface === 'free') {
+    it.fx = clamp((p.x + drag.start.a) / state.W, -0.5, 0.5);
+    it.fz = clamp((p.z + drag.start.b) / state.D, -0.5, 0.5);
+  } else {
+    const s = surfaces[it.surface];
+    const l = s.group.worldToLocal(p);
+    it.u = clamp(l.x / s.sw + 0.5 + drag.start.a, 0, 1);
+    it.v = clamp(l.y / s.sh + 0.5 + drag.start.b, 0, 1);
+  }
+  placeItem(it);
+});
+
+renderer.domElement.addEventListener('pointerup', e => {
+  const moved = downAt ? Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) : 99;
+  if (drag) { drag = null; controls.enabled = true; }
+  else if (downAt && moved < 4 && e.button === 0 && !hitsItem(e)) select(null);
+  downAt = null;
+});
+
+function hitsItem(e) {
+  setRay(e);
+  return raycaster.intersectObjects(items.map(i => i.mesh), true)
+    .some(h => h.object.type === 'Mesh');
+}
+
+// --- tiedostojen pudotus ---
+view.addEventListener('dragover', e => { e.preventDefault(); view.classList.add('drag'); });
+view.addEventListener('dragleave', e => { if (e.target === view || !view.contains(e.relatedTarget)) view.classList.remove('drag'); });
+view.addEventListener('drop', e => {
+  e.preventDefault();
+  view.classList.remove('drag');
+  addFiles([...e.dataTransfer.files], hitSurface(e), e);
+});
+let addTarget = 'back';
+document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+  addTarget = b.dataset.add === 'wall' ? $('addWall').value : b.dataset.add;
+  $('fileIn').click();
+});
+$('fileIn').onchange = e => {
+  addFiles([...e.target.files], { surface:addTarget, u:0.5, v:0.5 });
+  e.target.value = '';
+};
+
+// --- kontrollit ---
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.12;
+controls.screenSpacePanning = true;
+
+const tcontrols = new THREE.TransformControls(camera, renderer.domElement);
+tcontrols.setSize(0.9);
+scene.add(tcontrols);
+tcontrols.addEventListener('dragging-changed', e => { controls.enabled = !e.value; });
+tcontrols.addEventListener('objectChange', () => {
+  if (!selected || selected.kind !== 'model') return;
+  readModelFromRoot(selected);
+  syncModel();
+  dirty = true;
+});
+
+function setCam(kind) {
+  const { W, D, H } = state;
+  const t = controls.target;
+  if (kind === 'door') {
+    const s = surfaces[state.door.wall === 'none' ? 'front' : state.door.wall];
+    const local = new THREE.Vector3(door.parent ? door.position.x : 0, -s.sh / 2 + 1.6, 0.3);
+    camera.position.copy(s.group.localToWorld(local.clone()));
+    const look = s.group.localToWorld(new THREE.Vector3(local.x * 0.3, -s.sh / 2 + 1.35, 3));
+    t.copy(look);
+  } else if (kind === 'corner') {
+    camera.position.set(W / 2 - 0.2, H - 0.25, D / 2 - 0.2);
+    t.set(-W * 0.2, H * 0.35, -D * 0.25);
+  } else if (kind === 'outside') {
+    camera.position.set(W * 1.3, H * 1.9, D * 1.5);
+    t.set(0, H * 0.35, 0);
+  } else if (kind === 'top') {
+    camera.position.set(0, Math.max(W, D) * 1.7 + H, 0.001);
+    t.set(0, 0, 0);
+  }
+  controls.update();
+}
+document.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => setCam(b.dataset.cam));
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+
+function applyLight() {
+  ambient.intensity = state.light * (1 - state.shade);
+  sun.intensity = state.light * state.shade;
+}
+
+// --- paneelin sidonnat ---
+function bindDims() {
+  for (const [id, key] of [['dimW', 'W'], ['dimD', 'D'], ['dimH', 'H']]) {
+    $(id).oninput = () => {
+      const v = parseFloat($(id).value.replace(',', '.'));
+      if (!(v > 0.5)) return;
+      state[key] = v;
+      layoutRoom(); syncSel();
+    };
+  }
+}
+function setColor(k, c) {
+  state.colors[k] = c;
+  surfaces[k].mesh.material.color.set(c);
+  $('col_' + k).value = c;
+}
+$('colAll').oninput = e => WALLS.forEach(k => setColor(k, e.target.value));
+Object.keys(SURF).forEach(k => $('col_' + k).oninput = e => setColor(k, e.target.value));
+
+const wallOpts = '<option value="none">ei</option>' + WALLS.map(k => `<option value="${k}">${SURF[k]}</option>`).join('');
+$('doorWall').innerHTML = wallOpts; $('winWall').innerHTML = wallOpts;
+$('selSurf').innerHTML = Object.entries(SURF).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')
+  + '<option value="free">Huoneessa (seisoo/roikkuu)</option>';
+$('doorWall').onchange = e => { state.door.wall = e.target.value; layoutRoom(); };
+$('doorPos').oninput = e => { state.door.pos = +e.target.value; layoutRoom(); };
+$('winWall').onchange = e => { state.win.wall = e.target.value; layoutRoom(); };
+$('winPos').oninput = e => { state.win.pos = +e.target.value; layoutRoom(); };
+$('winW').oninput = e => { state.win.w = +e.target.value; $('winWv').textContent = fmt(state.win.w, 2) + ' m'; layoutRoom(); };
+$('light').oninput = e => { state.light = +e.target.value; applyLight(); };
+$('shade').oninput = e => { state.shade = +e.target.value; applyLight(); };
+$('fov').oninput = e => { state.fov = +e.target.value; camera.fov = state.fov; camera.updateProjectionMatrix(); };
+
+$('selSurf').onchange = e => selected && setSurface(selected, e.target.value);
+$('selW').oninput = e => { if (!selected) return; selected.w = +e.target.value; placeItem(selected); syncSel(); };
+$('selRot').oninput = e => { if (!selected) return; selected.rot = +e.target.value * Math.PI / 180; placeItem(selected); syncSel(); };
+$('selY').oninput = e => { if (!selected) return; selected.fy = +e.target.value; placeItem(selected); syncSel(); };
+$('selFlip').onclick = () => { if (!selected) return; selected.flip = !selected.flip; placeItem(selected); };
+$('selFront').onclick = () => { if (!selected) return; selected.order = nextOrder(); placeItem(selected); };
+$('selBack').onclick = () => {
+  if (!selected) return;
+  items.forEach(i => { if (i !== selected) i.order++; });
+  selected.order = 1;
+  items.forEach(placeItem);
+};
+$('selDup').onclick = async () => {
+  if (!selected) return;
+  const s = selected, img = await loadImage(s.src);
+  select(makeItem(s.src, img, { surface:s.surface, u:clamp(s.u + 0.04, 0, 1), v:clamp(s.v - 0.04, 0, 1),
+    w:s.w, rot:s.rot, flip:s.flip, fx:clamp(s.fx + 0.05, -0.5, 0.5), fz:s.fz, fy:s.fy }));
+};
+$('selDel').onclick = () => selected && removeItem(selected);
+
+// 3D-mallin paneeli
+const isModelSel = () => selected && selected.kind === 'model';
+function modelEdit(fn) { if (!isModelSel()) return; fn(selected); placeModel(selected); syncModel(); }
+document.querySelectorAll('[data-tmode]').forEach(b => b.onclick = () => { tcontrols.setMode(b.dataset.tmode); syncModel(); });
+$('mH').oninput = () => {
+  const v = parseFloat($('mH').value.replace(',', '.'));
+  if (v > 0) modelEdit(it => { it.s = v / it.h0; });
+};
+$('mY').oninput = e => modelEdit(it => { it.y = +e.target.value; });
+for (const k of ['Rx', 'Ry', 'Rz'])
+  $('m' + k).oninput = e => modelEdit(it => { it[k.toLowerCase()] = +e.target.value * Math.PI / 180; });
+$('mFloor').onclick = () => modelEdit(it => {
+  // Laskee mallin niin, että sen alin kohta koskettaa lattiaa nykyisessä asennossa.
+  placeModel(it);
+  it.y -= new THREE.Box3().setFromObject(it.mesh).min.y;
+});
+$('mCeil').onclick = () => modelEdit(hangFromCeiling);
+$('mReset').onclick = () => modelEdit(it => { it.rx = it.ry = it.rz = 0; });
+$('mDup').onclick = async () => {
+  if (!isModelSel()) return;
+  const s = selected;
+  select(await makeModel(s.src, s.name, { x:s.x + 0.3, y:s.y, z:s.z, rx:s.rx, ry:s.ry, rz:s.rz, s:s.s }));
+};
+$('mDel').onclick = () => isModelSel() && removeItem(selected);
+window.addEventListener('keydown', e => {
+  if (!isModelSel() || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  const mode = { w:'translate', e:'rotate', r:'scale' }[e.key.toLowerCase()];
+  if (mode) { tcontrols.setMode(mode); syncModel(); }
+});
+window.addEventListener('keydown', e => {
+  if (!selected || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); removeItem(selected); }
+});
+
+// --- tallennus ---
+function download(name, href) {
+  const a = document.createElement('a');
+  a.href = href; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+$('savePng').onclick = () => {
+  const sel = selected;
+  if (sel) highlight(sel, false);
+  tcontrols.visible = false;
+  const pr = renderer.getPixelRatio();
+  renderer.setPixelRatio(Math.max(pr, 2.5));
+  resize();
+  renderer.render(scene, camera);
+  renderer.domElement.toBlob(b => download('huone.png', URL.createObjectURL(b)), 'image/png');
+  renderer.setPixelRatio(pr);
+  resize();
+  if (sel) highlight(sel, true);
+  tcontrols.visible = true;
+};
+
+$('savePlan').onclick = () => {
+  const { W, D } = state;
+  const ppm = 160, pad = 140;
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(W * ppm + pad * 2); cv.height = Math.round(D * ppm + pad * 2);
+  const g = cv.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+  const X = x => pad + (x + W / 2) * ppm, Z = z => pad + (z + D / 2) * ppm;
+  g.fillStyle = state.colors.floor; g.fillRect(X(-W / 2), Z(-D / 2), W * ppm, D * ppm);
+  // lattialle sijoitetut kuvat
+  const floorImgs = items.filter(i => i.surface === 'floor').sort((a, b) => a.order - b.order);
+  for (const it of floorImgs) {
+    const img = it.mesh.material.map.image, w = it.w * ppm, h = it.w / it.aspect * ppm;
+    g.save();
+    g.translate(X((it.u - 0.5) * W), Z(-(it.v - 0.5) * D));
+    g.rotate(-it.rot);
+    g.scale(it.flip ? -1 : 1, 1);
+    g.drawImage(img, -w / 2, -h / 2, w, h);
+    g.restore();
+  }
+  // vapaat esineet ylhäältä viivoina
+  g.strokeStyle = '#d9462b'; g.lineWidth = 6; g.lineCap = 'round';
+  for (const it of items.filter(i => i.surface === 'free')) {
+    const cx = X(it.fx * W), cz = Z(it.fz * D), hw = it.w / 2 * ppm;
+    const dx = Math.cos(it.rot) * hw, dz = -Math.sin(it.rot) * hw;
+    g.beginPath(); g.moveTo(cx - dx, cz - dz); g.lineTo(cx + dx, cz + dz); g.stroke();
+  }
+  // 3D-mallit: ylhäältä katsottu ääriviiva (rajauslaatikko)
+  g.lineWidth = 3; g.strokeStyle = '#2b5fd9'; g.fillStyle = 'rgba(43,95,217,.15)';
+  for (const it of items.filter(i => i.kind === 'model')) {
+    const b = new THREE.Box3().setFromObject(it.mesh);
+    const x = X(b.min.x), z = Z(b.min.z), w = (b.max.x - b.min.x) * ppm, d = (b.max.z - b.min.z) * ppm;
+    g.fillRect(x, z, w, d); g.strokeRect(x, z, w, d);
+  }
+  // seinät
+  g.strokeStyle = '#222'; g.lineWidth = 8; g.lineCap = 'square';
+  g.strokeRect(X(-W / 2), Z(-D / 2), W * ppm, D * ppm);
+  // aukot: seinän alkupiste ja suunta pohjapiirroksessa
+  const wallLine = { back:[-W/2, -D/2, 1, 0, W], front:[W/2, D/2, -1, 0, W], left:[-W/2, D/2, 0, -1, D], right:[W/2, -D/2, 0, 1, D] };
+  function opening(wall, pos, w, color, isDoor) {
+    if (wall === 'none') return;
+    const [x0, z0, dx, dz, len] = wallLine[wall];
+    w = Math.min(w, len - 0.1);
+    const c = (pos - 0.5) * (len - w) + len / 2;
+    const a = [x0 + dx * (c - w / 2), z0 + dz * (c - w / 2)], b = [x0 + dx * (c + w / 2), z0 + dz * (c + w / 2)];
+    g.strokeStyle = color; g.lineWidth = 12; g.lineCap = 'butt';
+    g.beginPath(); g.moveTo(X(a[0]), Z(a[1])); g.lineTo(X(b[0]), Z(b[1])); g.stroke();
+    if (isDoor) {
+      // oven aukeamiskaari huoneen sisään
+      const nx = -dz, nz = dx, r = w * ppm;
+      const start = Math.atan2(dz, dx), inward = Math.atan2(nz, nx);
+      g.strokeStyle = '#888'; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(X(a[0]), Z(a[1]));
+      g.lineTo(X(a[0] + nx * w), Z(a[1] + nz * w));
+      let d = inward - start; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+      g.arc(X(a[0]), Z(a[1]), r, start + d, start, d > 0);
+      g.stroke();
+    }
+  }
+  opening(state.win.wall, state.win.pos, state.win.w, '#7fb2cf', false);
+  opening(state.door.wall, state.door.pos, DOOR_W, '#fff', true);
+  // mitat
+  g.fillStyle = '#222'; g.strokeStyle = '#222'; g.lineWidth = 2;
+  g.font = '600 30px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const y0 = Z(-D / 2) - 60;
+  g.beginPath(); g.moveTo(X(-W / 2), y0); g.lineTo(X(W / 2), y0);
+  g.moveTo(X(-W / 2), y0 - 12); g.lineTo(X(-W / 2), y0 + 12); g.moveTo(X(W / 2), y0 - 12); g.lineTo(X(W / 2), y0 + 12); g.stroke();
+  g.fillText(fmt(W, 2) + ' m', X(0), y0 - 26);
+  const x0 = X(-W / 2) - 60;
+  g.beginPath(); g.moveTo(x0, Z(-D / 2)); g.lineTo(x0, Z(D / 2));
+  g.moveTo(x0 - 12, Z(-D / 2)); g.lineTo(x0 + 12, Z(-D / 2)); g.moveTo(x0 - 12, Z(D / 2)); g.lineTo(x0 + 12, Z(D / 2)); g.stroke();
+  g.save(); g.translate(x0 - 30, Z(0)); g.rotate(-Math.PI / 2); g.fillText(fmt(D, 2) + ' m', 0, 0); g.restore();
+  g.font = '24px system-ui, sans-serif'; g.fillStyle = '#555';
+  g.fillText('Pinta-ala ' + fmt(W * D, 1) + ' m² · korkeus ' + fmt(state.H, 2) + ' m', cv.width / 2, cv.height - 50);
+  cv.toBlob(b => download('pohjapiirros.png', URL.createObjectURL(b)), 'image/png');
+};
+
+$('saveJson').onclick = () => {
+  const data = {
+    version: 1, room: state,
+    camera: { pos: camera.position.toArray(), target: controls.target.toArray() },
+    items: items.map(i => i.kind === 'model'
+      ? (({ kind, src, name, x, y, z, rx, ry, rz, s }) => ({ kind, src, name, x, y, z, rx, ry, rz, s }))(i)
+      : (({ src, surface, u, v, w, rot, flip, order, fx, fz, fy }) => ({ src, surface, u, v, w, rot, flip, order, fx, fz, fy }))(i))
+  };
+  const b = new Blob([JSON.stringify(data)], { type:'application/json' });
+  download('huonemalli.json', URL.createObjectURL(b));
+  dirty = false;
+};
+$('loadJson').onclick = () => $('jsonIn').click();
+$('jsonIn').onchange = async e => {
+  const f = e.target.files[0]; e.target.value = '';
+  if (!f) return;
+  let data;
+  try { data = JSON.parse(await f.text()); } catch { alert('Tiedostoa ei voitu lukea.'); return; }
+  [...items].forEach(removeItem);
+  Object.assign(state, data.room, { colors: Object.assign({}, state.colors, data.room.colors) });
+  for (const it of data.items) {
+    if (it.kind === 'model') { await makeModel(it.src, it.name, it); continue; }
+    const img = await loadImage(it.src);
+    makeItem(it.src, img, it);
+  }
+  syncPanel();
+  layoutRoom();
+  if (data.camera) { camera.position.fromArray(data.camera.pos); controls.target.fromArray(data.camera.target); controls.update(); }
+  dirty = false;
+};
+
+let dirty = false;
+const markDirty = () => { dirty = true; };
+renderer.domElement.addEventListener('pointerup', markDirty);
+$('panel').addEventListener('input', markDirty);
+view.addEventListener('drop', markDirty);
+window.addEventListener('beforeunload', e => { if (dirty && items.length) { e.preventDefault(); e.returnValue = ''; } });
+
+// --- apu ---
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function fmt(v, d) { return (+v.toFixed(d)).toString().replace('.', ','); }
+
+function syncPanel() {
+  $('dimW').value = state.W; $('dimD').value = state.D; $('dimH').value = state.H;
+  Object.keys(SURF).forEach(k => setColor(k, state.colors[k]));
+  $('doorWall').value = state.door.wall; $('doorPos').value = state.door.pos;
+  $('winWall').value = state.win.wall; $('winPos').value = state.win.pos;
+  $('winW').value = state.win.w; $('winWv').textContent = fmt(state.win.w, 2) + ' m';
+  $('light').value = state.light; $('shade').value = state.shade; applyLight();
+  $('fov').value = state.fov; camera.fov = state.fov; camera.updateProjectionMatrix();
+}
+
+// --- käynnistys ---
+bindDims();
+syncPanel();
+layoutRoom();
+resize();
+setCam('outside');
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+})();
+</script>
+</body>
+</html>
