@@ -44,6 +44,12 @@
   summary { cursor:pointer; margin:0 -16px; padding:12px 16px; font-size:12px; text-transform:uppercase;
     letter-spacing:.06em; color:var(--muted); }
   details h2 { border-top:none; padding-top:4px; margin-top:10px; }
+  #objList { display:flex; flex-direction:column; gap:3px; }
+  #objList button { text-align:left; display:flex; gap:8px; align-items:center; padding:5px 8px; }
+  #objList button.on { background:#fbf3ef; border-color:var(--accent); }
+  #objList .ic { width:18px; text-align:center; flex:none; }
+  #objList .nm { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #objList .wh { color:var(--muted); font-size:12px; flex:none; }
   #selThumb { max-width:100%; max-height:80px; display:block; margin:4px 0; background:#ddd; }
 </style>
 <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
@@ -75,6 +81,16 @@
       <input id="fileIn" type="file" accept="image/*,.glb" multiple hidden>
     </div>
     <div class="note">Kuva (PNG/JPG) tai 3D-malli (.glb). Läpinäkyvä PNG toimii hahmona tai esineenä. Tiedoston voi myös raahata suoraan näkymään sille pinnalle, johon sen haluaa. Klikkaa valitaksesi, raahaa siirtääksesi.</div>
+
+    <h2>Valot</h2>
+    <div class="btns">
+      <button id="addSpot">Lisää spotti</button>
+      <button id="addPoint">Lisää lamppu</button>
+      <button id="lampsToggle">Lamput: päällä</button>
+    </div>
+    <div class="row"><label for="light">Yleisvalo</label><input id="light" type="range" min="0" max="1.3" step="0.01" value="1"></div>
+    <div class="row"><label for="shade">Yleisvalon varjostus</label><input id="shade" type="range" min="0" max="1" step="0.01" value="0.3"></div>
+    <div class="note">Laske yleisvaloa, niin lamppujen valo ja varjot erottuvat. Varjon heittävät 3D-mallit sekä seisovat ja roikkuvat kuvat.</div>
 
     <div id="sel" hidden>
       <h2 id="selTitle">Valittu kuva</h2>
@@ -114,10 +130,34 @@
         </div>
         <div class="note">Vedä nuolista, renkaista tai kahvoista suoraan näkymässä. Mallin saa työntää seinään, lattiaan tai kattoon, jolloin osa jää pinnan taakse.</div>
       </div>
+      <div id="selLamp">
+        <div class="btns" id="lAimBtns">
+          <button id="lMoveLamp">Siirrä lamppua</button>
+          <button id="lMoveTarget">Suuntaa</button>
+          <button id="lDown">Osoita alas</button>
+        </div>
+        <div class="row"><label for="lOn">Päällä</label><input id="lOn" type="checkbox"></div>
+        <div class="row"><label for="lShadow">Heittää varjoja</label><input id="lShadow" type="checkbox"></div>
+        <div class="row"><label for="lColor">Väri</label><input id="lColor" type="color"></div>
+        <div class="row"><label for="lInt">Kirkkaus</label><input id="lInt" type="range" min="0" max="5" step="0.05"><span class="val" id="lIntv"></span></div>
+        <div class="row"><label for="lDist">Kantama</label><input id="lDist" type="range" min="0" max="20" step="0.1"><span class="val" id="lDistv"></span></div>
+        <div id="lSpotRows">
+          <div class="row"><label for="lTilt">Kallistus</label><input id="lTilt" type="range" min="-180" max="180" step="1"><span class="val" id="lTiltv"></span></div>
+          <div class="row"><label for="lYaw">Suunta</label><input id="lYaw" type="range" min="-180" max="180" step="1"><span class="val" id="lYawv"></span></div>
+          <div class="note" id="lAimHint"></div>
+          <div class="row"><label for="lAngle">Kartion leveys</label><input id="lAngle" type="range" min="3" max="85" step="1"><span class="val" id="lAnglev"></span></div>
+          <div class="row"><label for="lPen">Reunan pehmeys</label><input id="lPen" type="range" min="0" max="1" step="0.01"><span class="val" id="lPenv"></span></div>
+        </div>
+        <div class="btns">
+          <button id="lDup">Monista</button>
+          <button id="lDel" class="danger">Poista</button>
+        </div>
+        <div class="note" id="lNote"></div>
+      </div>
     </div>
 
     <details id="roomBox" open>
-    <summary>Huone: mitat, värit, ovi, valo</summary>
+    <summary>Huone: mitat, värit, ovi</summary>
     <h2>Mitat</h2>
     <div class="row"><label for="dimW">Leveys (m)</label><input id="dimW" type="number" step="0.1" min="1" max="20" value="3.5"></div>
     <div class="row"><label for="dimD">Syvyys (m)</label><input id="dimD" type="number" step="0.1" min="1" max="20" value="5"></div>
@@ -140,9 +180,6 @@
     <div class="row"><label for="winPos">Ikkunan paikka</label><input id="winPos" type="range" min="0" max="1" step="0.01" value="0.5"></div>
     <div class="row"><label for="winW">Ikkunan leveys</label><input id="winW" type="range" min="0.4" max="4" step="0.05" value="1.2"><span class="val" id="winWv"></span></div>
 
-    <h2>Valaistus</h2>
-    <div class="row"><label for="light">Kirkkaus</label><input id="light" type="range" min="0.1" max="1.3" step="0.01" value="1"></div>
-    <div class="row"><label for="shade">Varjostus</label><input id="shade" type="range" min="0" max="1" step="0.01" value="0.3"></div>
 
     </details>
 
@@ -166,6 +203,10 @@
       <input id="jsonIn" type="file" accept=".json,application/json" hidden>
     </div>
     <div class="note">"Tallenna malli" tallentaa kaiken (kuvat mukaan lukien) yhteen .json-tiedostoon, jonka voi avata myöhemmin jatkaakseen.</div>
+
+    <h2>Kaikki kohteet</h2>
+    <div class="note" id="objEmpty">Ei vielä kuvia, malleja eikä valoja.</div>
+    <div id="objList"></div>
   </div>
 
   <div id="view">
@@ -194,7 +235,7 @@ const state = {
   colors: { back:'#f3e4d8', left:'#f3e4d8', right:'#f3e4d8', front:'#f3e4d8', floor:'#ece6df', ceil:'#f6f2ee' },
   door: { wall:'front', pos:0.5 },
   win: { wall:'none', pos:0.5, w:1.2 },
-  light: 1, shade: 0.3, fov: 70
+  light: 1, shade: 0.3, fov: 70, lampsOn: true
 };
 
 // --- three.js ---
@@ -205,6 +246,8 @@ const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.localClippingEnabled = true;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 // Huoneen kuusi tasoa: kuvista ja malleista leikataan pois kaikki, mikä jää seinien, lattian tai katon taakse.
 const roomClip = [
   new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
@@ -231,6 +274,7 @@ for (const k of Object.keys(SURF)) {
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1),
     new THREE.MeshLambertMaterial({ color: state.colors[k] }));
   mesh.userData.surface = k;
+  mesh.receiveShadow = true;
   group.add(mesh);
   scene.add(group);
   surfaces[k] = { group, mesh, sw:1, sh:1 };
@@ -240,6 +284,7 @@ const win = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshLambertM
 const winFrame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)),
   new THREE.LineBasicMaterial({ color:'#8a8580' }));
 win.add(winFrame);
+door.receiveShadow = win.receiveShadow = true;
 
 function surfaceDefs() {
   const { W, D, H } = state, P = Math.PI;
@@ -290,8 +335,12 @@ function makeItem(src, img, opts = {}) {
   tex.encoding = THREE.sRGBEncoding;
   tex.needsUpdate = true;
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const mat = new THREE.MeshLambertMaterial({ map:tex, transparent:true, alphaTest:0.02, clippingPlanes:roomClip });
+  const mat = new THREE.MeshLambertMaterial({ map:tex, transparent:true, alphaTest:0.02, clippingPlanes:roomClip, clipShadows:true });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
+  // Varjo kuvan läpinäkymättömän osan muotoisena, ei suorakulmiona (spotit ja pistevalot).
+  mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking, map:tex, alphaTest:0.5, side:THREE.DoubleSide });
+  mesh.customDistanceMaterial = new THREE.MeshDistanceMaterial({ map:tex, alphaTest:0.5, side:THREE.DoubleSide });
+  mesh.receiveShadow = true;
   const outline = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(1, 1)),
     new THREE.LineBasicMaterial({ color:'#ff2d7a', depthTest:false }));
   outline.renderOrder = 999;
@@ -304,6 +353,7 @@ function makeItem(src, img, opts = {}) {
   }, opts);
   mesh.userData.item = it;
   items.push(it);
+  refreshList();
   placeItem(it);
   return it;
 }
@@ -312,9 +362,11 @@ function nextOrder() { return items.reduce((m, i) => Math.max(m, i.order), 0) + 
 
 function placeItem(it) {
   if (it.kind === 'model') { placeModel(it); return; }
+  if (it.kind === 'lamp') { placeLamp(it); return; }
   const h = it.w / it.aspect;
   const m = it.mesh;
   m.scale.set(it.flip ? -it.w : it.w, h, 1);
+  m.castShadow = it.surface === 'free';
   if (it.surface === 'free') {
     scene.add(m);
     m.material.side = THREE.DoubleSide;
@@ -345,7 +397,10 @@ async function makeModel(src, name, opts = {}) {
   const buf = await (await fetch(src)).arrayBuffer();
   const gltf = await new Promise((res, rej) => gltfLoader.parse(buf, '', res, rej));
   const inner = gltf.scene;
-  inner.traverse(o => { if (o.material) [].concat(o.material).forEach(m => { m.clippingPlanes = roomClip; }); });
+  inner.traverse(o => {
+    if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+    if (o.material) [].concat(o.material).forEach(m => { m.clippingPlanes = roomClip; m.clipShadows = true; });
+  });
   const box = new THREE.Box3().setFromObject(inner);
   const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
   inner.position.set(-c.x, -box.min.y, -c.z);
@@ -364,6 +419,7 @@ async function makeModel(src, name, opts = {}) {
   }, opts);
   root.userData.item = it;
   items.push(it);
+  refreshList();
   placeModel(it);
   return it;
 }
@@ -384,6 +440,140 @@ function readModelFromRoot(it) {
   it.s = Math.max(0.0001, r.scale.x);
   r.scale.setScalar(it.s);
   it.helper.update();
+}
+
+// --- lamput ---
+// Spotti osoittaa kohdepalloon (tx, ty, tz); suunta vaihdetaan siirtämällä kohdetta.
+let lampAim = false;
+
+function makeLamp(opts = {}) {
+  const type = opts.type || 'spot';
+  const root = new THREE.Group();
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 12), new THREE.MeshBasicMaterial());
+  const pick = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), new THREE.MeshBasicMaterial());
+  pick.visible = false;  // isompi näkymätön osuma-alue, jotta pieni lamppu on helppo klikata
+  root.add(bulb, pick);
+  const light = type === 'spot' ? new THREE.SpotLight('#fff', 1, 0, 0.5, 0.4, 1) : new THREE.PointLight('#fff', 1, 0, 1);
+  light.shadow.mapSize.set(type === 'spot' ? 1024 : 512, type === 'spot' ? 1024 : 512);
+  light.shadow.bias = -0.0005;
+  light.shadow.normalBias = 0.02;
+  light.shadow.camera.near = 0.05;
+  root.add(light);
+  scene.add(root);
+  const target = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8),
+    new THREE.MeshBasicMaterial({ color:'#ff2d7a', depthTest:false }));
+  target.renderOrder = 998;
+  target.visible = false;
+  scene.add(target);
+  if (type === 'spot') light.target = target;
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+    new THREE.LineBasicMaterial({ color:'#ff2d7a', depthTest:false }));
+  line.renderOrder = 998;
+  line.visible = false;
+  scene.add(line);
+  const n = items.filter(i => i.kind === 'lamp').length;
+  const { W, D, H } = state;
+  const it = Object.assign(type === 'spot'
+    ? { x: n * 0.3 - W * 0.2, y: H - 0.15, z: D * 0.25, tx: n * 0.3 - W * 0.2, ty: 1, tz: -D * 0.15, intensity: 2, angle: 25 }
+    : { x: n * 0.3, y: H * 0.75, z: 0, tx: 0, ty: 0, tz: 0, intensity: 1, angle: 25 },
+    { id: nextId++, kind:'lamp', type, mesh: root, bulb, light, target, line,
+      color:'#fff1dc', dist:0, pen:0.4, on:true, shadow:true, order:0 }, opts);
+  root.userData.item = it;
+  target.userData.item = it;
+  target.userData.isTarget = true;
+  items.push(it);
+  refreshList();
+  placeLamp(it);
+  return it;
+}
+
+function placeLamp(it) {
+  const lit = state.lampsOn && it.on;
+  it.mesh.position.set(it.x, it.y, it.z);
+  it.target.position.set(it.tx, it.ty, it.tz);
+  const pa = it.line.geometry.attributes.position;
+  pa.setXYZ(0, it.x, it.y, it.z); pa.setXYZ(1, it.tx, it.ty, it.tz);
+  pa.needsUpdate = true;
+  it.line.geometry.computeBoundingSphere();
+  const L = it.light;
+  L.color.set(it.color);
+  L.intensity = it.intensity;
+  L.distance = it.dist;
+  if (it.type === 'spot') { L.angle = it.angle * Math.PI / 180; L.penumbra = it.pen; }
+  L.castShadow = it.shadow;
+  L.visible = lit;
+  it.bulb.material.color.set(lit ? it.color : '#6b6560');
+}
+
+function applyLamps() {
+  items.filter(i => i.kind === 'lamp').forEach(placeLamp);
+  $('lampsToggle').textContent = 'Lamput: ' + (state.lampsOn ? 'päällä' : 'pois');
+  $('lampsToggle').classList.toggle('main', !state.lampsOn);
+  refreshList();
+}
+
+function attachGizmo() {
+  const it = selected;
+  if (!it || (it.kind !== 'model' && it.kind !== 'lamp')) { tcontrols.detach(); return; }
+  if (it.kind === 'lamp') {
+    tcontrols.setMode('translate');
+    tcontrols.attach(lampAim && it.type === 'spot' ? it.target : it.mesh);
+  } else tcontrols.attach(it.mesh);
+}
+
+// Spotin suunta kulmina: kallistus 0° = suoraan alas, +90° = vaakaan suunnan puolelle,
+// −90° = vaakaan vastakkaiselle puolelle; suunta 0° = kohti takaseinää (−z), 90° = oikealle (+x).
+// Suunta muistetaan (it.yaw), jotta kallistus voi mennä nollan yli miinukselle ilman että suunta hyppää.
+function lampAngles(it) {
+  const dx = it.tx - it.x, dy = it.ty - it.y, dz = it.tz - it.z;
+  const r = Math.hypot(dx, dy, dz) || 1;
+  const tilt = Math.round(Math.acos(clamp(-dy / r, -1, 1)) * 180 / Math.PI);
+  if (Math.hypot(dx, dz) > 0.001 * r) {
+    const az = Math.round(Math.atan2(dx, -dz) * 180 / Math.PI);
+    if (it.yaw === undefined) it.yaw = az;
+    const diff = ((az - it.yaw + 540) % 360) - 180;
+    if (Math.abs(diff) > 90) return { tilt: -tilt, yaw: it.yaw };
+    it.yaw = az;
+  }
+  return { tilt, yaw: it.yaw || 0 };
+}
+
+function setLampAngles(it, tilt, yaw) {
+  const r = Math.max(1, Math.hypot(it.tx - it.x, it.ty - it.y, it.tz - it.z));
+  const t = tilt * Math.PI / 180, y = yaw * Math.PI / 180;
+  it.yaw = yaw;
+  it.tx = it.x + r * Math.sin(t) * Math.sin(y);
+  it.ty = it.y - r * Math.cos(t);
+  it.tz = it.z - r * Math.sin(t) * Math.cos(y);
+}
+
+function syncLamp() {
+  const it = selected;
+  const spot = it.type === 'spot';
+  $('lMoveTarget').style.display = spot ? '' : 'none';
+  $('lDown').style.display = spot ? '' : 'none';
+  $('lSpotRows').style.display = spot ? '' : 'none';
+  $('lMoveLamp').classList.toggle('main', !(lampAim && spot));
+  $('lMoveTarget').classList.toggle('main', lampAim && spot);
+  $('lOn').checked = it.on;
+  $('lShadow').checked = it.shadow;
+  $('lColor').value = it.color;
+  $('lInt').value = it.intensity; $('lIntv').textContent = fmt(it.intensity, 2);
+  $('lDist').value = it.dist; $('lDistv').textContent = it.dist ? fmt(it.dist, 1) + ' m' : 'rajaton';
+  const a = lampAngles(it);
+  $('lTilt').value = a.tilt; $('lTiltv').textContent = a.tilt + '°';
+  $('lYaw').value = a.yaw; $('lYawv').textContent = a.yaw + '°';
+  // Miinuskallistus osoittaa suunnan vastakkaiselle puolelle.
+  const eff = (((a.tilt < 0 ? a.yaw + 180 : a.yaw) + 540) % 360) - 180;
+  $('lAimHint').textContent = 'Kallistus: 0° alas, ±90° vaakaan, miinus = vastakkaiselle puolelle. Valo osoittaa '
+    + (Math.abs(a.tilt) <= 15 ? 'alas'
+      : Math.abs(a.tilt) >= 165 ? 'kattoon'
+      : 'kohti ' + (Math.abs(eff) <= 45 ? 'takaseinää' : Math.abs(eff) >= 135 ? 'etuseinää' : eff > 0 ? 'oikeaa seinää' : 'vasenta seinää')) + '.';
+  $('lAngle').value = it.angle; $('lAnglev').textContent = it.angle + '°';
+  $('lPen').value = it.pen; $('lPenv').textContent = fmt(it.pen, 2);
+  const shadows = items.filter(i => i.kind === 'lamp' && i.shadow).length;
+  $('lNote').textContent = (spot ? 'Spotti: "Siirrä lamppua" siirtää valaisinta, "Suuntaa" siirtää vaaleanpunaista kohdepalloa, johon valo osoittaa. ' : 'Lamppu valaisee joka suuntaan. ')
+    + (shadows > 6 ? 'Varjoja heittäviä valoja on ' + shadows + ' – yli 6 voi hidastaa sivua.' : '');
 }
 
 // Nostaa mallin niin, että sen ylin kohta koskettaa kattoa nykyisessä asennossa.
@@ -424,7 +614,7 @@ async function addFiles(files, hit, e) {
       const aspect = img.width / img.height;
       const h = Math.min(1.5, state.H * 0.6);
       const fy = hit.surface === 'hang' ? state.H - h : 0;
-      select(makeItem(src, img, { surface:'free', w:h * aspect, fx:n * 0.06, fz:0, fy }));
+      select(makeItem(src, img, { name:f.name, surface:'free', w:h * aspect, fx:n * 0.06, fz:0, fy }));
       n++;
       continue;
     }
@@ -434,13 +624,18 @@ async function addFiles(files, hit, e) {
     let w = Math.min(s.sw * 0.4, 1.2);
     if (w / aspect > s.sh * 0.6) w = s.sh * 0.6 * aspect;
     const u = (hit ? hit.u : 0.5) + n * 0.04, v = (hit ? hit.v : 0.5) - n * 0.04;
-    select(makeItem(src, img, { surface, u, v, w }));
+    select(makeItem(src, img, { name:f.name, surface, u, v, w }));
     n++;
   }
 }
 
 // --- valinta ja paneeli ---
 function highlight(it, on) {
+  if (it.kind === 'lamp') {
+    it.bulb.scale.setScalar(on ? 1.5 : 1);
+    it.target.visible = it.line.visible = on && it.type === 'spot';
+    return;
+  }
   (it.kind === 'model' ? it.helper : it.outline).visible = on;
 }
 
@@ -448,20 +643,57 @@ function select(it) {
   if (selected) highlight(selected, false);
   selected = it;
   $('sel').hidden = !it;
-  if (it && it.kind === 'model') tcontrols.attach(it.mesh); else tcontrols.detach();
+  attachGizmo();
+  refreshList();
   if (!it) return;
   highlight(it, true);
   syncSel();
 }
 
+// Paneelin alimmainen lista: jokainen kohde klikattavana, myös toisen takana olevat.
+function itemLabel(it) {
+  if (it.kind === 'lamp') {
+    const same = items.filter(i => i.kind === 'lamp' && i.type === it.type);
+    return { ic: it.type === 'spot' ? '◣' : '●', nm: (it.type === 'spot' ? 'Spotti ' : 'Lamppu ') + (same.indexOf(it) + 1),
+      wh: state.lampsOn && it.on ? '' : 'pois' };
+  }
+  if (it.kind === 'model') return { ic: '▲', nm: it.name || '3D-malli', wh: '3D' };
+  return { ic: '▢', nm: it.name || 'Kuva', wh: it.surface === 'free' ? 'huoneessa' : SURF[it.surface] };
+}
+
+function refreshList() {
+  const box = $('objList');
+  box.textContent = '';
+  $('objEmpty').style.display = items.length ? 'none' : '';
+  const rank = i => i.kind === 'lamp' ? 2 : i.kind === 'model' ? 1 : 0;
+  for (const it of [...items].sort((a, b) => rank(b) - rank(a))) {
+    const l = itemLabel(it);
+    const b = document.createElement('button');
+    b.className = it === selected ? 'on' : '';
+    for (const [cls, txt] of [['ic', l.ic], ['nm', l.nm], ['wh', l.wh]]) {
+      const sp = document.createElement('span'); sp.className = cls; sp.textContent = txt; b.appendChild(sp);
+    }
+    b.title = l.nm;
+    b.onclick = () => {
+      if (it.kind === 'lamp') lampAim = false;
+      if (selected === it) { attachGizmo(); syncSel(); } else select(it);
+      $('sel').scrollIntoView({ block:'nearest', behavior:'smooth' });
+    };
+    box.appendChild(b);
+  }
+}
+
 function syncSel() {
   const it = selected;
   if (!it) return;
-  const isModel = it.kind === 'model';
-  $('selTitle').textContent = isModel ? 'Valittu 3D-malli' : 'Valittu kuva';
-  $('selImg').style.display = isModel ? 'none' : '';
-  $('selModel').style.display = isModel ? '' : 'none';
-  if (isModel) { syncModel(); return; }
+  const kind = it.kind || 'image';
+  $('selTitle').textContent = { image:'Valittu kuva', model:'Valittu 3D-malli',
+    lamp: it.type === 'spot' ? 'Valittu spotti' : 'Valittu lamppu' }[kind];
+  $('selImg').style.display = kind === 'image' ? '' : 'none';
+  $('selModel').style.display = kind === 'model' ? '' : 'none';
+  $('selLamp').style.display = kind === 'lamp' ? '' : 'none';
+  if (kind === 'model') { syncModel(); return; }
+  if (kind === 'lamp') { syncLamp(); return; }
   $('selThumb').src = it.src;
   $('selSurf').value = it.surface;
   $('selW').value = it.w; $('selWv').textContent = fmt(it.w, 2) + ' m';
@@ -476,6 +708,7 @@ function setSurface(it, surf) {
   if (surf === 'free') { it.fx = 0; it.fz = 0; it.fy = 0; it.rot = 0; }
   else { it.u = 0.5; it.v = 0.5; if (it.surface === 'free') it.rot = 0; }
   it.surface = surf;
+  refreshList();
   placeItem(it);
   syncSel();
 }
@@ -496,8 +729,23 @@ function syncModel() {
 }
 
 function removeItem(it) {
+  removeItemObjects(it);
+  refreshList();
+}
+
+function removeItemObjects(it) {
   it.mesh.parent && it.mesh.parent.remove(it.mesh);
   if (selected === it) select(null);
+  if (it.kind === 'lamp') {
+    scene.remove(it.target, it.line);
+    it.light.dispose();
+    [it.mesh, it.target, it.line].forEach(r => r.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) o.material.dispose();
+    }));
+    items.splice(items.indexOf(it), 1);
+    return;
+  }
   if (it.kind === 'model') {
     scene.remove(it.helper);
     it.mesh.traverse(o => {
@@ -542,18 +790,14 @@ renderer.domElement.addEventListener('pointerdown', e => {
   if (tcontrols.object && tcontrols.axis) { downAt = null; return; }
   downAt = { x:e.clientX, y:e.clientY };
   if (e.button !== 0 || e.shiftKey) return;
-  setRay(e);
-  const hits = [
-    ...raycaster.intersectObjects(items.filter(i => i.kind !== 'model').map(i => i.mesh), false),
-    ...raycaster.intersectObjects(items.filter(i => i.kind === 'model').map(i => i.mesh), true)
-  ].sort((a, b) => a.distance - b.distance);
-  const hit = hits[0];
+  const hit = pickHit(e);
   if (!hit) return;
   let o = hit.object;
   while (!o.userData.item) o = o.parent;
   const it = o.userData.item;
-  select(it);
-  if (it.kind === 'model') return;
+  if (it.kind === 'lamp') lampAim = !!o.userData.isTarget;
+  if (selected === it) { attachGizmo(); syncSel(); } else select(it);
+  if (it.kind) return;
   let plane, start;
   if (it.surface === 'free') {
     plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -hit.point.y);
@@ -594,11 +838,17 @@ renderer.domElement.addEventListener('pointerup', e => {
   downAt = null;
 });
 
-function hitsItem(e) {
+// Lähin klikattava: pintakuvat, 3D-mallit, lamput ja valitun spotin kohdepallo.
+function pickHit(e) {
   setRay(e);
-  return raycaster.intersectObjects(items.map(i => i.mesh), true)
-    .some(h => h.object.type === 'Mesh');
+  const deep = items.filter(i => i.kind).map(i => i.mesh);
+  if (selected && selected.kind === 'lamp' && selected.type === 'spot') deep.push(selected.target);
+  return [
+    ...raycaster.intersectObjects(items.filter(i => !i.kind).map(i => i.mesh), false),
+    ...raycaster.intersectObjects(deep, true).filter(h => h.object.isMesh)
+  ].sort((a, b) => a.distance - b.distance)[0];
 }
+function hitsItem(e) { return !!pickHit(e); }
 
 // --- tiedostojen pudotus ---
 view.addEventListener('dragover', e => { e.preventDefault(); view.classList.add('drag'); });
@@ -629,9 +879,15 @@ tcontrols.setSize(0.9);
 scene.add(tcontrols);
 tcontrols.addEventListener('dragging-changed', e => { controls.enabled = !e.value; });
 tcontrols.addEventListener('objectChange', () => {
-  if (!selected || selected.kind !== 'model') return;
-  readModelFromRoot(selected);
-  syncModel();
+  const it = selected;
+  if (!it) return;
+  if (it.kind === 'model') { readModelFromRoot(it); syncModel(); }
+  else if (it.kind === 'lamp') {
+    ({ x:it.x, y:it.y, z:it.z } = it.mesh.position);
+    ({ x:it.tx, y:it.ty, z:it.tz } = it.target.position);
+    placeLamp(it);
+    syncLamp();
+  }
   dirty = true;
 });
 
@@ -747,6 +1003,40 @@ $('mDup').onclick = async () => {
   select(await makeModel(s.src, s.name, { x:s.x + 0.3, y:s.y, z:s.z, rx:s.rx, ry:s.ry, rz:s.rz, s:s.s }));
 };
 $('mDel').onclick = () => isModelSel() && removeItem(selected);
+
+// Lamput
+function addLamp(type) {
+  // Ensimmäisen lampun kohdalla himmennetään yleisvaloa, muuten lampun valo ja varjot eivät erotu.
+  if (!items.some(i => i.kind === 'lamp') && state.light > 0.5) {
+    state.light = 0.45; $('light').value = state.light; applyLight();
+  }
+  lampAim = false;
+  select(makeLamp({ type }));
+  dirty = true;
+}
+$('addSpot').onclick = () => addLamp('spot');
+$('addPoint').onclick = () => addLamp('point');
+$('lampsToggle').onclick = () => { state.lampsOn = !state.lampsOn; applyLamps(); dirty = true; };
+const isLampSel = () => selected && selected.kind === 'lamp';
+function lampEdit(fn) { if (!isLampSel()) return; fn(selected); placeLamp(selected); syncLamp(); }
+$('lMoveLamp').onclick = () => { lampAim = false; attachGizmo(); syncLamp(); };
+$('lMoveTarget').onclick = () => { lampAim = true; attachGizmo(); syncLamp(); };
+$('lDown').onclick = () => lampEdit(it => { it.tx = it.x; it.tz = it.z; it.ty = 0; });
+$('lOn').onchange = e => { lampEdit(it => { it.on = e.target.checked; }); refreshList(); };
+$('lShadow').onchange = e => lampEdit(it => { it.shadow = e.target.checked; });
+$('lColor').oninput = e => lampEdit(it => { it.color = e.target.value; });
+$('lInt').oninput = e => lampEdit(it => { it.intensity = +e.target.value; });
+$('lDist').oninput = e => lampEdit(it => { it.dist = +e.target.value; });
+$('lTilt').oninput = e => lampEdit(it => setLampAngles(it, +e.target.value, lampAngles(it).yaw));
+$('lYaw').oninput = e => lampEdit(it => setLampAngles(it, lampAngles(it).tilt, +e.target.value));
+$('lAngle').oninput = e => lampEdit(it => { it.angle = +e.target.value; });
+$('lPen').oninput = e => lampEdit(it => { it.pen = +e.target.value; });
+$('lDup').onclick = () => {
+  if (!isLampSel()) return;
+  const { type, x, y, z, tx, ty, tz, color, intensity, dist, angle, pen, on, shadow } = selected;
+  select(makeLamp({ type, x:x + 0.3, y, z, tx:tx + 0.3, ty, tz, color, intensity, dist, angle, pen, on, shadow }));
+};
+$('lDel').onclick = () => isLampSel() && removeItem(selected);
 window.addEventListener('keydown', e => {
   if (!isModelSel() || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
   const mode = { w:'translate', e:'rotate', r:'scale' }[e.key.toLowerCase()];
@@ -768,6 +1058,9 @@ $('savePng').onclick = () => {
   const sel = selected;
   if (sel) highlight(sel, false);
   tcontrols.visible = false;
+  // Lamppupallot eivät kuulu kuvaan, vain niiden valo.
+  const lamps = items.filter(i => i.kind === 'lamp');
+  lamps.forEach(l => { l.bulb.visible = false; });
   const pr = renderer.getPixelRatio();
   renderer.setPixelRatio(Math.max(pr, 2.5));
   resize();
@@ -775,6 +1068,7 @@ $('savePng').onclick = () => {
   renderer.domElement.toBlob(b => download('huone.png', URL.createObjectURL(b)), 'image/png');
   renderer.setPixelRatio(pr);
   resize();
+  lamps.forEach(l => { l.bulb.visible = true; });
   if (sel) highlight(sel, true);
   tcontrols.visible = true;
 };
@@ -812,6 +1106,15 @@ $('savePlan').onclick = () => {
     const b = new THREE.Box3().setFromObject(it.mesh);
     const x = X(b.min.x), z = Z(b.min.z), w = (b.max.x - b.min.x) * ppm, d = (b.max.z - b.min.z) * ppm;
     g.fillRect(x, z, w, d); g.strokeRect(x, z, w, d);
+  }
+  // lamput: keltainen ympyrä, spotille viiva kohteen suuntaan
+  for (const it of items.filter(i => i.kind === 'lamp')) {
+    if (it.type === 'spot') {
+      g.strokeStyle = '#c99a00'; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(X(it.x), Z(it.z)); g.lineTo(X(it.tx), Z(it.tz)); g.stroke();
+    }
+    g.fillStyle = '#ffd23f'; g.strokeStyle = '#8a6a00'; g.lineWidth = 3;
+    g.beginPath(); g.arc(X(it.x), Z(it.z), 14, 0, Math.PI * 2); g.fill(); g.stroke();
   }
   // seinät
   g.strokeStyle = '#222'; g.lineWidth = 8; g.lineCap = 'square';
@@ -862,7 +1165,10 @@ $('saveJson').onclick = () => {
     camera: { pos: camera.position.toArray(), target: controls.target.toArray() },
     items: items.map(i => i.kind === 'model'
       ? (({ kind, src, name, x, y, z, rx, ry, rz, s }) => ({ kind, src, name, x, y, z, rx, ry, rz, s }))(i)
-      : (({ src, surface, u, v, w, rot, flip, order, fx, fz, fy }) => ({ src, surface, u, v, w, rot, flip, order, fx, fz, fy }))(i))
+      : i.kind === 'lamp'
+      ? (({ kind, type, x, y, z, tx, ty, tz, color, intensity, dist, angle, pen, on, shadow }) =>
+          ({ kind, type, x, y, z, tx, ty, tz, color, intensity, dist, angle, pen, on, shadow }))(i)
+      : (({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy }) => ({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy }))(i))
   };
   const b = new Blob([JSON.stringify(data)], { type:'application/json' });
   download('huonemalli.json', URL.createObjectURL(b));
@@ -878,6 +1184,7 @@ $('jsonIn').onchange = async e => {
   Object.assign(state, data.room, { colors: Object.assign({}, state.colors, data.room.colors) });
   for (const it of data.items) {
     if (it.kind === 'model') { await makeModel(it.src, it.name, it); continue; }
+    if (it.kind === 'lamp') { makeLamp(it); continue; }
     const img = await loadImage(it.src);
     makeItem(it.src, img, it);
   }
@@ -906,6 +1213,7 @@ function syncPanel() {
   $('winW').value = state.win.w; $('winWv').textContent = fmt(state.win.w, 2) + ' m';
   $('light').value = state.light; $('shade').value = state.shade; applyLight();
   $('fov').value = state.fov; camera.fov = state.fov; camera.updateProjectionMatrix();
+  applyLamps();
 }
 
 // --- käynnistys ---
