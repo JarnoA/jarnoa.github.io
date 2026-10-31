@@ -79,8 +79,9 @@
       <button data-add="floor">Lattiaan…</button>
       <button data-add="ceil">Kattoon…</button>
       <input id="fileIn" type="file" accept="image/*,.glb" multiple hidden>
+      <input id="replaceIn" type="file" hidden>
     </div>
-    <div class="note">Kuva (PNG/JPG) tai 3D-malli (.glb). Läpinäkyvä PNG toimii hahmona tai esineenä. Tiedoston voi myös raahata suoraan näkymään sille pinnalle, johon sen haluaa. Klikkaa valitaksesi, raahaa siirtääksesi.</div>
+    <div class="note">Kuva (PNG/JPG) tai 3D-malli (.glb). Läpinäkyvä PNG toimii hahmona tai esineenä. Tiedoston voi myös raahata suoraan näkymään sille pinnalle, johon sen haluaa. Klikkaa valitaksesi, raahaa valittua siirtääksesi. Esc poistaa valinnan.</div>
 
     <h2>Valot</h2>
     <div class="btns">
@@ -99,14 +100,17 @@
       <div class="row"><label for="selSurf">Pinta</label><select id="selSurf"></select></div>
       <div class="row"><label for="selW">Leveys</label><input id="selW" type="range" min="0.05" max="8" step="0.01"><span class="val" id="selWv"></span></div>
       <div class="row"><label for="selRot">Kierto</label><input id="selRot" type="range" min="-180" max="180" step="1"><span class="val" id="selRotv"></span></div>
+      <div class="row"><label for="selOp">Läpinäkyvyys</label><input id="selOp" type="range" min="0.05" max="1" step="0.01"><span class="val" id="selOpv"></span></div>
       <div class="row" id="selYrow"><label for="selY">Korkeus lattiasta</label><input id="selY" type="range" min="0" max="3" step="0.01"><span class="val" id="selYv"></span></div>
       <div class="btns">
         <button id="selFlip">Peilaa</button>
         <button id="selFront">Tuo eteen</button>
         <button id="selBack">Vie taakse</button>
         <button id="selDup">Monista</button>
+        <button id="selReplace">Vaihda tiedosto…</button>
         <button id="selDel" class="danger">Poista</button>
       </div>
+      <div class="note" id="selLive"></div>
       <div class="note">Pinta "Huoneessa" = kuva seisoo tai roikkuu vapaasti, kuten veistos. Delete-näppäin poistaa.</div>
       </div>
       <div id="selModel">
@@ -117,6 +121,7 @@
           <button data-tmode="scale">Koko</button>
         </div>
         <div class="row"><label for="mH">Korkeus (m)</label><input id="mH" type="number" step="0.05" min="0.01"></div>
+        <div class="row"><label for="mOp">Läpinäkyvyys</label><input id="mOp" type="range" min="0.05" max="1" step="0.01"><span class="val" id="mOpv"></span></div>
         <div class="row"><label for="mY">Nosto lattiasta</label><input id="mY" type="range" min="-2" max="8" step="0.01"><span class="val" id="mYv"></span></div>
         <div class="row"><label for="mRy">Kierto</label><input id="mRy" type="range" min="-180" max="180" step="1"><span class="val" id="mRyv"></span></div>
         <div class="row"><label for="mRx">Kallistus eteen</label><input id="mRx" type="range" min="-180" max="180" step="1"><span class="val" id="mRxv"></span></div>
@@ -126,8 +131,10 @@
           <button id="mCeil">Kattoon</button>
           <button id="mReset">Nollaa kierto</button>
           <button id="mDup">Monista</button>
+          <button id="mReplace">Vaihda tiedosto…</button>
           <button id="mDel" class="danger">Poista</button>
         </div>
+        <div class="note" id="mLive"></div>
         <div class="note">Vedä nuolista, renkaista tai kahvoista suoraan näkymässä. Mallin saa työntää seinään, lattiaan tai kattoon, jolloin osa jää pinnan taakse.</div>
       </div>
       <div id="selLamp">
@@ -211,7 +218,7 @@
 
   <div id="view">
     <div id="dropHint">Pudota kuva pinnalle</div>
-    <div id="help">Vedä: kierrä · Oikea nappi / shift+vedä: siirrä · Rulla: zoomaa · 3D-malli: W siirrä, E käännä, R koko</div>
+    <div id="help">Vedä: kierrä · Oikea nappi / kahden sormen klikkaus / shift+vedä: siirrä · Rulla, kahden sormen vieritys tai nipistys: zoomaa · Esc: poista valinta · 3D-malli: W siirrä, E käännä, R koko</div>
   </div>
 </div>
 
@@ -330,11 +337,16 @@ function placeOpening(mesh, wall, pos, w, h, cy) {
 }
 
 // --- kuvat ---
-function makeItem(src, img, opts = {}) {
+function makeTexture(img) {
   const tex = new THREE.Texture(img);
   tex.encoding = THREE.sRGBEncoding;
   tex.needsUpdate = true;
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return tex;
+}
+
+function makeItem(src, img, opts = {}) {
+  const tex = makeTexture(img);
   const mat = new THREE.MeshLambertMaterial({ map:tex, transparent:true, alphaTest:0.02, clippingPlanes:roomClip, clipShadows:true });
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
   // Varjo kuvan läpinäkymättömän osan muotoisena, ei suorakulmiona (spotit ja pistevalot).
@@ -349,7 +361,7 @@ function makeItem(src, img, opts = {}) {
   const it = Object.assign({
     id: nextId++, src, mesh, outline, aspect: img.width / img.height,
     surface:'back', u:0.5, v:0.5, w:1, rot:0, flip:false, order: nextOrder(),
-    fx:0, fz:0, fy:0
+    fx:0, fz:0, fy:0, opacity:1
   }, opts);
   mesh.userData.item = it;
   items.push(it);
@@ -367,6 +379,7 @@ function placeItem(it) {
   const m = it.mesh;
   m.scale.set(it.flip ? -it.w : it.w, h, 1);
   m.castShadow = it.surface === 'free';
+  m.material.opacity = it.opacity;
   if (it.surface === 'free') {
     scene.add(m);
     m.material.side = THREE.DoubleSide;
@@ -393,21 +406,35 @@ function readFile(f) {
 // Malli kääritään juuriryhmään, jonka origo on mallin pohjan keskellä: y = 0 tarkoittaa "seisoo lattialla".
 const gltfLoader = new THREE.GLTFLoader();
 
-async function makeModel(src, name, opts = {}) {
+async function parseModel(src) {
   const buf = await (await fetch(src)).arrayBuffer();
   const gltf = await new Promise((res, rej) => gltfLoader.parse(buf, '', res, rej));
   const inner = gltf.scene;
   inner.traverse(o => {
     if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
-    if (o.material) [].concat(o.material).forEach(m => { m.clippingPlanes = roomClip; m.clipShadows = true; });
+    if (o.material) [].concat(o.material).forEach(m => {
+      m.clippingPlanes = roomClip; m.clipShadows = true;
+      m.userData.op0 = m.opacity; m.userData.tr0 = m.transparent; m.userData.dw0 = m.depthWrite;
+    });
   });
   const box = new THREE.Box3().setFromObject(inner);
   const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
   inner.position.set(-c.x, -box.min.y, -c.z);
+  return { inner, h0: size.y || 1 };
+}
+
+function disposeTree(obj) {
+  obj.traverse(o => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) [].concat(o.material).forEach(m => { for (const v of Object.values(m)) if (v && v.isTexture) v.dispose(); m.dispose(); });
+  });
+}
+
+async function makeModel(src, name, opts = {}) {
+  const { inner, h0 } = await parseModel(src);
   const root = new THREE.Group();
   root.add(inner);
   scene.add(root);
-  const h0 = size.y || 1;
   // Jos mallin yksiköt ovat selvästi pielessä (mm tai km), skaalataan n. 1,2 m korkeaksi.
   const auto = (h0 > 6 || h0 < 0.05) ? 1.2 / h0 : 1;
   const helper = new THREE.BoxHelper(root, '#ff2d7a');
@@ -415,7 +442,7 @@ async function makeModel(src, name, opts = {}) {
   scene.add(helper);
   const it = Object.assign({
     id: nextId++, kind:'model', src, name, mesh: root, helper, h0,
-    x:0, y:0, z:0, rx:0, ry:0, rz:0, s:auto, order:0
+    x:0, y:0, z:0, rx:0, ry:0, rz:0, s:auto, order:0, opacity:1
   }, opts);
   root.userData.item = it;
   items.push(it);
@@ -429,6 +456,16 @@ function placeModel(it) {
   r.position.set(it.x, it.y, it.z);
   r.rotation.set(it.rx, it.ry, it.rz);
   r.scale.setScalar(it.s);
+  // Läpinäkyvyys kerrotaan mallin omalla läpinäkyvyydellä; täysin peittävä malli palaa alkuperäiseen tilaan.
+  r.traverse(o => {
+    if (!o.material) return;
+    [].concat(o.material).forEach(m => {
+      const t = it.opacity < 0.999 || m.userData.tr0;
+      if (m.transparent !== t) { m.transparent = t; m.needsUpdate = true; }
+      m.opacity = m.userData.op0 * it.opacity;
+      m.depthWrite = it.opacity >= 0.999 ? m.userData.dw0 : false;
+    });
+  });
   r.updateMatrixWorld(true);
   it.helper.update();
 }
@@ -589,9 +626,9 @@ function floorPoint(e) {
   return { x: clamp(p.x, -state.W / 2, state.W / 2), z: clamp(p.z, -state.D / 2, state.D / 2) };
 }
 
-async function addFiles(files, hit, e) {
+async function addFiles(files, hit, e, handles = []) {
   let n = 0;
-  for (const f of files) {
+  for (const [k, f] of files.entries()) {
     if (/\.glb$/i.test(f.name)) {
       // Lattialle tai kattoon pudotettu malli menee osumakohtaan; seinälle pudotettu lattialle seinän eteen.
       let p = e ? floorPoint(e) : { x:0, z:0 };
@@ -600,6 +637,7 @@ async function addFiles(files, hit, e) {
       try {
         const it = await makeModel(await readFile(f), f.name, { x:p.x + n * 0.2, z:p.z });
         if (hit && (hit.surface === 'ceil' || hit.surface === 'hang')) { hangFromCeiling(it); placeModel(it); }
+        linkFile(it, handles[k], f);
         select(it);
       }
       catch (err) { alert('GLB-mallia ' + f.name + ' ei voitu avata.'); }
@@ -614,7 +652,9 @@ async function addFiles(files, hit, e) {
       const aspect = img.width / img.height;
       const h = Math.min(1.5, state.H * 0.6);
       const fy = hit.surface === 'hang' ? state.H - h : 0;
-      select(makeItem(src, img, { name:f.name, surface:'free', w:h * aspect, fx:n * 0.06, fz:0, fy }));
+      const it = makeItem(src, img, { name:f.name, surface:'free', w:h * aspect, fx:n * 0.06, fz:0, fy });
+      linkFile(it, handles[k], f);
+      select(it);
       n++;
       continue;
     }
@@ -624,9 +664,95 @@ async function addFiles(files, hit, e) {
     let w = Math.min(s.sw * 0.4, 1.2);
     if (w / aspect > s.sh * 0.6) w = s.sh * 0.6 * aspect;
     const u = (hit ? hit.u : 0.5) + n * 0.04, v = (hit ? hit.v : 0.5) - n * 0.04;
-    select(makeItem(src, img, { name:f.name, surface, u, v, w }));
+    const it = makeItem(src, img, { name:f.name, surface, u, v, w });
+    linkFile(it, handles[k], f);
+    select(it);
     n++;
   }
+}
+
+// --- linkitys tiedostoon ---
+// Chromessa ja Edgessä kuva tai malli muistaa tiedostonsa: kun tiedosto tallennetaan uudelleen samalla
+// nimellä, sisältö vaihtuu huoneeseen parissa sekunnissa ja paikka, koko ja asento säilyvät.
+const canLink = 'showOpenFilePicker' in window;
+const PICK_TYPES = {
+  image: { description:'Kuva', accept:{ 'image/*':['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'] } },
+  model: { description:'3D-malli', accept:{ 'model/gltf-binary':['.glb'] } }
+};
+
+function linkFile(it, handle, f) {
+  if (!handle || handle.kind !== 'file') return;
+  it.handle = handle;
+  it.fileTime = f.lastModified;
+}
+
+async function swapContent(it, f) {
+  const src = await readFile(f);
+  if (it.kind === 'model') {
+    const { inner, h0 } = await parseModel(src);
+    const old = it.mesh.children[0];
+    it.mesh.remove(old);
+    disposeTree(old);
+    it.mesh.add(inner);
+    it.h0 = h0;
+  } else {
+    const img = await loadImage(src);
+    const m = it.mesh, old = m.material.map, tex = makeTexture(img);
+    m.material.map = m.customDepthMaterial.map = m.customDistanceMaterial.map = tex;
+    [m.material, m.customDepthMaterial, m.customDistanceMaterial].forEach(x => x.needsUpdate = true);
+    old.dispose();
+    it.aspect = img.width / img.height;
+  }
+  it.src = src;
+  it.name = f.name;
+  placeItem(it);
+  refreshList();
+  if (selected === it) syncSel();
+  dirty = true;
+}
+
+let polling = false;
+setInterval(async () => {
+  if (polling || document.hidden) return;
+  polling = true;
+  try {
+    for (const it of items.filter(i => i.handle)) {
+      let f;
+      try { f = await it.handle.getFile(); } catch (err) { continue; }
+      if (f.lastModified === it.fileTime || !items.includes(it)) continue;
+      // Kesken tallennuksen luettu tiedosto voi olla rikki: aika päivitetään vasta onnistuneen latauksen jälkeen.
+      try { await swapContent(it, f); it.fileTime = f.lastModified; } catch (err) {}
+    }
+  } finally { polling = false; }
+}, 1500);
+
+let replaceTarget = null;
+async function replaceFile(it) {
+  const kind = it.kind === 'model' ? 'model' : 'image';
+  if (!canLink) {
+    replaceTarget = it;
+    $('replaceIn').accept = kind === 'model' ? '.glb' : 'image/*';
+    $('replaceIn').click();
+    return;
+  }
+  let h;
+  try { [h] = await showOpenFilePicker({ types:[PICK_TYPES[kind]] }); } catch (err) { return; }
+  const f = await h.getFile();
+  try { await swapContent(it, f); linkFile(it, h, f); }
+  catch (err) { alert('Tiedostoa ' + f.name + ' ei voitu avata.'); }
+}
+$('replaceIn').onchange = async e => {
+  const f = e.target.files[0], it = replaceTarget;
+  e.target.value = '';
+  replaceTarget = null;
+  if (!f || !it) return;
+  try { await swapContent(it, f); } catch (err) { alert('Tiedostoa ' + f.name + ' ei voitu avata.'); }
+};
+
+function liveNote(it) {
+  if (it.handle) return 'Linkitetty tiedostoon ' + it.name + ': kun tallennat sen uudelleen, muutos näkyy tässä parissa sekunnissa.';
+  if (canLink) return 'Ei linkitetty tiedostoon. "Vaihda tiedosto…" linkittää, ja sen jälkeen tiedoston tallennus päivittää huoneen.';
+  return '"Vaihda tiedosto…" vaihtaa sisällön ja pitää paikan, koon ja asennon. (Automaattinen päivitys toimii vain Chromessa ja Edgessä.)';
 }
 
 // --- valinta ja paneeli ---
@@ -695,11 +821,13 @@ function syncSel() {
   if (kind === 'model') { syncModel(); return; }
   if (kind === 'lamp') { syncLamp(); return; }
   $('selThumb').src = it.src;
+  $('selLive').textContent = liveNote(it);
   $('selSurf').value = it.surface;
   $('selW').value = it.w; $('selWv').textContent = fmt(it.w, 2) + ' m';
   const deg = Math.round(it.rot * 180 / Math.PI);
   $('selRot').value = deg; $('selRotv').textContent = deg + '°';
   $('selYrow').style.display = it.surface === 'free' ? '' : 'none';
+  $('selOp').value = it.opacity; $('selOpv').textContent = Math.round(it.opacity * 100) + ' %';
   $('selY').max = state.H; $('selY').value = it.fy; $('selYv').textContent = fmt(it.fy, 2) + ' m';
 }
 
@@ -717,7 +845,9 @@ function syncModel() {
   const it = selected;
   const deg = r => Math.round(r * 180 / Math.PI);
   $('mName').textContent = it.name || '';
+  $('mLive').textContent = liveNote(it);
   if (document.activeElement !== $('mH')) $('mH').value = (+(it.h0 * it.s).toFixed(2));
+  $('mOp').value = it.opacity; $('mOpv').textContent = Math.round(it.opacity * 100) + ' %';
   $('mY').max = Math.max(8, state.H + 1);
   $('mY').value = it.y; $('mYv').textContent = fmt(it.y, 2) + ' m';
   for (const k of ['Rx', 'Ry', 'Rz']) {
@@ -748,10 +878,7 @@ function removeItemObjects(it) {
   }
   if (it.kind === 'model') {
     scene.remove(it.helper);
-    it.mesh.traverse(o => {
-      if (o.geometry) o.geometry.dispose();
-      if (o.material) [].concat(o.material).forEach(m => { for (const v of Object.values(m)) if (v && v.isTexture) v.dispose(); m.dispose(); });
-    });
+    disposeTree(it.mesh);
     items.splice(items.indexOf(it), 1);
     return;
   }
@@ -792,12 +919,10 @@ renderer.domElement.addEventListener('pointerdown', e => {
   if (e.button !== 0 || e.shiftKey) return;
   const hit = pickHit(e);
   if (!hit) return;
-  let o = hit.object;
-  while (!o.userData.item) o = o.parent;
-  const it = o.userData.item;
-  if (it.kind === 'lamp') lampAim = !!o.userData.isTarget;
-  if (selected === it) { attachGizmo(); syncSel(); } else select(it);
-  if (it.kind) return;
+  // Vain jo valittua kuvaa raahataan. Muuten painallus kiertää näkymää, ja valinta tehdään
+  // vasta kun painike nostetaan liikuttamatta (pointerup), ettei seinäkuva tartu vahingossa.
+  const it = ownerOf(hit.object).userData.item;
+  if (it !== selected || it.kind) return;
   let plane, start;
   if (it.surface === 'free') {
     plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -hit.point.y);
@@ -834,9 +959,19 @@ renderer.domElement.addEventListener('pointermove', e => {
 renderer.domElement.addEventListener('pointerup', e => {
   const moved = downAt ? Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) : 99;
   if (drag) { drag = null; controls.enabled = true; }
-  else if (downAt && moved < 4 && e.button === 0 && !hitsItem(e)) select(null);
+  else if (downAt && moved < 4 && e.button === 0) {
+    const hit = pickHit(e);
+    if (!hit) select(null);
+    else {
+      const o = ownerOf(hit.object), it = o.userData.item;
+      if (it.kind === 'lamp') lampAim = !!o.userData.isTarget;
+      if (selected === it) { attachGizmo(); syncSel(); } else select(it);
+    }
+  }
   downAt = null;
 });
+
+function ownerOf(o) { while (!o.userData.item) o = o.parent; return o; }
 
 // Lähin klikattava: pintakuvat, 3D-mallit, lamput ja valitun spotin kohdepallo.
 function pickHit(e) {
@@ -848,7 +983,6 @@ function pickHit(e) {
     ...raycaster.intersectObjects(deep, true).filter(h => h.object.isMesh)
   ].sort((a, b) => a.distance - b.distance)[0];
 }
-function hitsItem(e) { return !!pickHit(e); }
 
 // --- tiedostojen pudotus ---
 view.addEventListener('dragover', e => { e.preventDefault(); view.classList.add('drag'); });
@@ -856,12 +990,20 @@ view.addEventListener('dragleave', e => { if (e.target === view || !view.contain
 view.addEventListener('drop', e => {
   e.preventDefault();
   view.classList.remove('drag');
-  addFiles([...e.dataTransfer.files], hitSurface(e), e);
+  // Kahvat pyydetään heti pudotuksen aikana; myöhemmin dataTransfer on jo tyhjä.
+  const hs = [...e.dataTransfer.items].filter(i => i.kind === 'file')
+    .map(i => i.getAsFileSystemHandle ? i.getAsFileSystemHandle().catch(() => null) : null);
+  const files = [...e.dataTransfer.files];
+  Promise.all(hs).then(handles => addFiles(files, hitSurface(e), e, handles));
 });
 let addTarget = 'back';
 document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
   addTarget = b.dataset.add === 'wall' ? $('addWall').value : b.dataset.add;
-  $('fileIn').click();
+  if (!canLink) { $('fileIn').click(); return; }
+  showOpenFilePicker({ multiple:true, types:[{ description:'Kuva tai 3D-malli',
+    accept:{ ...PICK_TYPES.image.accept, ...PICK_TYPES.model.accept } }] })
+    .then(async hs => addFiles(await Promise.all(hs.map(h => h.getFile())), { surface:addTarget, u:0.5, v:0.5 }, null, hs))
+    .catch(() => {});
 });
 $('fileIn').onchange = e => {
   addFiles([...e.target.files], { surface:addTarget, u:0.5, v:0.5 });
@@ -873,6 +1015,17 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.12;
 controls.screenSpacePanning = true;
+// Oma zoomaus: OrbitControls zoomaa saman verran jokaisesta rullatapahtumasta, ja kosketuslevy lähettää
+// niitä kymmeniä yhdessä eleessä. Tässä zoomaus seuraa vierityksen määrää; nipistys (ctrl) on herkempi.
+controls.enableZoom = false;
+renderer.domElement.addEventListener('wheel', e => {
+  e.preventDefault();
+  const d = clamp(e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY, -120, 120);
+  const off = camera.position.clone().sub(controls.target);
+  const len = clamp(off.length() * Math.exp(d * (e.ctrlKey ? 0.01 : 0.002)), 0.2, 80);
+  camera.position.copy(controls.target).add(off.setLength(len));
+  controls.update();
+}, { passive:false });
 
 const tcontrols = new THREE.TransformControls(camera, renderer.domElement);
 tcontrols.setSize(0.9);
@@ -963,6 +1116,7 @@ $('selSurf').onchange = e => selected && setSurface(selected, e.target.value);
 $('selW').oninput = e => { if (!selected) return; selected.w = +e.target.value; placeItem(selected); syncSel(); };
 $('selRot').oninput = e => { if (!selected) return; selected.rot = +e.target.value * Math.PI / 180; placeItem(selected); syncSel(); };
 $('selY').oninput = e => { if (!selected) return; selected.fy = +e.target.value; placeItem(selected); syncSel(); };
+$('selOp').oninput = e => { if (!selected) return; selected.opacity = +e.target.value; placeItem(selected); syncSel(); };
 $('selFlip').onclick = () => { if (!selected) return; selected.flip = !selected.flip; placeItem(selected); };
 $('selFront').onclick = () => { if (!selected) return; selected.order = nextOrder(); placeItem(selected); };
 $('selBack').onclick = () => {
@@ -974,10 +1128,11 @@ $('selBack').onclick = () => {
 $('selDup').onclick = async () => {
   if (!selected) return;
   const s = selected, img = await loadImage(s.src);
-  select(makeItem(s.src, img, { surface:s.surface, u:clamp(s.u + 0.04, 0, 1), v:clamp(s.v - 0.04, 0, 1),
-    w:s.w, rot:s.rot, flip:s.flip, fx:clamp(s.fx + 0.05, -0.5, 0.5), fz:s.fz, fy:s.fy }));
+  select(makeItem(s.src, img, { name:s.name, handle:s.handle, fileTime:s.fileTime, surface:s.surface, u:clamp(s.u + 0.04, 0, 1), v:clamp(s.v - 0.04, 0, 1),
+    w:s.w, rot:s.rot, flip:s.flip, opacity:s.opacity, fx:clamp(s.fx + 0.05, -0.5, 0.5), fz:s.fz, fy:s.fy }));
 };
 $('selDel').onclick = () => selected && removeItem(selected);
+$('selReplace').onclick = () => selected && !selected.kind && replaceFile(selected);
 
 // 3D-mallin paneeli
 const isModelSel = () => selected && selected.kind === 'model';
@@ -987,6 +1142,7 @@ $('mH').oninput = () => {
   const v = parseFloat($('mH').value.replace(',', '.'));
   if (v > 0) modelEdit(it => { it.s = v / it.h0; });
 };
+$('mOp').oninput = e => modelEdit(it => { it.opacity = +e.target.value; });
 $('mY').oninput = e => modelEdit(it => { it.y = +e.target.value; });
 for (const k of ['Rx', 'Ry', 'Rz'])
   $('m' + k).oninput = e => modelEdit(it => { it[k.toLowerCase()] = +e.target.value * Math.PI / 180; });
@@ -1000,9 +1156,10 @@ $('mReset').onclick = () => modelEdit(it => { it.rx = it.ry = it.rz = 0; });
 $('mDup').onclick = async () => {
   if (!isModelSel()) return;
   const s = selected;
-  select(await makeModel(s.src, s.name, { x:s.x + 0.3, y:s.y, z:s.z, rx:s.rx, ry:s.ry, rz:s.rz, s:s.s }));
+  select(await makeModel(s.src, s.name, { x:s.x + 0.3, y:s.y, z:s.z, rx:s.rx, ry:s.ry, rz:s.rz, s:s.s, opacity:s.opacity, handle:s.handle, fileTime:s.fileTime }));
 };
 $('mDel').onclick = () => isModelSel() && removeItem(selected);
+$('mReplace').onclick = () => isModelSel() && replaceFile(selected);
 
 // Lamput
 function addLamp(type) {
@@ -1044,6 +1201,7 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keydown', e => {
   if (!selected || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.key === 'Escape') { select(null); return; }
   if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); removeItem(selected); }
 });
 
@@ -1164,11 +1322,11 @@ $('saveJson').onclick = () => {
     version: 1, room: state,
     camera: { pos: camera.position.toArray(), target: controls.target.toArray() },
     items: items.map(i => i.kind === 'model'
-      ? (({ kind, src, name, x, y, z, rx, ry, rz, s }) => ({ kind, src, name, x, y, z, rx, ry, rz, s }))(i)
+      ? (({ kind, src, name, x, y, z, rx, ry, rz, s, opacity }) => ({ kind, src, name, x, y, z, rx, ry, rz, s, opacity }))(i)
       : i.kind === 'lamp'
       ? (({ kind, type, x, y, z, tx, ty, tz, color, intensity, dist, angle, pen, on, shadow }) =>
           ({ kind, type, x, y, z, tx, ty, tz, color, intensity, dist, angle, pen, on, shadow }))(i)
-      : (({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy }) => ({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy }))(i))
+      : (({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy, opacity }) => ({ src, name, surface, u, v, w, rot, flip, order, fx, fz, fy, opacity }))(i))
   };
   const b = new Blob([JSON.stringify(data)], { type:'application/json' });
   download('huonemalli.json', URL.createObjectURL(b));
