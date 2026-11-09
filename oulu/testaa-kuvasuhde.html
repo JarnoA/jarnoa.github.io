@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kuvasuhteen testi</title>
+<style>
+  body{ margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; background:#0a0e14; color:#f6efe4; font-family:Georgia, serif; padding:16px; box-sizing:border-box; }
+  h1{ font-size:1.6rem; margin:0 0 6px; }
+  p{ margin:0; opacity:.8; text-align:center; max-width:520px; }
+  .napit{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+  button{ font:inherit; font-size:1.1rem; padding:14px 22px; border-radius:10px; border:2px solid #f2c94c; background:#ffffff10; color:#f6efe4; cursor:pointer; }
+  button:hover{ background:#f2c94c22; }
+</style>
+</head>
+<body>
+  <h1>Kuvasuhteen testi</h1>
+  <p>Avaa esitys omaan ikkunaansa projektorin kuvasuhteella. Selaa nuolinäppäimillä kuten esityksessä.</p>
+  <div class="napit">
+    <button data-l="1024" data-k="768">4:3 (vanha projektori)</button>
+    <button data-l="1280" data-k="800">16:10 (Mac)</button>
+    <button data-l="1280" data-k="720">16:9</button>
+  </div>
+<script>
+// Oulu 9.11.2026: 16:9-kehyksen testaus ilman projektoria.
+document.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+  const l = +b.dataset.l, k = +b.dataset.k;
+  window.open('esitys-2d.html', 'kuvasuhde' + l + 'x' + k, `popup=yes,width=${l},height=${k}`);
+}));
+</script>
+</body>
+</html>
