@@ -10,6 +10,12 @@
 // Käyttö esitys-data.js:ssä: `kaninkolo: true` tai `kaninkolo: { viive: 4700 }`
 // (ms pysähdykseen saapumisesta; Humak2:ssa kolmannen rivin kohdalla,
 // Pohjassa Elias-kohdassa). Kaikki Phaserissa, scrollFactor 0, oppaan tasossa.
+//
+// Oulu 10.11.2026 (Jarno: "voisiko jänis tulla ja hypätä koloon kun klikkaan
+// seuraavalle sivulle, ruutukaappauksiin? Ja olisi isompana"):
+// `kaninkolo: { odota: true, koko: 1.5 }` -> Pupu juoksee kolon reunalle ja jää
+// odottamaan (hengittää). Hyppy koloon vasta kun siirrytään seuraavalle
+// sivulle (Oulussa 8509, ruutukaappaukset). `koko` = kerroin Pupun korkeudelle.
 // ============================================================================
 (function(){
 'use strict';
@@ -18,14 +24,15 @@ const JUOKSU = 1.7, AUKEAA = 0.45, HYPPY = 0.75, HEHKU = 1.6, SULKEUTUU = 0.5;  
 
 const kuva = new Image(); kuva.src = KUVA;
 let sc = null, kani = null, koloTaka = null, koloEtu = null, hehku = null, rafId = 0, ajastin = 0, alku = 0, tila = null;
+let odottaa = false, hyppyAlku = null;   // Oulu: odota-tila
 
 function siivoa(){
-  cancelAnimationFrame(rafId); rafId = 0; clearTimeout(ajastin); ajastin = 0; tila = null;
+  cancelAnimationFrame(rafId); rafId = 0; clearTimeout(ajastin); ajastin = 0; tila = null; odottaa = false; hyppyAlku = null;
   [kani, koloTaka, koloEtu, hehku].forEach(o => { if (o) o.destroy(); });
   kani = koloTaka = koloEtu = hehku = null;
 }
 
-function valmista(){
+function valmista(koko){
   sc = window.__paaKohtaus;
   if (!sc || !sc.hahmo || !kuva.complete || !kuva.naturalWidth) return false;
   if (!sc.textures.exists('kaninkolo-juoksu')) sc.textures.addSpriteSheet('kaninkolo-juoksu', kuva, { frameWidth: KEHYS, frameHeight: KEHYS });
@@ -35,7 +42,7 @@ function valmista(){
   kani = sc.add.image(-9999, 0, 'kaninkolo-juoksu', 0).setOrigin(0.5, ORIGIN_Y).setScrollFactor(0).setDepth(d + 0.03);
   koloEtu = sc.add.graphics().setScrollFactor(0).setDepth(d + 0.04);
   const GW = sc.scale.width, ox = h.x - sc.cameras.main.scrollX * h.scrollFactorX;
-  const kaniKork = h.displayHeight * 0.8;
+  const kaniKork = h.displayHeight * 0.8 * (koko || 1);
   tila = {
     gy: h.y, kaniKork, s: kaniKork / KEHYS,
     kx: Math.min(GW * 0.86, Math.max(ox + GW * 0.24, GW * 0.55)),   // kolon keskikohta: oppaan oikealla puolella
@@ -72,7 +79,15 @@ function silmukka(ms){
   if (sc.hahmo && kani.depth < sc.hahmo.depth) [koloTaka, hehku, kani, koloEtu].forEach((o, i) => o.setDepth(sc.hahmo.depth + 0.01 * (i + 1)));
   const kehys = Math.floor(t * 14) % KEHYKSIA;
   const auki = Math.min(1, t / AUKEAA);
-  const t1 = JUOKSU, t2 = t1 + HYPPY, t3 = t2 + HEHKU, t4 = t3 + SULKEUTUU;
+  let t1 = JUOKSU;
+  // odota-tila: juoksun jälkeen Pupu seisoo kolon reunalla, kunnes hyppy laukaistaan
+  if (odottaa && t >= t1 && hyppyAlku == null) {
+    const hengitys = 1 + Math.sin(t * 3) * 0.015;
+    piirraKolo(1, 0); asetaKani(kx + kaniKork * 0.35, gy, 0, null); kani.setScale(tila.s, tila.s * hengitys);
+    rafId = requestAnimationFrame(silmukka); return;
+  }
+  if (hyppyAlku != null) t1 = hyppyAlku;
+  const t2 = t1 + HYPPY, t3 = t2 + HEHKU, t4 = t3 + SULKEUTUU;
   if (t < t1) {                                   // juoksu oikealta kolon reunalle
     const e = t / t1, x = alkuX + (kx + kaniKork * 0.35 - alkuX) * (1 - Math.pow(1 - e, 1.4));
     piirraKolo(auki, 0); asetaKani(x, gy, kehys, null);
@@ -90,14 +105,20 @@ function silmukka(ms){
 }
 
 window.naytaKaninkolo = function(p){
+  // odottava Pupu hyppää koloon, kun siirrytään seuraavalle sivulle
+  if (odottaa && tila && !(p && p.kaninkolo)) {
+    hyppyAlku = Math.max(JUOKSU, (performance.now() - alku) / 1000); odottaa = false;
+    return;
+  }
   siivoa();
   if (!(p && p.kaninkolo)) return;
+  const asetus = typeof p.kaninkolo === 'object' ? p.kaninkolo : {};
   if (typeof ESIKATSELU !== 'undefined' && ESIKATSELU) return;
   const viive = (typeof p.kaninkolo === 'object' && p.kaninkolo.viive != null) ? p.kaninkolo.viive : 1200;
   ajastin = setTimeout(() => {
     let yritys = 0;
     const kaynnista = () => {
-      if (valmista()) { alku = performance.now(); rafId = requestAnimationFrame(silmukka); }
+      if (valmista(asetus.koko)) { alku = performance.now(); odottaa = !!asetus.odota; rafId = requestAnimationFrame(silmukka); }
       else if (++yritys < 40) ajastin = setTimeout(kaynnista, 100);
     };
     kaynnista();

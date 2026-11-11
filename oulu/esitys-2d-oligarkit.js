@@ -63,9 +63,10 @@ function patsas(kuva){
 
 // x:7365 (8.10.2026, Jarno: "molemmat"): Bezosin pilveen 28 % ja Zuckerbergin puhelimen
 // ylle pikselikuvakkeet (Instagram, Facebook, WhatsApp) - ponnahtavat kun patsaat ovat nousseet.
-const JEFFMARK = 'kuvat/jeffmark-rajattu.png', SAM = 'kuvat/samalt-robotti.png';
+// 10.11.2026 Oulu: uudet erilliset kuvat (Jarno). 28 % Bezosin maapallolle, kuvakkeet Markin pään ylle.
+const BEZOS = 'kuvat/bezos.png', MARK = 'kuvat/mark.png', SAM = 'kuvat/sam.png';
 const SAM_KUPLA = ['Pahojakin asioita pitää', 'hyväksyä teknologian', 'hyötyjen vuoksi.'];   // Jarnon sanamuoto 8.10.2026 (Altman, Politico 4.10.2026)
-const PILVI = { x: .23, y: .37 }, PUHELIN = { x: .96, y: .2 };   // kuvan osuuksina (mitattu jeffmark.png:stä)
+const PILVI = { x: .155, y: .36 }, PUHELIN = { x: .6, y: .03 };   // kuvan osuuksina: maapallo bezos.png:ssä, pään yläpuoli mark.png:ssä
 const IKONIT = {
   insta: ['.oooooooooo.','oo........oo','o.wwwwwwww.o','o.w......w.o','o.w..ww.ww.o','o.w.w..w.w.o','o.w.w..w.w.o','o.w..ww..w.o','o.w......w.o','o.wwwwwwww.o','oo........oo','.oooooooooo.'],
   fb:    ['bbbbbbbbbbbb','bbbbbbbbbbbb','bbbbbbbwwwbb','bbbbbbwwbbbb','bbbbbbwbbbbb','bbbbwwwwwbbb','bbbbbbwbbbbb','bbbbbbwbbbbb','bbbbbbwbbbbb','bbbbbbwbbbbb','bbbbbbwbbbbb','bbbbbbwbbbbb'],
@@ -84,12 +85,12 @@ function ikoni(nimi, x, y, s){
 let tiedotAlku = 0;
 const pomppu = e => e <= 0 ? 0 : e >= 1 ? 1 : 1 + 2.2*Math.pow(e - 1, 3) + 1.2*Math.pow(e - 1, 2);   // back-out
 function piirraTiedot(){
-  const p = patsas(JEFFMARK); if (!p) return;
+  const p = patsas(BEZOS), M = patsas(MARK); if (!p) return;
   const t = (performance.now() - tiedotAlku) / 1000;
   // 28 % pilven päälle
   const e1 = pomppu(Math.min(1, (t - 2.6) / .5));
   if (e1 > 0) {
-    const cx = p.x + p.w*PILVI.x, cy = p.y + p.h*PILVI.y, f = p.h * .11 * e1;
+    const cx = p.x + p.w*PILVI.x, cy = p.y + p.h*PILVI.y, f = p.h * .1 * e1;
     ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = `bold ${f}px Georgia, 'EB Garamond', serif`;
     const f2 = f * .3, lev = Math.max(ctx.measureText('28 %').width, f2 * 9.5) + f*.5;
@@ -103,7 +104,7 @@ function piirraTiedot(){
   const S = patsas(SAM);
   const e3 = pomppu(Math.min(1, (t - 4.6) / .5));
   if (S && e3 > 0) {
-    const hx = S.x + S.w*.6, hy = S.y + S.h*.05, f = Math.max(14, S.h*.045);
+    const hx = S.x + S.w*.42, hy = S.y + S.h*.1, f = Math.max(14, S.h*.045);
     ctx.save(); ctx.font = `bold ${f}px Georgia, 'EB Garamond', serif`;
     const rivit = SAM_KUPLA, lev = Math.max(...rivit.map(r => ctx.measureText(r).width)) + f*1.2, kor = rivit.length*f*1.25 + f*.8;
     const bx = Math.min(W - lev - 8, hx + f*.6), by = Math.max(8, hy - kor - f*.4);
@@ -117,7 +118,8 @@ function piirraTiedot(){
     ctx.restore();
   }
   // kuvakkeet puhelimen yllä kaarena, yksi kerrallaan
-  const s = p.h * .075, px = p.x + p.w*PUHELIN.x, py = p.y + p.h*PUHELIN.y;
+  if (!M) return;
+  const s = M.h * .075, px = M.x + M.w*PUHELIN.x, py = M.y + M.h*PUHELIN.y;
   let siirto = Math.min(0, W - 8 - (px + s*1.9));   // ei yli ruudun oikean reunan
   [['insta', -1.6, -1.15], ['fb', -.5, -1.75], ['wa', .65, -1.15]].forEach(([n, dx, dy], i) => {
     const e = pomppu(Math.min(1, (t - 3.2 - i*.45) / .45)); if (e <= 0) return;

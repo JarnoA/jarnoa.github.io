@@ -246,7 +246,7 @@ const HAHMOKERROKSET = [
   // ===== OULU 9.11.2026: TF:n alun hahmot samoilla arvoilla, x + 16000 =====
   // Oulu 9.11.2026: TF x:4840 "Same machine. New mission." -> Oulu 9540: T-800 kävelee tytön taakse ja jää seisomaan (TF:n arvot)
   { x: 12110, saapuu: { kavely: 'assets/2d/sprites/t800-walk.png', heilutus: 'assets/2d/sprites/t800-walk.png', kehysLeveys: 283, kehysKorkeus: 504,
-    kavelyKehyksia: 16, heilutusKehyksia: 1, heiluttaaKertaa: 1, aloitusX: -0.15, kohdeX: 0.38, kavelyAika: 4, korkeusProsentti: 0.42, pysty: 0.94, kasvotVasemmalle: true, syvyys: 99 } },
+    kavelyKehyksia: 16, heilutusKehyksia: 1, heiluttaaKertaa: 1, aloitusX: -0.15, kohdeX: 0.31, kavelyAika: 4, korkeusProsentti: 0.42, pysty: 0.94, kasvotVasemmalle: true, syvyys: 98 } },   // 10.11.2026 (Jarno: "terminator menee tytön taakse" + "tytön vasemmalla puolella"): syvyys 99 -> 98 (tyttö 99), kohdeX 0.38 -> 0.31
   { vainKohtaus: 'oulu-tf-metsa', x: -1650, spritesheet: 'assets/2d/sprites/Bulldozer/Walk.png',
     kehysLeveys: 112, kehysKorkeus: 80, kehyksia: 4, fps: 8,
     korkeusProsentti: 0.5, yProsentti: 0.999, ankkuri: { x: 0.5, y: 1 },
@@ -524,10 +524,14 @@ const HAHMOKERROKSET = [
   // ääneen luettuna, pptx-dia 71. Pelkkä ääniraita, ei omaa kuvaa/videota.
   // Patsaat taustaksi (8.10.2026, Jarnon Gemini-kuva): Bezos+pilvi & Zuckerberg+puhelin oikealla (pingviini hylätty).
   // vainPysahdys + nousee: näkyy vain tällä pysähdyksellä ja nousee maasta. 28 % + some-ikonit: esitys-2d-oligarkit.js.
-  { x: 7365, kuva: 'kuvat/jeffmark-rajattu.png', pehmea: true, korkeusProsentti: 0.62, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.30, ankkuri: { x: -0.15, y: 0.0 }, vainPysahdys: 7365, nousee: true },
+  // 10.11.2026 Oulu (Jarno: "en ollut tyytyväinen bezos, sam ja mark kuviin"): uudet erilliset kuvat bezos.png + mark.png + sam.png.
+//  { x: 7365, kuva: 'kuvat/jeffmark-rajattu.png', pehmea: true, korkeusProsentti: 0.62, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.30, ankkuri: { x: -0.15, y: 0.0 }, vainPysahdys: 7365, nousee: true },
+  { x: 7365, kuva: 'kuvat/bezos.png', pehmea: true, korkeusProsentti: 0.58, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.34, ankkuri: { x: -0.317, y: 0.0 }, vainPysahdys: 7365, nousee: true },
+  { x: 7365, kuva: 'kuvat/mark.png', pehmea: true, korkeusProsentti: 0.56, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.36, ankkuri: { x: -2.63, y: 0.0 }, vainPysahdys: 7365, nousee: true, nousuViive: 300 },
   // Sam Altman (8.10.2026, Jarno: "samaan muiden kanssa", vasemmalle, puhekupla) - Jarnon samalt.png
   // + pikselirobotin kasvot palikassa. Puhekupla piirretään esitys-2d-oligarkit.js:ssä.
-  { x: 7365, kuva: 'kuvat/samalt-robotti.png', pehmea: true, korkeusProsentti: 0.55, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.36, ankkuri: { x: 1.95, y: 0.0 }, vainPysahdys: 7365, nousee: true, nousuViive: 900 },
+//  { x: 7365, kuva: 'kuvat/samalt-robotti.png', pehmea: true, korkeusProsentti: 0.55, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.36, ankkuri: { x: 1.95, y: 0.0 }, vainPysahdys: 7365, nousee: true, nousuViive: 900 },
+  { x: 7365, kuva: 'kuvat/sam.png', pehmea: true, korkeusProsentti: 0.55, scrollFactor: 1.5, syvyysSuhde: 0.45, yProsentti: 0.37, ankkuri: { x: 2.45, y: 0.0 }, vainPysahdys: 7365, nousee: true, nousuViive: 900 },
   { x: 7440, aaniraita: 'Sounds/manipulointi.mp3' },
   { x: 7890, kuva: 'Backrounds/Pixel Art Castle background/PNG/Background 3/9-castle.png', korkeusProsentti: 0.92, scrollFactor: 1.8, syvyysSuhde: 0.45, yProsentti: 0.20, ankkuri: { x: 0.3, y: -0.0 } },
   { x: 8340, kuva: 'kuvat/storm.png', pehmea: true, korkeusProsentti: 0.62, scrollFactor: 1.0, syvyysSuhde: 0.15, yProsentti: 0.30, ankkuri: { x: 0.5, y: 0.0 } },
@@ -1551,7 +1555,7 @@ const HAHMOKERROKSET = [
 // kilpailla..." -kohdasta Homo Ludensiin (x:13740) asti, hiljaa, fade in/out.
 // Lähde näkyy Homo Ludensin lahde-rivillä ("mobygratis", EI Mobyn nimeä).
 const TAUSTAMUSIIKIT = [
-  { alku: 12990, loppu: 13740, aani: 'Sounds/mobygratis-from-myself.mp3', voimakkuus: 0.25, fade: 2.5 },
+  { alku: 13700, loppu: 13890, aani: 'Sounds/mobygratis-from-myself.mp3', voimakkuus: 0.25, fade: 2.5 },   // Oulu 10.11.2026 (Jarno): Kasvattajat (13700) -> Kiitos (13890), ei viimeisellä 13950. Vanha 12990–13740
 ];
 
 const YLITYSHAHMOT = [
@@ -1599,6 +1603,11 @@ const YLITYSHAHMOT = [
     siluetti: { vari: 0x2a3048 },
     silma: { vari: 0xff2a1a, koko: 0.07, pisteet: [[0.452,0.048],[0.411,0.060],[0.372,0.075],[0.345,0.087],[0.355,0.079],[0.394,0.067],[0.450,0.056],[0.503,0.048],[0.563,0.048],[0.602,0.048],[0.615,0.048],[0.612,0.048],[0.598,0.048],[0.545,0.048],[0.483,0.052],[0.448,0.052]] },
     askeleet: { ruudut: [0, 8], tarina: 0.004, vainEka: true } }, // aloitusViive: kettu ehtii ensin keskelle ennen kuin T-800 ilmestyy sen taakse. virtaa: koko jahti toistuu (kettu kävelee takaisin vasemmalta, T-800 odottaa) niin kauan kuin pysähdyksellä ollaan
+  // ILVES-JAHTI (Oulu 10.11.2026, Jarno: "lynx glb… juoksu… kuten 1 terminator, ajaa guiden pois ruudulta, loop"):
+  // lynx.glb (victory_mirosya, Sketchfab, CC BY 4.0) metarig|run paistettu test-glb-render.html:llä
+  // (12 kehystä, sivuprofiili z-akselilta, pad 1.35). Kuva katsoo OIKEALLE (kasvotSuuntaan 1).
+  // Tulee vasemmalta ketun takaa, kettu pakenee oikealle (nopeus 520 > ilveksen ~440 px/s), virtaa = toistuu.
+  { x: 4950, spritesheet: 'assets/2d/sprites/lynx-run.png', kehysLeveys: 451, kehysKorkeus: 380, kehyksia: 12, ankkuriX: 0.519, ankkuriY: 1.0, kasvotSuuntaan: 1, pehmea: true, fps: 16, kesto: 5, korkeusProsentti: 0.22, yProsentti: 0.94, suunta: 1, aloitusViive: 1.5, virtaa: true, jahtaa: { etaisyys: 0.25, nopeus: 520 } },
   // { x: 1400, spritesheet: 'assets/2d/sprites/Mech-walk-200×150px-sprites.png', kehysLeveys: 200, kehysKorkeus: 150, kehyksia: 8, ankkuriX: 0.505, ankkuriY: 0.953, kasvotSuuntaan: 1, fps: 10, kesto: 6, korkeusProsentti: 0.35, yProsentti: 0.94, suunta: -1, virtaa: true }, // virtaa:true (Zalaris 9.9.2026: Mech kiertää uudelleen ja uudelleen, ei vain kerran)
 
   // NERA-VIRTA (3.9.2026, Jarno x:6990 Pravda-propaganda-pysähdys: "there

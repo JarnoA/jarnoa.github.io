@@ -10,6 +10,11 @@
 //     yli siluetin ulkopuolella, kieppuen. Välillä yksi irtoaa ulospäin - ja vetäytyy takaisin.
 //     ("viipymään alustalla pidempään")
 //
+//  Oulu 10.11.2026 (Jarno: "ihmisten sekaan myös robotteja lentämään"): 4 robottisiluettia
+//     (kuvat/myrsky-robotti-1..4.png, ihmisten värinen #8c8974, leikattu robots.png:stä ja
+//     robotsihlouette2.png:stä) lentävät samoissa kaarissa. Ne ilmestyvät pään luota
+//     häivyttäen ja häipyvät paluussa.
+//
 // Käyttö esitys-data.js:ssä: `myrsky: true`. Alkuperäiset kuvat piilotetaan
 // (alpha 0) ja korvataan omilla Phaser-objekteilla samalla scrollFactorilla ja
 // syvyydellä. Poistuttaessa ihmiset liukuvat takaisin alkupaikoilleen (1.2 s),
@@ -23,6 +28,7 @@ const LAATIKOT = [[0,0,72,87],[1331,134,74,70],[1397,183,78,83],[604,221,79,72],
 // Alkuperäinen väri säilytetään (Jarno 3.10.2026: "way they were was good") - näkyvyys
 // hoidetaan pitämällä ihmiset naisen siluetin ulkopuolella (laajat kaaret).
 const PAA = { x: 0.57, y: 0.33 };   // pään keskipiste storm.png:n osuuksina
+const LAHI = 0.3;                   // Oulu 10.11.2026: kuinka paljon hahmo kasvaa tullessaan kohti kameraa
 const RUUTU = 12, AALTO = 0.012;    // ruutukoko tekstuuripikseleinä, aallon amplitudi (osuus korkeudesta)
 
 let sc = null, nainen = null, ihmiset = null, oma = null, tex = null, tctx = null, lahde = null;
@@ -30,6 +36,7 @@ let hahmot = [], tila = 'pois', t = 0, paluu = 0, edPiirto = 0, tyhjat = null;
 let tw = 0, th = 0;
 const kuvaN = new Image(); kuvaN.src = NAINEN;
 const kuvaI = new Image(); kuvaI.src = IHMISET;
+const ROBOTIT = [1, 2, 3, 4].map(n => { const k = new Image(); k.src = 'kuvat/myrsky-robotti-' + n + '.png'; return k; });
 
 function etsi(polku){ return sc.children.list.find(o => o.texture && String(o.texture.key).endsWith(polku)) || null; }
 const sstep = (a, b, x) => { const u = Math.max(0, Math.min(1, (x - a) / (b - a))); return u*u*(3 - 2*u); };
@@ -81,6 +88,10 @@ function teeIhmistekstuurit(){
     const g = c.getContext('2d'); g.drawImage(kuvaI, b[0], b[1], b[2], b[3], 0, 0, b[2], b[3]);
     sc.textures.addCanvas(avain, c).setFilter(Phaser.Textures.FilterMode.LINEAR);
   });
+  ROBOTIT.forEach((k, i) => {
+    const avain = 'myrsky-rob-' + i;
+    if (!sc.textures.exists(avain)) sc.textures.addImage(avain, k);
+  });
 }
 
 // ihmisen alkuperäinen paikka (stormp:n scrollFactorilla) muunnettuna naisen
@@ -99,7 +110,7 @@ function paanKeskus(){
 }
 
 function aloita(){
-  sc = window.__paaKohtaus; if (!sc || !kuvaN.complete || !kuvaI.complete) return false;
+  sc = window.__paaKohtaus; if (!sc || !kuvaN.complete || !kuvaI.complete || !ROBOTIT.every(k => k.complete)) return false;
   nainen = etsi(NAINEN); ihmiset = etsi(IHMISET); if (!nainen || !ihmiset) return false;
   if (!tex || !sc.textures.exists('myrsky-nainen')) valmistaTekstuuri();
   teeIhmistekstuurit();
@@ -113,11 +124,20 @@ function aloita(){
     const [x0, y0] = alkuPaikka(b);
     const img = sc.add.image(x0, y0, 'myrsky-ih-' + i).setScale(sk)
       .setScrollFactor(nainen.scrollFactorX, nainen.scrollFactorY).setDepth(nainen.depth + 0.001);
-    return { img, b,
+    return { img, b, sk, lahiVaihe: Math.random()*6, lahiNopeus: 0.16 + Math.random()*0.1,
       // kaaret pään yli siluetin ulkopuolella: keskus hieman pään yläpuolella
       rx: (0.62 + 0.05*i) * nainen.displayWidth, ry: (0.50 + 0.035*i) * nainen.displayHeight,
       laaja: (0.55 + 0.03*i) * Math.PI, nopeus: (2*Math.PI) / (22 + i*3.5), pyor: (Math.random() < .5 ? -1 : 1) * (0.25 + Math.random()*0.3),
       vaihe: Math.random()*6 };
+  });
+  // robotit ihmisten sekaan: omat kaaret ihmisten kaarien väleihin
+  ROBOTIT.forEach((k, j) => {
+    const img = sc.add.image(K.x, K.y, 'myrsky-rob-' + j).setScale(sk).setAlpha(0)
+      .setScrollFactor(nainen.scrollFactorX, nainen.scrollFactorY).setDepth(nainen.depth + 0.001);
+    hahmot.push({ img, b: null, sk, lahiVaihe: Math.random()*6, lahiNopeus: 0.16 + Math.random()*0.1,
+      rx: (0.66 + 0.06*j) * nainen.displayWidth, ry: (0.52 + 0.045*j) * nainen.displayHeight,
+      laaja: (0.58 + 0.04*j) * Math.PI, nopeus: (2*Math.PI) / (20 + j*4.5), pyor: (j % 2 ? -1 : 1) * (0.2 + Math.random()*0.25),
+      vaihe: 1.5 + j*1.6 });
   });
   nainen.setAlpha(0); ihmiset.setAlpha(0);
   tila = 'paalla'; t = 0; edPiirto = -1;
@@ -146,8 +166,13 @@ function paivita(aika, dtMs){
     const px = K.x + Math.cos(k) * h.rx * kerroin;
     const py = K.y - 0.05 * nainen.displayHeight + Math.sin(k) * h.ry * kerroin + Math.sin(t*0.7 + h.vaihe) * h.ry * 0.05;
     const m = sisaan * (1 - sstep(0, 1, paluu));
-    const [x0, y0] = alkuPaikka(h.b);
+    const [x0, y0] = h.b ? alkuPaikka(h.b) : [K.x, K.y - 0.05 * nainen.displayHeight];
+    if (!h.b) h.img.setAlpha(m);
     h.img.setPosition(x0 + (px - x0) * m, y0 + (py - y0) * m);
+    // Oulu 10.11.2026 (Jarno: "välillä vähän kameran suuntaan, ei paljon"): harvoin
+    // ja hitaasti kasvaa enintään ~30 %, ja lähin piirtyy muiden päälle
+    const lahi = Math.pow(Math.max(0, Math.sin(h.lahiNopeus * t + h.lahiVaihe)), 4) * m;
+    h.img.setScale(h.sk * (1 + LAHI * lahi)).setDepth(nainen.depth + 0.001 + lahi * 0.0005);
     h.img.setRotation(h.pyor * t * m + Math.sin(t*0.5 + h.vaihe) * 0.2 * m);
   });
   if (tila === 'paluu' && paluu >= 1) lopeta();

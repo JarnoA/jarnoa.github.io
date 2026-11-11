@@ -11,8 +11,10 @@
 // ============================================================================
 (function(){
 'use strict';
-const PYSAHDYKSET_MIKAEL = { 2300: 'idle', 2350: 'interact' };
-const PAIKKA = 0.76;          // seisomapaikka, osuus ruudun leveydestä
+// Oulu 10.11.2026 (Jarno): Mikael kulkee tytön vieressä kolmen teon ajan (sivut 74–79), sivulla 80 juoksee pois.
+// TF:n alkuperäinen: { 2300: 'idle', 2350: 'interact' }
+const PYSAHDYKSET_MIKAEL = { 12992: 'idle', 12994: 'interact', 12996: 'idle', 12998: 'idle', 13000: 'interact', 13010: 'idle' };
+const PAIKKA = 0.30;          // seisomapaikka, osuus ruudun leveydestä (Oulu: tytön takana/vieressä, TF 0.76)
 const KOKO = 1.15;            // Mikaelin korkeus = ketun näkyvä korkeus x KOKO
 const KAVELY = 0.28;          // kävelynopeus, ruudun leveyksiä sekunnissa
 const JUOKSU = 0.9;           // juoksunopeus pois
@@ -58,7 +60,7 @@ function paivita(aika, dt){
 
   if (klippi) {
     if (tila !== 'paikalla') {                        // tulee sisään oikean reunan takaa
-      if (tila === 'poissa') m.x = esikatselu ? kohde : cam.scrollX + W + m.displayWidth;
+      if (tila === 'poissa') m.x = esikatselu ? kohde : (PAIKKA < 0.5 ? cam.scrollX - m.displayWidth : cam.scrollX + W + m.displayWidth);   // Oulu: vasemmalta tytön takaa
       tila = 'paikalla'; m.setVisible(true);
     }
     const ero = kohde - m.x;

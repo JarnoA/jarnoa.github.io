@@ -155,7 +155,7 @@ const KOHTAUKSET = [
     // reaaliarvoille, ei vain pysähdys-x:ille - sama periaate kuin kaikilla
     // muillakin KOHTAUKSET-rajoilla tässä tiedostossa (koskettavat aina
     // TÄSMÄLLEEN, ei koskaan 1 yksikön rakoa).
-    xAlue: [3090, 3765],
+    xAlue: [3090, 3400],   // Oulu 10.11.2026 (Jarno: Google Maps 3840 näytti ensin tämän taustan): raja 3765 -> 3400, ettei pitkän kävelyn kameraviive jätä vanhaa taustaa
     kansio: 'Backrounds/Pixel Art Castle background/PNG/Background 2/',
     taustaKorkeusSuhde: 1.0,
     taivas: { ylavari: 0x9eb6bb, alavari: 0xc8d3d3 },
@@ -189,7 +189,7 @@ const KOHTAUKSET = [
     zoom: 1.0, // ks. sovitaTaustatRuutuun():n zoom-kommentti - ei leikkaa kerrosten yläreunaa
     // Background 3: järven rannalla, oma peilikuva vedessä + valonsäteet -
     // rauhallisin/valoisin näistä kuudesta.
-    xAlue: [3765, 4139], // ks. linna-eder-2:n xAlue-kommentti - sama raja, aukoton
+    xAlue: [3400, 4139], // Oulu 10.11.2026: alku 3765 -> 3400 (ks. linna-eder-2) // ks. linna-eder-2:n xAlue-kommentti - sama raja, aukoton
     kansio: 'Backrounds/Pixel Art Castle background/PNG/Background 3/',
     taustaKorkeusSuhde: 1.0,
     taivas: { ylavari: 0xcccec0, alavari: 0xcccec0 },

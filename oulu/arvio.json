@@ -1,44 +1,167 @@
 {
-  "_ohje": "Kaaritaulukon Arvio-sarake (node Pohja/tee-kaari.js Oulu). ydin = asian ydin, karsi = karsintaehdotus, huom = huomio. Claude 9.11.2026 tarinan kaaren auditista; Jarnon kommentit merkitty.",
-  "-2850": ["ydin", "lupaus: kasvattaja algoritmin ja lapsen välissä"],
-  "-1400": ["ydin", "tytön kysymys – tarinan alku"],
-  "-600": ["ydin", "huoli = välittämistä – sisäänpääsy aiheeseen"],
-  "-1090": ["karsi", "tyhjä välisivu, sanottavissa 17915:llä"],
-  "390":  ["ydin", "kaksi polkua: kielteinen"],
-  "405":  ["ydin", "kaksi polkua: myönteinen"],
-  "540":  ["karsi", "jäävuori sanoo saman kuvana"],
-  "840":  ["ydin", "algoritmit pinnan alla – Oulun pääväite"],
-  "1760": ["karsi", "T-800 (1400) näyttää jo saman"],
-  "2040": ["huom", "Jarno 9.11.: tuo huolet esiin (12090 tuo toivon)"],
-  "3840": ["ydin", "Jarno: tärkein koko esityksessä"],
-  "3990": ["ydin", "Google Maps → nuoren oma kokemus"],
-  "4140": ["karsi", "Mikki ja Musta laatikko kantavat saman"],
-  "4141": ["ydin", "Mikki = oppipoika, lapsi; joku pysäyttää luudat = kasvattaja"],
-  "4440": ["ydin", "Miten tämä toimii ja miksi? – käytännön kysymys"],
-  "4455": ["karsi", "Jarno epävarma; 4290 kantaa asian"],
-  "4590": ["ydin", "Mustan laatikon valta – kuvauksen ydin"],
-  "5115": ["ydin", "peili: tämä olet sinä"],
-  "5340": ["ydin", "mitä nuori näkee: syöte oppii sinut"],
-  "5640": ["karsi", "Jarno: pidetään toistaiseksi"],
-  "7140": ["ydin", "algoritminen lukutaito = kansalaistaito (kuvaus)"],
-  "7290": ["ydin", "kuka omistaa alustat"],
-  "7590": ["ydin", "raha → sitouttaminen"],
-  "8190": ["ydin", "tunteet ennen ymmärrystä"],
-  "8499": ["ydin", "Elias: kaninkolo"],
-  "8640": ["ydin", "Mutta… – kahden polun käänne"],
-  "8940": ["ydin", "algoritmit luovat myös turvaa"],
-  "9240": ["karsi", "Jarno: pidetään toistaiseksi; Joka viides kantaa saman"],
-  "9255": ["ydin", "suomalaiset nuoret uskoutuvat koneelle"],
-  "9840": ["ydin", "oppiminen, kun kone tekee valmiin"],
-  "10620": ["ydin", "opettaja ja pienet oppilaat"],
-  "12090": ["huom", "Jarno 9.11.: toivoa on"],
-  "12110": ["ydin", "sama kone, uusi tehtävä"],
-  "12200": ["ydin", "mikä on merkityksellistä"],
-  "12690": ["ydin", "HITAUS – ihmisen supervoima"],
-  "12992": ["ydin", "kolme tekoa: vie mukanasi"],
-  "12994": ["ydin", "kolme tekoa: vie mukanasi"],
-  "12996": ["ydin", "kolme tekoa: vie mukanasi"],
-  "13000": ["ydin", "nuoremmat kysyvät vielä teiltä"],
-  "13010": ["ydin", "kone näkee klikkauksen, te näette nuoren"],
-  "13700": ["ydin", "kasvattajat = sosiaalisia insinöörejä"]
+ "_ohje": "Kaaritaulukon Arvio-sarake (node Pohja/tee-kaari.js Oulu). ydin = asian ydin, karsi = karsintaehdotus, huom = huomio. Claude 9.11.2026 tarinan kaaren auditista; Jarnon kommentit merkitty.",
+ "-2850": [
+  "ydin",
+  "lupaus: kasvattaja algoritmin ja lapsen välissä"
+ ],
+ "-1400": [
+  "ydin",
+  "tytön kysymys – tarinan alku"
+ ],
+ "-600": [
+  "ydin",
+  "huoli = välittämistä – sisäänpääsy aiheeseen"
+ ],
+ "-1090": [
+  "karsi",
+  "tyhjä välisivu, sanottavissa 17915:llä"
+ ],
+ "390": [
+  "ydin",
+  "kaksi polkua: kielteinen"
+ ],
+ "405": [
+  "ydin",
+  "kaksi polkua: myönteinen"
+ ],
+ "-150": [
+  "ydin",
+  "algoritmit pinnan alla – Oulun pääväite"
+ ],
+ "1760": [
+  "karsi",
+  "T-800 (1400) näyttää jo saman"
+ ],
+ "2040": [
+  "huom",
+  "Jarno 9.11.: tuo huolet esiin (12090 tuo toivon)"
+ ],
+ "3840": [
+  "ydin",
+  "Jarno: tärkein koko esityksessä"
+ ],
+ "3990": [
+  "ydin",
+  "Google Maps → nuoren oma kokemus"
+ ],
+ "4140": [
+  "karsi",
+  "Mikki ja Musta laatikko kantavat saman"
+ ],
+ "4141": [
+  "ydin",
+  "Mikki = oppipoika, lapsi; joku pysäyttää luudat = kasvattaja"
+ ],
+ "4590": [
+  "ydin",
+  "Mustan laatikon valta – kuvauksen ydin"
+ ],
+ "5115": [
+  "ydin",
+  "peili: tämä olet sinä"
+ ],
+ "5340": [
+  "ydin",
+  "mitä nuori näkee: syöte oppii sinut"
+ ],
+ "5640": [
+  "karsi",
+  "Jarno: pidetään toistaiseksi"
+ ],
+ "7140": [
+  "ydin",
+  "algoritminen lukutaito = kansalaistaito (kuvaus)"
+ ],
+ "7290": [
+  "ydin",
+  "kuka omistaa alustat"
+ ],
+ "7590": [
+  "ydin",
+  "raha → sitouttaminen"
+ ],
+ "8190": [
+  "ydin",
+  "tunteet ennen ymmärrystä"
+ ],
+ "8499": [
+  "ydin",
+  "Elias: kaninkolo"
+ ],
+ "8640": [
+  "ydin",
+  "Mutta… – kahden polun käänne"
+ ],
+ "8940": [
+  "ydin",
+  "algoritmit luovat myös turvaa"
+ ],
+ "9240": [
+  "karsi",
+  "Jarno: pidetään toistaiseksi; Joka viides kantaa saman"
+ ],
+ "9255": [
+  "ydin",
+  "suomalaiset nuoret uskoutuvat koneelle"
+ ],
+ "9840": [
+  "ydin",
+  "oppiminen, kun kone tekee valmiin"
+ ],
+ "10620": [
+  "ydin",
+  "opettaja ja pienet oppilaat"
+ ],
+ "12090": [
+  "huom",
+  "Jarno 9.11.: toivoa on"
+ ],
+ "12110": [
+  "ydin",
+  "sama kone, uusi tehtävä"
+ ],
+ "12200": [
+  "ydin",
+  "mikä on merkityksellistä"
+ ],
+ "12690": [
+  "ydin",
+  "HITAUS – ihmisen supervoima"
+ ],
+ "12992": [
+  "ydin",
+  "kolme tekoa: vie mukanasi"
+ ],
+ "12994": [
+  "ydin",
+  "kolme tekoa: vie mukanasi"
+ ],
+ "12996": [
+  "ydin",
+  "kolme tekoa: vie mukanasi"
+ ],
+ "13000": [
+  "ydin",
+  "nuoremmat kysyvät vielä teiltä"
+ ],
+ "13010": [
+  "ydin",
+  "kone näkee klikkauksen, te näette nuoren"
+ ],
+ "13700": [
+  "ydin",
+  "kasvattajat = sosiaalisia insinöörejä"
+ ],
+ "540": [
+  "karsi",
+  "jäävuori sanoo saman kuvana"
+ ],
+ "4950": [
+  "karsi",
+  "Jarno epävarma; 4290 kantaa asian"
+ ],
+ "4850": [
+  "ydin",
+  "ennustuskone – vastaus kysymykseen mikä tekoäly on (Jarno 10.11.)"
+ ]
 }

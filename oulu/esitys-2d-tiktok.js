@@ -15,6 +15,9 @@
 //  2. kuka olet: profiiliin ilmestyy tunnisteita (tagit)
 //  3. copy:     kopioitu tekstinpätkä lentää profiiliin
 //  4. loppu:    syöte on lähes pelkkää kissaa - algoritmi oppi
+//     + Joensuu 27.10.2026 (Jarno): joka 4. kortti on kaverin video, jossa kaksi
+//       kasvoa; tunnistusneliöt osuvat kasvoihin, toisella 'ei tiliä'. TikTok kerää
+//       tietoa myös ihmisistä, joilla ei ole tiliä (tietosuojakäytäntö).
 // Ei ihmishahmoja (ks. muistio: hahmot GLB:stä, ei koodista).
 // ============================================================================
 (function(){
@@ -22,6 +25,7 @@
 const POOLI = ['⚽','🎮','💄','🚗','🍕','🎵','🏀','🐶','📚','😂'];
 const VARIT = ['#3b2f5c','#1f4a5c','#5c2f45','#2f5c3b','#5c4a2f','#2f3b5c'];
 const AJASTIN = [1.2, 4.6, 7.4, 10.4, 13.6];   // s, vaiheiden alku ilman rivejä
+const KAVERI_KESTO = 3.2;                      // s, kaverivideon näkymisaika syötteessä
 
 const cv = document.createElement('canvas'), fxc = document.createElement('canvas');
 cv.id = 'tiktok-maailma'; fxc.id = 'tiktok-fx';
@@ -50,6 +54,7 @@ let aktiivinen = false, rafId = 0, nyt = 0, edellinen = 0, alku = 0, tagit = [];
 let tila;
 
 function uusiKortti(ikoni){
+  if (ikoni === 'KAVERIT') return { ikoni: '', kaverit: true, vari: '#2f4a5c', edist: 0 };
   return { ikoni: ikoni || POOLI[Math.floor(Math.random()*POOLI.length)], vari: VARIT[Math.floor(Math.random()*VARIT.length)], edist: 0 };
 }
 
@@ -60,7 +65,7 @@ function alusta(){
     lukittu: false, sydan: -9,
     profiili: [],            // { ikoni, teksti, maara, yli, t }
     lentajat: [],            // { teksti, x0,y0,x1,y1,t0,kesto, kohde:fn }
-    kissaTila: false, ekaRivi: -1, valmis: [false,false,false,false,false],
+    kissaTila: false, kissaLaskuri: 0, ekaRivi: -1, valmis: [false,false,false,false,false],
   };
 }
 
@@ -157,11 +162,19 @@ function paivita(dt){
         lenna('⚽', puh.s.x + puh.s.w/2, puh.s.y + puh.s.h*.2, 'pallo', () => { lisaaProfiiliin('pallo', '⚽', 'jalkapallo', { yli: true }); tila.valmis[1] = true; });
         tila.lukittu = false; swaippaa(null, true);
       }
+    } else if (k.kaverit) {   // kaverivideo: pysyy, kunnes kasvot on tunnistettu
+      k.edist = Math.min(1, (nyt - tila.korttiAlku)/KAVERI_KESTO);
+      if (nyt - tila.korttiAlku > KAVERI_KESTO) swaippaa('🐱');
     } else if (!tila.lukittu) {
       k.edist = Math.min(1, (nyt - tila.korttiAlku)/tila.kortinKesto);
       if (nyt - tila.korttiAlku > tila.kortinKesto) {
         const kissa = tila.kissaTila ? Math.random() < .9 : Math.random() < .15;
-        swaippaa(kissa ? '🐱' : null);
+        // Joensuu: kaverivideot alkavat vasta, kun 6. rivi ("tunnistaa kaverisi videosta…") on näkyvissä
+        const kaveriRivi = document.querySelectorAll('#teksti .leipa-rivi')[5];
+        const kaveritSallittu = !kaveriRivi || kaveriRivi.classList.contains('nakyy');
+        if (kaveritSallittu && !tila.ekaKaveri && tila.kissaTila) { tila.ekaKaveri = true; tila.kissaLaskuri = 2; swaippaa('KAVERIT'); }
+        else if (kaveritSallittu && tila.kissaTila && ++tila.kissaLaskuri % 4 === 2) swaippaa('KAVERIT');
+        else swaippaa(kissa ? '🐱' : null);
       }
     }
   }
@@ -188,7 +201,8 @@ function piirraKortti(k, oy){
   const gr = ctx.createLinearGradient(0, s.y + oy, 0, s.y + oy + s.h);
   gr.addColorStop(0, k.vari); gr.addColorStop(1, '#101218');
   ctx.fillStyle = gr; ctx.fillRect(s.x, s.y + oy, s.w, s.h);
-  emoji(ctx, k.ikoni, s.x + s.w/2, s.y + oy + s.h*.42, s.w*.42);
+  if (k.kaverit) piirraKaverit(k, oy);
+  else emoji(ctx, k.ikoni, s.x + s.w/2, s.y + oy + s.h*.42, s.w*.42);
   // oikean reunan ikonit
   ctx.globalAlpha = .75;
   for (let i = 0; i < 3; i++) { ctx.fillStyle = '#e8eaf0'; ctx.beginPath(); ctx.arc(s.x + s.w*.88, s.y + oy + s.h*(.55 + i*.1), s.w*.035, 0, Math.PI*2); ctx.fill(); }
@@ -197,6 +211,32 @@ function piirraKortti(k, oy){
   ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(s.x, s.y + oy + s.h - 4, s.w, 3);
   ctx.fillStyle = '#ff3b5c'; ctx.fillRect(s.x, s.y + oy + s.h - 4, s.w * k.edist, 3);
   ctx.restore();
+}
+// kaverin video: kaksi kasvoa, tunnistusneliöt kutistuvat kasvoille, oikealla 'ei tiliä'
+function piirraKaverit(k, oy){
+  const s = puh.s, y = s.y + oy + s.h*.42, koko = s.w*.3;
+  const kasvot = [[s.x + s.w*.3, '🧑'], [s.x + s.w*.7, '👧']];
+  kasvot.forEach(([x, e]) => emoji(ctx, e, x, y, koko));
+  if (k !== tila.kortti || tila.siirtyy) return;
+  const t = nyt - tila.korttiAlku;
+  kasvot.forEach(([x], i) => {
+    const e = Math.max(0, Math.min(1, (t - .4 - i*.35) / .5)), ee = 1 - Math.pow(1 - e, 3);
+    if (e <= 0) return;
+    const r = koko*(.62 + 1.2*(1 - ee));
+    ctx.globalAlpha = (e < 1 || Math.floor(t*6) % 2) ? 1 : .55;
+    ctx.strokeStyle = '#ffd166'; ctx.lineWidth = Math.max(2, s.w*.012);
+    ctx.strokeRect(x - r, y - r, r*2, r*2);
+    ctx.globalAlpha = 1;
+  });
+  if (t > 1.6) {
+    const a = Math.min(1, (t - 1.6)*3);
+    ctx.globalAlpha = a; ctx.fillStyle = 'rgba(16,18,26,.85)';
+    const lx = kasvot[1][0], ly = y + koko*1.0, fw = s.w*.44, fh = s.h*.075;
+    pyorea(ctx, lx - fw/2, ly - fh/2, fw, fh, fh*.3); ctx.fill();
+    ctx.fillStyle = '#ffd166'; ctx.font = `${Math.round(s.w*.08)}px Georgia,Garamond,"Times New Roman",serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('ei tiliä', lx, ly);
+    ctx.globalAlpha = 1;
+  }
 }
 function piirra(){
   ctx.setTransform(DPR,0,0,DPR,0,0); ctx.clearRect(0,0,W,H);
