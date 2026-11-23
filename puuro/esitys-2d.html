@@ -2462,6 +2462,10 @@ class PaaKohtaus extends Phaser.Scene {
     // datatiedostoilla jo aiemmin - hidastaa latausta hieman jokaisella
     // reloadilla, mutta tämä on aktiivisen muokkauksen työkalu, ei
     // tuotantosivusto, joten tuoreus voittaa.
+    // PUURO 23.11.2026 (Jarno): latausmittari aloitussivulle (esitys-2d-aloitus.js lukee)
+    window.__lataus = { osuus: 0, valmis: false };
+    this.load.on('progress', v => { window.__lataus.osuus = v; });
+    this.load.on('complete', () => { window.__lataus.osuus = 1; window.__lataus.valmis = true; });
     const CB = Date.now();
     const bust = (polku) => polku + (polku.includes('?') ? '&' : '?') + 'cb=' + CB;
 
@@ -2548,6 +2552,21 @@ class PaaKohtaus extends Phaser.Scene {
     // AIDOSTI valmis heti lavalla eikä "hyppää" myöhässä paikalleen (ks.
     // muistio §38 jatko 2 - tämä oli oikea korjaus samaan ongelmaan
     // test-video-alpha.html:ssä).
+    // SUOJA 19.11.2026 (Virkku, Jarno: "lisää suoja"): video, jota selain ei
+    // osaa toistaa (esim. Keynotesta tuotu .mov), kaatoi Phaserin esilatauksen
+    // ja sen mukana koko maiseman (taustat, opashahmo, kuvat, kohtaukset).
+    // Tarkistus samalla tavalla kuin Phaser itse (device.video[pääte]);
+    // tukematon video jätetään pois ja siitä varoitetaan konsolissa.
+    const tuetutVideot = this.sys.game.device.video;
+    for (let i = HAHMOKERROKSET.length - 1; i >= 0; i--) {
+      const v = HAHMOKERROKSET[i].video;
+      if (!v) continue;
+      const paate = v.split('?')[0].split('.').pop().toLowerCase();
+      if (!tuetutVideot[paate]) {
+        console.warn('Video ohitettu, selain ei toista muotoa .' + paate + ' (muunna mp4:ksi):', v);
+        HAHMOKERROKSET.splice(i, 1);
+      }
+    }
     HAHMOKERROKSET.forEach(h => {
       if (h.video) {
         this.load.video('hahmo-video:' + h.video, bust(h.video), 'canplaythrough', false, false);
