@@ -1,239 +1,531 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Energy Calculator – Manual vs AI Energy Comparison</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Estimate and compare the energy and water usage of manual work versus AI-generated tasks. Understand the environmental impact of using AI.">
-<meta property="og:title" content="AI Energy Calculator – Compare Manual vs AI Work">
-<meta property="og:description" content="A tool to compare energy consumption and water use between manual work and AI generation.">
-<meta property="og:url" content="https://csy.fi/ai-energy-calculator/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Energy Calculator · csy.fi</title>
+<meta name="description" content="A playful, rough-direction calculator: your own device versus AI, in energy and water — with ranges, sources and other ways to look at the same question. By Jarno Alastalo, CSY Lab.">
 <meta property="og:type" content="website">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'EB Garamond', serif;
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 2rem;
-      font-size: 1.2rem;
-    }
-    h2 {
-      color: #ecb45c;
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin: 1rem 0 0.5rem;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 5px;
-      background-color: #2a2a2a;
-      color: #e0e0e0;
-      font-family: 'EB Garamond', serif;
-      font-size: 1.1rem;
-    }
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      font-size: 1.1rem;
-      background-color: #3a3a3a;
-      color: #ffffff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      font-family: 'EB Garamond', serif;
-    }
-    button:hover {
-      background-color: #505050;
-    }
-    .results {
-      margin-top: 2rem;
-      background-color: #2a2a2a;
-      padding: 1rem;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-    .highlight {
-      font-size: 1.5rem;
-      color: #ecb45c;
-      margin-top: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .icon {
-      font-size: 1.5rem;
-    }
-    .bar-container {
-      background-color: #444;
-      border-radius: 3px;
-      margin: 0.5rem 0 1rem;
-      overflow: hidden;
-    }
-    .bar {
-      height: 24px;
-      background-color: #ecb45c;
-      text-align: right;
-      padding-right: 8px;
-      line-height: 24px;
-      color: #000;
-    }
-    .disclaimer, .sources {
-      font-size: 1rem;
-      color: #bbbbbb;
-      margin-top: 1.5rem;
-    }
-    .sources ul {
-      padding-left: 1.2rem;
-    }
-    .sources a {
-      color: #ffffff;
-      text-decoration: underline;
-    }
-    .foolproof {
-      font-size: 0.95rem;
-      color: #888;
-      margin-top: 1.5rem;
-      background-color: #1a1a1a;
-      padding: 1rem;
-      border-left: 4px solid #ecb45c;
-    }
-  </style>
-  <script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
+<meta property="og:url" content="https://csy.fi/ai-energy-calculator/">
+<meta property="og:title" content="AI Energy Calculator">
+<meta property="og:description" content="Your device versus AI, in energy and water. Rough estimates with ranges and sources — and other ways to look at the same question.">
+<meta property="og:site_name" content="csy.fi">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://csy.fi/ai-energy-calculator/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Your device or AI? AI Energy Calculator by CSY Lab, csy.fi/ai-energy-calculator, with Jarno Alastalo">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://csy.fi/ai-energy-calculator/og.jpg">
+<meta name="twitter:title" content="AI Energy Calculator">
+<meta name="twitter:description" content="Your device versus AI, in energy and water. Rough estimates with ranges and sources.">
+<link rel="canonical" href="https://csy.fi/ai-energy-calculator/">
+<meta name="theme-color" content="#0b1020">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yo:#0b1020; --yo2:#121a33; --yo3:#1b2647;
+  --paperi:#f6f1e6; --paperi2:#ece4d3; --muste:#16181f; --himmea:#5a5f6e;
+  --kelta:#f2c94c; --kelta2:#e0ac1b; --vihrea:#3f8f6b; --vihrea2:#2c6b4f; --puna:#e0533f; --sini:#5b7fd6;
+  --r:18px; --varjo:0 10px 30px rgba(10,14,30,.12);
+  --leveys:1000px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paperi);color:var(--muste);font:400 18px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.08;margin:0 0 .4em;letter-spacing:-.01em}
+h2{font-size:clamp(1.9rem,5.5vw,3rem);font-weight:900}
+h3{font-size:clamp(1.25rem,3.4vw,1.6rem);font-weight:800}
+p{margin:0 0 1em}
+a{color:inherit}
+.kehys{max-width:var(--leveys);margin:0 auto;padding:0 16px}
+section{padding:60px 0}
+.kicker{display:inline-block;font:700 .78rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--vihrea2);margin-bottom:14px}
+.ingressi{font-size:1.12rem;color:#33384a;max-width:46rem}
+.tumma{background:var(--yo);color:#eef1f8}
+.tumma .ingressi{color:#c5cbe0}
+.tumma .kicker{color:var(--kelta)}
+
+/* yläpalkki */
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav .kehys{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-top:10px;padding-bottom:10px}
+.nav .kehys::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;text-decoration:none;color:#dfe4f2;font:600 .88rem/1 Inter,sans-serif;padding:9px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.14);white-space:nowrap}
+.nav a:hover,.nav a:focus-visible{background:var(--kelta);color:var(--yo);border-color:var(--kelta)}
+
+/* hero */
+.hero{background:radial-gradient(120% 80% at 70% 0%,#24305a 0%,#121a33 45%,#0b1020 100%);color:#fff;padding:56px 0 48px}
+.hero .kicker{color:var(--kelta)}
+.hero h1{font-size:clamp(2.4rem,8vw,4.6rem);font-weight:900;margin-bottom:.25em;text-wrap:balance}
+.hero h1 span{color:var(--kelta)}
+.hero .ala{font-size:clamp(1.05rem,2.4vw,1.3rem);color:#cfd5ea;max-width:40rem;margin-bottom:26px}
+.kehysviesti{background:var(--kelta);color:var(--yo);border-radius:var(--r);padding:18px 20px;max-width:44rem;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.kehysviesti b{font-family:Fraunces,Georgia,serif;font-weight:900;font-size:1.25rem;display:block;margin-bottom:4px}
+.kehysviesti p{margin:0;font-size:1rem}
+
+/* merkit */
+.merkki{display:inline-block;font:700 .68rem/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:6px;vertical-align:middle;white-space:nowrap}
+.m-vert{background:#d6efe2;color:#1f5a40}
+.m-rap{background:#dfe6fa;color:#2d4594}
+.m-yri{background:#fde7d2;color:#8a4a12}
+.m-jou{background:#ece4d3;color:#5a4a2a}
+.m-arv{background:#eee;color:#444}
+.selite{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:18px;font-size:.88rem;color:#c5cbe0}
+.selite span{display:inline-flex;align-items:center;gap:6px}
+
+/* lomake */
+.lomake{display:grid;gap:18px;grid-template-columns:1fr}
+.kortti{background:#fff;border-radius:var(--r);padding:20px 20px 18px;box-shadow:var(--varjo)}
+.kortti h3{font-size:1.2rem;font-family:Inter,sans-serif;font-weight:700;margin-bottom:.6em}
+label{display:block;font-weight:600;font-size:.98rem;margin:12px 0 6px}
+label small{display:block;font-weight:400;color:var(--himmea);font-size:.86rem}
+select,input[type=number]{width:100%;padding:12px 12px;border:2px solid var(--paperi2);border-radius:12px;background:#fffdf8;color:var(--muste);font:500 1rem Inter,sans-serif}
+select:focus,input:focus{outline:none;border-color:var(--kelta2)}
+.vesi-valinta{display:grid;gap:8px;margin-top:6px}
+.vesi-valinta label{display:flex;gap:10px;align-items:flex-start;font-weight:500;margin:0;padding:10px 12px;border:2px solid var(--paperi2);border-radius:12px;cursor:pointer;background:#fffdf8}
+.vesi-valinta input{margin-top:5px;accent-color:var(--vihrea2)}
+.vesi-valinta label:has(input:checked){border-color:var(--vihrea)}
+.arvo{font-size:.84rem;color:var(--himmea);margin-top:6px}
+
+/* tulokset */
+.tulos{margin-top:24px}
+.palkit{display:grid;gap:18px;margin:8px 0 18px}
+.palkki-nimi{display:flex;justify-content:space-between;gap:10px;font-weight:600;flex-wrap:wrap}
+.palkki-nimi span:last-child{font-weight:500;color:var(--himmea);font-size:.92rem}
+.rata{position:relative;height:26px;background:var(--paperi2);border-radius:13px;margin-top:6px;overflow:hidden}
+.vali{position:absolute;top:0;bottom:0;border-radius:13px;opacity:.38}
+.tyyp{position:absolute;top:0;bottom:0;border-radius:13px}
+.kasi .vali,.kasi .tyyp{background:var(--sini)}
+.ai .vali,.ai .tyyp{background:var(--kelta2)}
+.paatos{font-family:Fraunces,Georgia,serif;font-weight:900;font-size:clamp(1.4rem,4.4vw,2rem);line-height:1.15;background:var(--yo);color:#fff;border-radius:var(--r);padding:22px 22px;margin:8px 0 14px}
+.paatos em{font-style:normal;color:var(--kelta)}
+.paatos small{display:block;font:500 .95rem/1.5 Inter,sans-serif;color:#c5cbe0;margin-top:10px}
+.pikku{font-size:.92rem;color:var(--himmea)}
+
+/* näkymät */
+.nakyma{background:#fff;border-radius:22px;box-shadow:var(--varjo);padding:24px 22px;margin-top:22px}
+.nakyma .nro{font:700 .78rem Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--vihrea2)}
+.nakyma h3{margin:.15em 0 .5em;font-size:clamp(1.5rem,4.6vw,2rem)}
+.miksi{border-left:5px solid var(--vihrea);background:#f2f8f4;border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0 0;font-size:.98rem}
+.miksi b{color:var(--vihrea2)}
+.rinnat{display:grid;gap:12px;grid-template-columns:1fr;margin:14px 0}
+.rinta{background:var(--paperi);border-radius:14px;padding:16px}
+.rinta .iso{font-family:Fraunces,serif;font-weight:900;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1;color:var(--yo)}
+.rinta p{margin:.4em 0 0;font-size:.95rem;color:#3a3f50}
+.rinta .lahde{display:block;margin-top:8px;font-size:.8rem;color:var(--himmea)}
+.tumma-nakyma{background:var(--yo2);color:#eef1f8}
+.tumma-nakyma .nro{color:var(--kelta)}
+.tumma-nakyma .rinta{background:var(--yo3)}
+.tumma-nakyma .rinta .iso{color:var(--kelta)}
+.tumma-nakyma .rinta p{color:#dfe4f2}
+.tumma-nakyma .rinta .lahde{color:#9aa3c2}
+.tumma-nakyma .miksi{background:rgba(63,143,107,.15);color:#e6f2ec}
+.tumma-nakyma .miksi b{color:#9fe0bf}
+.tumma-nakyma input{background:var(--yo3);color:#fff;border-color:#2c3a66}
+.nappi{display:inline-flex;align-items:center;gap:8px;background:var(--kelta);color:var(--yo);font-weight:700;text-decoration:none;padding:12px 18px;border-radius:999px;border:0;font-size:1rem;cursor:pointer;font-family:inherit}
+.nappi:hover{background:var(--kelta2)}
+.napit{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+
+/* puuttuu */
+.puuttuu{display:grid;gap:12px;grid-template-columns:1fr;margin-top:22px}
+.puuttuu .kortti h3{font-size:1.05rem}
+.puuttuu .kortti p{font-size:.95rem;margin:0;color:#3a3f50}
+
+/* lähteet */
+.lahteet ol{padding-left:1.2rem;margin:18px 0 0}
+.lahteet li{margin:0 0 12px;font-size:.95rem}
+.lahteet li .merkki{margin-right:6px}
+.lahteet a{color:var(--vihrea2)}
+details.kaavat{background:#fff;border-radius:var(--r);box-shadow:var(--varjo);padding:4px 20px;margin-top:22px}
+details.kaavat summary{cursor:pointer;font-weight:700;padding:14px 0}
+details.kaavat table{width:100%;border-collapse:collapse;font-size:.9rem;margin:6px 0 16px}
+details.kaavat th,details.kaavat td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--paperi2);vertical-align:top}
+details.kaavat code{font-size:.88rem;background:var(--paperi);padding:2px 5px;border-radius:5px}
+.taulu-kaari{overflow-x:auto}
+
+footer{background:var(--yo);color:#aeb6d2;padding:36px 0 46px;font-size:.92rem}
+footer a{color:#fff}
+footer p{margin:0 0 .6em}
+
+@media (min-width:720px){
+  .lomake{grid-template-columns:1fr 1fr}
+  .lomake .koko{grid-column:1/-1}
+  .rinnat{grid-template-columns:repeat(3,1fr)}
+  .rinnat.kaksi{grid-template-columns:repeat(2,1fr)}
+  .puuttuu{grid-template-columns:1fr 1fr}
+}
+</style>
+<script src="https://cdn.counter.dev/script.js" data-id="4dd6d014-e826-4cda-8265-b742387017fc" data-utcoffset="2"></script>
 </head>
 <body>
-  <div style="margin-bottom: 1rem;">
-  <a href="https://csy.fi/" style="color: #ecb45c; text-decoration: none; font-size: 1.1rem;">← CSY Lab</a>
-</div>
 
-  <h2>Compare Manual Work vs AI</h2>
+<nav class="nav" aria-label="Sections">
+  <div class="kehys">
+    <a href="https://csy.fi/">← CSY Lab</a>
+    <a href="#laskuri">Calculator</a>
+    <a href="#arki">Everyday scale</a>
+    <a href="#miljoonat">Millions of people</a>
+    <a href="#rakennus">Zoom out</a>
+    <a href="#puuttuu">Not included</a>
+    <a href="#lahteet">Sources</a>
+  </div>
+</nav>
 
-  <p style="margin-top: -1rem; margin-bottom: 2rem; color: #bbb; font-size: 1.1rem; text-align: center;">
- Estimate and compare the energy impact of doing creative work manually or with AI assistance. This tool compares the energy use of one person’s device — not full production pipelines.
-  </p>
+<header class="hero">
+  <div class="kehys">
+    <span class="kicker">CSY Lab · AI Energy Calculator</span>
+    <h1>Your device <span>or</span> AI?</h1>
+    <p class="ala">Compare the electricity and water of doing something yourself with doing it with AI. Then look at the same question three other ways.</p>
+    <div class="kehysviesti" role="note">
+      <b>For fun and for thinking. Not a measurement.</b>
+      <p>This calculator is entertainment and gives only a rough direction. Every number is an estimate, and the range between low and high can be tenfold or more. AI companies publish very little. The calculator does not tell you what to do. It shows alternative ways to look at the same question.</p>
+    </div>
+    <div class="selite" aria-label="What the source labels mean">
+      <span><i class="merkki m-vert">Peer-reviewed</i> journal or conference</span>
+      <span><i class="merkki m-rap">Report</i> research report or preprint</span>
+      <span><i class="merkki m-yri">Company</i> company's own figure</span>
+      <span><i class="merkki m-jou">News</i> journalism</span>
+      <span><i class="merkki m-arv">Estimate</i> our rough estimate</span>
+    </div>
+  </div>
+</header>
 
+<main>
+<section id="laskuri">
+  <div class="kehys">
+    <span class="kicker">1 · The calculator</span>
+    <h2>Your device versus AI</h2>
+    <p class="ingressi">Doing it yourself uses your own device. Doing it with AI uses a data centre, plus your device while you write prompts and check the results.</p>
 
+    <div class="lomake">
+      <div class="kortti">
+        <h3>What are you making?</h3>
+        <label for="tehtava">Task</label>
+        <select id="tehtava">
+          <option value="teksti">Text: an ordinary chat answer</option>
+          <option value="paattely">Text: long answer with "thinking" mode</option>
+          <option value="kuva" selected>Image</option>
+          <option value="videoKevyt">Video: short clip, open models</option>
+          <option value="videoRaskas">Video: 5-second high-quality clip</option>
+        </select>
+        <p class="arvo" id="tehtavaArvo"></p>
 
-  <label for="device">Select your device (typical power)</label>
-  <select id="device">
-    <option value="10">Mobile Phone (~10W)</option>
-    <option value="25">MacBook Pro M1 (~25W)</option>
-    <option value="30">Windows Ultrabook (~30W)</option>
-    <option value="60">Gaming Laptop (~60W)</option>
-    <option value="90">Desktop PC (~90W)</option>
-  </select>
+        <label for="laite">Your device</label>
+        <select id="laite">
+          <option value="puhelin">Phone</option>
+          <option value="lappari" selected>Laptop, everyday work</option>
+          <option value="lappariRaskas">Laptop, heavy work (video, gaming)</option>
+          <option value="poyta">Desktop computer + monitor</option>
+        </select>
+        <p class="arvo" id="laiteArvo"></p>
+      </div>
 
-  <label for="scenario">What are you doing?</label>
-  <select id="scenario">
-    <option value="image">Creating an image (~1.5 Wh per image)</option>
-    <option value="video">Making a video (~940 Wh per 5 sec video)</option>
-    <option value="text">Writing or generating text (~0.3 Wh per request) </option>
-  </select>
+      <div class="kortti">
+        <h3>How much?</h3>
+        <label for="kasiTunnit">🛠 Doing it yourself: hours
+          <small>Making it without AI, on your own device</small></label>
+        <input type="number" id="kasiTunnit" value="2" min="0" step="0.25" inputmode="decimal">
 
-<h3 style="color: #ecb45c; margin-top: 2rem;">🛠️ Manual Work</h3>
+        <label for="aiMaara">🤖 With AI: how many results?
+          <small>Count every try, also the ones you throw away</small></label>
+        <input type="number" id="aiMaara" value="4" min="0" step="1" inputmode="numeric">
 
-  <label for="manualTime">How long do you work on it yourself manually? (in hours)<br><span style='font-size: 1rem; color: #aaa;'>(e.g., editing the image or video yourself, without AI help)</span></label>
-  <input type="number" id="manualTime" value="2" min="0" step="0.1">
+        <label for="aiTunnit">🤖 With AI: hours of prompting and checking
+          <small>Your own device is on during this time</small></label>
+        <input type="number" id="aiTunnit" value="0.5" min="0" step="0.25" inputmode="decimal">
+      </div>
 
-  <h3 style="color: #ecb45c; margin-top: 2rem;">🤖 AI-Assisted Work</h3>
-
-
-  <label for="aiUse">How many results do you make with AI instead of doing them yourself?<br><span style='font-size: 1rem; color: #aaa;'>(e.g., number of AI-generated images, 5 sec videos, or texts)</span></label>
-  <input type="number" id="aiUse" value="1" min="0" step="1">
-
-  <label for="aiOversight">How much time do you spend reviewing or prompting AI? (in hours)<br><span style='font-size: 1rem; color: #aaa;'>(e.g., writing prompts, reviewing outputs)</span></label>
-  <input type="number" id="aiOversight" value="0.5" min="0" step="0.1">
-
-  <button onclick="compare()">Compare Energy</button>
-
-  <div class="results" id="output"></div>
-
-  <script>
-    function compare() {
-      const devicePower = parseFloat(document.getElementById("device").value);
-      const scenario = document.getElementById("scenario").value;
-      const manualTime = parseFloat(document.getElementById("manualTime").value);
-      const aiUse = parseFloat(document.getElementById("aiUse").value);
-      const aiOversight = parseFloat(document.getElementById("aiOversight").value);
-
-      let manualEnergy = manualTime * devicePower;
-      let aiEnergy = 0;
-      if (scenario === "image") aiEnergy = aiUse * 1.5;
-      if (scenario === "text") aiEnergy = aiUse * 0.3;
-      if (scenario === "video") aiEnergy = aiUse * 940;
-
-      let oversightEnergy = aiOversight * devicePower;
-      let totalAIEnergy = aiEnergy + oversightEnergy;
-
-      let comparisonText = '';
-      let icon = '';
-      if (manualEnergy > totalAIEnergy) {
-        const factor = (manualEnergy / totalAIEnergy).toFixed(1);
-        comparisonText = `Manual work uses <strong>${factor}× more</strong> energy than AI.`;
-        icon = '⚡';
-      } else if (totalAIEnergy > manualEnergy) {
-        const factor = (totalAIEnergy / manualEnergy).toFixed(1);
-        comparisonText = `AI uses <strong>${factor}× more</strong> energy than manual work.`;
-        icon = '🤖';
-      } else {
-        comparisonText = `Both use about the same amount of energy.`;
-        icon = '⚖️';
-      }
-
-      let waterNote = '';
-      if (scenario === "text") waterNote = '<div class="icon">💧 Approx. ' + (aiUse * 0.02).toFixed(2) + ' L of water used for AI processing</div>';
-      if (scenario === "image") waterNote = '<div class="icon">💧 Approx. ' + (aiUse * 0.2).toFixed(2) + ' L of water used for AI processing</div>';
-      if (scenario === "video") waterNote = '<div class="icon">💧 Approx. ' + (aiUse * 2).toFixed(2) + ' L of water used for AI processing</div>';
-
-      let manualBarWidth = Math.max((manualEnergy / Math.max(manualEnergy, totalAIEnergy)) * 100, 1);
-      let aiBarWidth = Math.max((totalAIEnergy / Math.max(manualEnergy, totalAIEnergy)) * 100, 1);
-
-      document.getElementById("output").innerHTML = `
-        <div>Manual work uses about <strong>${manualEnergy.toFixed(1)} Wh</strong></div>
-        <div class="bar-container"><div class="bar" style="width: ${manualBarWidth}%"></div></div>
-        <div>AI use takes about <strong>${totalAIEnergy.toFixed(1)} Wh</strong></div>
-        <div class="bar-container"><div class="bar" style="width: ${aiBarWidth}%"></div></div>
-        <div class="highlight"><span class="icon">${icon}</span>${comparisonText}</div>
-        <div style="margin-top: 0.5rem">${waterNote}</div>
-        <div class="disclaimer">
-          These are approximate estimates for educational use. Actual energy consumption may vary depending on hardware, software, and workload.
-  ⚠️ Note: The AI server energy (Wh per result) is a global average and will vary based on the specific model and data center efficiency.
+      <div class="kortti koko">
+        <h3>Which water do you count?</h3>
+        <div class="vesi-valinta" role="radiogroup" aria-label="Water">
+          <label><input type="radio" name="vesi" value="paikan"> <span><b>Only the data centre's own cooling water.</b> This is how companies usually report it (about 1.1 litres per kWh, from Google 2025).</span></label>
+          <label><input type="radio" name="vesi" value="kaikki" checked> <span><b>Also the water used to make the electricity</b> at power plants, world average (about 9.9 litres per kWh, from UN University 2026).</span></label>
         </div>
-        <div class="sources">
-          <ul>
-            <li><a href="https://www.technologyreview.com/2025/05/20/1116327/ai-energy-usage-climate-footprint-big-tech/" target="_blank">MIT Technology Review – We did the math on AI’s energy footprint. Here’s the story you haven’t heard.
-James O’Donnell & Casey Crownhart, May 20 2025.</a></li>
-            <li><a href="https://www.notebookcheck.net" target="_blank">NotebookCheck: MacBook M1 Load Power Data</a></li>
-            <li><a href="https://arxiv.org/html/2506.17016v1#abstract" target="_blank">Bertazzini et al. 2025: The Hidden Cost of an Image: Quantifying the Energy Consumption of AI Image Generation</a></li>
-            <li><a href="https://ar5iv.labs.arxiv.org/html/2311.16863" target="_blank">Luccioni et al. 2023: Energy Use of Text-to-Image Models</a></li>
-            <li><a href="https://doi.org/10.1016/j.procir.2024.01.098" target="_blank">Berthelot et al. 2024: Gen-AI Environmental Estimates</a></li>
-            <li><a href="https://academy.openai.com/public/clubs/higher-education-05x4z/resources/environmental-impact-of-ai" target="_blank">OpenAI Blog: Inference Power Consumption</a></li>
-            <li><a href="https://epoch.ai/blog?text=AI" target="_blank">AI Energy Estimates</a></li>
-            <li><a href="https://ourworldindata.org/search?q=ai+energy&resultType=all" target="_blank">Our World in Data: AI Energy and CO₂ Impact</a></li>
-          
-            <li><a href="https://doi.org/10.1145/3724499" target="_blank">Li et al. 2023: Making AI Less 'Thirsty'</a></li>
-            <li><a href="https://doi.org/10.5281/zenodo.7855594" target="_blank">George et al. 2023: Water Consumption by Chat GPT</a></li>
-            <li><a href="https://sustainability.google/reports/" target="_blank">Google Sustainability Report 2024</a></li>
-            <li><a href="https://www.microsoft.com/en-us/corporate-responsibility/sustainability/report" target="_blank">Microsoft Sustainability Report 2024</a></li>
-          </ul>
-        </div>
-        <div class="foolproof">
-          ⚠️ Disclaimer: These results are only rough approximations based on currently available data. They might be completely wrong, outdated, or not apply to your specific situation. Use for general comparison only.
-        </div>
-      `;
+      </div>
+    </div>
+
+    <div class="tulos" aria-live="polite">
+      <div class="palkit" id="palkit"></div>
+      <div class="paatos" id="paatos"></div>
+      <p class="pikku" id="vesiRivi"></p>
+      <p class="pikku">The light bar is the range from low to high estimate. The solid bar is the typical estimate. Water is counted only for the AI part, because your own device's electricity is counted as energy only.</p>
+    </div>
+
+    <details class="kaavat">
+      <summary>Show the formulas and every number</summary>
+      <div class="taulu-kaari">
+        <p><code>Yourself = hours × device watts</code><br>
+        <code>AI = results × energy per result + prompting hours × device watts</code><br>
+        <code>Water = AI data-centre energy × litres per kWh</code><br>
+        Every line is counted three times: with the low, the typical and the high value.</p>
+        <table id="arvotaulu"></table>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="arki" style="padding-top:0">
+  <div class="kehys">
+    <div class="nakyma">
+      <span class="nro">2 · Another way to look at it</span>
+      <h3>In everyday things</h3>
+      <p>Your AI part (typical estimate) in things you can picture:</p>
+      <div class="rinnat" id="arkiRinnat"></div>
+      <div class="miksi"><b>Why we calculate this:</b> watt-hours and millilitres mean little to most people. The UN University report uses the same comparisons: one AI image can light a 10-watt LED bulb for about 17 minutes, and a complex AI video uses about 4.1 litres of water, almost two days of drinking water for one person.</div>
+    </div>
+  </div>
+</section>
+
+<section id="miljoonat" style="padding-top:0">
+  <div class="kehys">
+    <div class="nakyma tumma-nakyma">
+      <span class="nro">3 · Another way to look at it</span>
+      <h3>When millions do the same</h3>
+      <label for="ihmiset" style="color:#eef1f8">If this many people did exactly what you did, every day for a year:</label>
+      <input type="number" id="ihmiset" value="1000000" min="0" step="100000" inputmode="numeric" style="max-width:16rem">
+      <div class="rinnat" id="miljoonaRinnat"></div>
+      <p style="margin-top:16px;font-weight:600">For comparison, from the UN University report (2026):</p>
+      <div class="rinnat">
+        <div class="rinta"><div class="iso">383 GWh</div><p>One year of ChatGPT prompts (2.5 billion a day × 0.42 Wh). The water: the minimum home water of about 500,000 people in sub-Saharan Africa.</p><span class="lahde"><i class="merkki m-rap">Report</i> UNU-INWEH 2026</span></div>
+        <div class="rinta"><div class="iso">87–98 GWh</div><p>Saved each year if people left "please", "thank you" and other extra words out of their prompts. That is the home electricity of up to 760,000 people in sub-Saharan Africa.</p><span class="lahde"><i class="merkki m-rap">Report</i> UNU-INWEH 2026 and its press release 3.6.2026 · <i class="merkki m-jou">News</i> New Scientist 3.6.2026</span></div>
+        <div class="rinta"><div class="iso">93 TWh</div><p>All AI work in data centres in 2025. More than all of Finland uses (83 TWh). AI is about one fifth of data-centre electricity; the rest is video, photos, games and the cloud.</p><span class="lahde"><i class="merkki m-rap">Report</i> UNU-INWEH 2026</span></div>
+      </div>
+      <div class="miksi"><b>Why we calculate this:</b> one person's prompt is tiny. It becomes big only when it is repeated billions of times, and no single young person decides that. That is why this view matters more than the first one: the important choices about AI's energy are made by the people who build and run it.</div>
+    </div>
+  </div>
+</section>
+
+<section id="rakennus" style="padding-top:0">
+  <div class="kehys">
+    <div class="nakyma">
+      <span class="nro">4 · Another way to look at it</span>
+      <h3>Zoom out: the building, not the prompt</h3>
+      <div class="rinnat kaksi">
+        <div class="rinta"><div class="iso">20 billion litres</div><p>River water that Google's planned data centre in Muhos, Finland, may take from the Oulu river each year. About 70 % would go up as steam.</p><span class="lahde"><i class="merkki m-jou">News</i> Kaleva 15.10.2025</span></div>
+        <div class="rinta"><div class="iso" id="muhosVertaus">–</div><p id="muhosTeksti">–</p><span class="lahde"><i class="merkki m-arv">Estimate</i> calculated from your numbers above</span></div>
+        <div class="rinta"><div class="iso">7.6 million litres</div><p>Montevideo, Uruguay, 2023: the city almost ran out of fresh water and tap water turned salty. At the same time, Google planned a data centre that would cool itself with 7.6 million litres of drinking water a day, the daily household water of 55,000 people. After protests, Google redesigned it.</p><span class="lahde"><i class="merkki m-jou">News</i> DW · Mongabay</span></div>
+        <div class="rinta"><div class="iso">500+ hectares</div><p>Forest cut at Google's data-centre sites in Muhos and Kajaani before the environmental assessment was finished, about 700 football fields.</p><span class="lahde"><i class="merkki m-jou">News</i> Yle 8.10.2026</span></div>
+      </div>
+      <div class="miksi"><b>Why we calculate this:</b> a calculator measures the prompt. But the water and the forest are decided when the building is planned. Good questions to ask about any data centre: What is it for? Who pays? Who decides? Whose river?</div>
+      <div class="napit">
+        <a class="nappi" href="https://csy.fi/promptcost/">What does a prompt cost? Three ways to talk about this with young people →</a>
+        <a class="nappi" style="background:transparent;border:2px solid var(--yo)" href="https://csy.fi/promptcost/map/">Map of data centres planned in Finland</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="puuttuu" class="tumma">
+  <div class="kehys">
+    <span class="kicker">What this calculator leaves out</span>
+    <h2>It is not the whole picture</h2>
+    <p class="ingressi">Leaving these out is a choice. Here is why, so you can decide whether it matters for you.</p>
+    <div class="puuttuu">
+      <div class="kortti"><h3>Training the AI</h3><p>Before anyone uses a model, it is trained. The water linked to training GPT-4 was about 600 million litres, 237 Olympic pools (UNU-INWEH 2026). Shared across all users, it is hard to divide per prompt, so it is not included.</p></div>
+      <div class="kortti"><h3>Making the machines</h3><p>Chips, servers and phones are made and thrown away. AI's e-waste could reach 2.5 million tonnes a year by 2030, nearly 250 Eiffel Towers (UNU-INWEH 2026). Not included.</p></div>
+      <div class="kortti"><h3>Doing more because it is easy</h3><p>When something becomes cheaper and faster, we often do more of it. An AI image may not replace two hours of work; it may come on top of it. This is called the rebound effect (Luccioni, Strubell &amp; Crawford, FAccT 2025). The calculator assumes one replaces the other. That is generous to AI.</p></div>
+      <div class="kortti"><h3>Your own life</h3><p>Some studies count a person's whole carbon footprint as the cost of "doing it yourself", and AI then looks 130–1,500 times better (Tomlinson et al., Scientific Reports 2024). We do not: you eat and live whether you use AI or not.</p></div>
+      <div class="kortti"><h3>Networks and waiting</h3><p>Sending data and your device waiting while the AI works use a little energy. For one person this is small, so it is not included.</p></div>
+      <div class="kortti"><h3>Which model, where, when</h3><p>The same question can use ten times more energy on a bigger model, and the water depends on the climate and the power plant. Companies rarely say which. That is why every result here is a range.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="lahteet" class="lahteet">
+  <div class="kehys">
+    <span class="kicker">Sources</span>
+    <h2>Where the numbers come from</h2>
+    <p class="ingressi">Most numbers about AI's energy are not from peer-reviewed research yet. Each source is labelled so you can see what kind it is.</p>
+    <ol>
+      <li><i class="merkki m-vert">Peer-reviewed</i> Oviedo, F., Kazhamiaka, F., Choukse, E. et al. (2025). Energy use of AI inference: efficiency pathways and test-time compute. <i>Joule</i>. Text: median 0.31 Wh per query (middle half 0.16–0.60 Wh); about 4.3 Wh with 15× more tokens. <a href="https://arxiv.org/abs/2509.20241">arxiv.org/abs/2509.20241</a></li>
+      <li><i class="merkki m-vert">Peer-reviewed</i> Luccioni, A. S., Jernite, Y. &amp; Strubell, E. (2024). Power Hungry Processing: Watts Driving the Cost of AI Deployment? <i>ACM FAccT 2024</i>. Image: average 2.9 Wh (as used by UNU-INWEH 2026). <a href="https://arxiv.org/abs/2311.16863">arxiv.org/abs/2311.16863</a></li>
+      <li><i class="merkki m-vert">Peer-reviewed</i> Li, P., Yang, J., Islam, M. A. &amp; Ren, S. Making AI Less "Thirsty". <i>Communications of the ACM</i>. Water taken vs water consumed; on-site and power-plant water. <a href="https://doi.org/10.1145/3724499">doi.org/10.1145/3724499</a></li>
+      <li><i class="merkki m-vert">Peer-reviewed</i> Luccioni, A. S., Strubell, E. &amp; Crawford, K. (2025). From Efficiency Gains to Rebound Effects: The Problem of Jevons' Paradox in AI's Polarized Environmental Debate. <i>ACM FAccT 2025</i>. <a href="https://arxiv.org/abs/2501.16548">arxiv.org/abs/2501.16548</a></li>
+      <li><i class="merkki m-vert">Peer-reviewed</i> Tomlinson, B., Black, R. W., Patterson, D. J. &amp; Torrance, A. W. (2024). The carbon emissions of writing and illustrating are lower for AI than for humans. <i>Scientific Reports</i>. <a href="https://www.nature.com/articles/s41598-024-54271-x">nature.com/articles/s41598-024-54271-x</a></li>
+      <li><i class="merkki m-rap">Report</i> UN University (UNU-INWEH) (2026). Environmental Cost of AI's Energy Use: Carbon, Water and Land Footprints. Image 2.9 Wh / 28.6 ml; complex video 415 Wh / 4.1 L; ChatGPT 383 GWh a year; AI 93 TWh in 2025; ~20 % of data-centre electricity; 130 kWh home electricity per person a year in sub-Saharan Africa. <a href="https://doi.org/10.53328/INR26RMA002">doi.org/10.53328/INR26RMA002</a> · Press release 3.6.2026 ("please" and "thank you"; 87–98 GWh ≈ nearly 760,000 people): <a href="https://www.eurekalert.org/news-releases/1128642">eurekalert.org</a></li>
+      <li><i class="merkki m-rap">Report</i> Delavande, J., Pierrard, R. &amp; Luccioni, S. (2025). Video Killed the Energy Budget: Characterizing the Latency and Power Regimes of Open Text-to-Video Models. NeurIPS 2025 workshop. Open video models from about 0.14 Wh to over 100 Wh per clip. <a href="https://arxiv.org/abs/2509.19222">arxiv.org/abs/2509.19222</a></li>
+      <li><i class="merkki m-yri">Company</i> Google (2025). Measuring the environmental impact of AI inference. Median Gemini text prompt 0.24 Wh and 0.26 ml of on-site water. <a href="https://www.technologyreview.com/2025/08/21/1122288/google-gemini-ai-energy/">via MIT Technology Review</a></li>
+      <li><i class="merkki m-jou">News</i> O'Donnell, J. &amp; Crownhart, C. (2025). We did the math on AI's energy footprint. <i>MIT Technology Review</i>, 20.5.2025. Image (Stable Diffusion 3 Medium) about 0.6–1.2 Wh; 5-second video (CogVideoX) about 940 Wh. <a href="https://www.technologyreview.com/2025/05/20/1116327/ai-energy-usage-climate-footprint-big-tech/">technologyreview.com</a></li>
+      <li><i class="merkki m-jou">News</i> Taylor, L. (2026). Ditch the niceties in AI prompts to save energy use, say researchers. <i>New Scientist</i>, 3.6.2026. <a href="https://www.newscientist.com/article/2529017-ditch-the-niceties-in-ai-prompts-to-save-energy-use-say-researchers/">newscientist.com</a></li>
+      <li><i class="merkki m-jou">News</i> Kaleva 15.10.2025 (Muhos river water) · Yle 8.10.2026 (Muhos and Kajaani forest) · DW and Mongabay (Montevideo 2023).</li>
+      <li><i class="merkki m-arv">Estimate</i> Device watts. Phones, laptops and desktops are measured by testers and researchers, but there is no single peer-reviewed number for "a laptop in everyday work". We use ranges. Phone power is mostly the screen and the radio (Carroll &amp; Heiser, USENIX 2010).</li>
+    </ol>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="kehys">
+    <p><b style="color:#fff">AI Energy Calculator</b> · CSY Lab · <a href="https://jarnoalastalo.com/en/">Jarno Alastalo</a> · <a href="mailto:jarno@csy.fi">jarno@csy.fi</a></p>
+    <p>Updated 26.11.2026: numbers shown as ranges, water calculated from energy with one factor, device watts lowered to everyday use, new options for "thinking" text and two kinds of video, every source labelled. Earlier version 15.11.2025.</p>
+    <p>Found a better number? Send it: <a href="mailto:jarno@csy.fi">jarno@csy.fi</a></p>
+    <p>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</p>
+  </div>
+</footer>
+
+<script>
+// Kaikki luvut: [matala, tyypillinen, korkea]
+const TEHTAVAT = {
+  teksti:      { nimi:'ordinary chat answer', yksikko:'answer', wh:[0.16, 0.31, 0.60],
+                 lahde:'Oviedo et al., Joule 2025 (peer-reviewed)' },
+  paattely:    { nimi:'long "thinking" answer', yksikko:'answer', wh:[1, 4.3, 10],
+                 lahde:'Oviedo et al., Joule 2025 (typical); UNU-INWEH 2026 (high, "more than 10 Wh"); the low value is our estimate' },
+  kuva:        { nimi:'image', yksikko:'image', wh:[0.6, 1.5, 2.9],
+                 lahde:'MIT Technology Review 2025 (low, Stable Diffusion 3 Medium); Luccioni et al., FAccT 2024 via UNU-INWEH 2026 (high, average of many models); the typical value is our estimate between the two' },
+  videoKevyt:  { nimi:'short video, open models', yksikko:'clip', wh:[0.14, 23, 109],
+                 lahde:'Delavande, Pierrard & Luccioni 2025, measured open models: AnimateDiff 1.6 s (low), WAN2.1 1.3B 5.4 s (typical), WAN2.1 14B 5.4 s (high)' },
+  videoRaskas: { nimi:'5-second high-quality video', yksikko:'clip', wh:[90, 415, 944],
+                 lahde:'UNU-INWEH 2026 (90 and 415 Wh); MIT Technology Review 2025 (944 Wh)' }
+};
+const LAITTEET = {
+  puhelin:       { nimi:'phone', w:[1, 2, 4] },
+  lappari:       { nimi:'laptop, everyday work', w:[5, 10, 20] },
+  lappariRaskas: { nimi:'laptop, heavy work', w:[30, 60, 120] },
+  poyta:         { nimi:'desktop + monitor', w:[60, 100, 150] }
+};
+const VESI = { paikan: 0.26/0.24, kaikki: 28.6/2.9 }; // L per kWh = ml per Wh
+const LED_W = 10;           // UNU-INWEH 2026 käyttää 10 W LED-lamppua
+const MIKRO_W = 1000;       // tavallinen mikroaaltouuni ~1000 W (arvio)
+const RUOKALUSIKKA_ML = 14.8;
+const JUOMAVESI_L = 2;      // UNU: 4,1 L ≈ kahden päivän juomavesi
+const SSA_KWH_HLO = 130;    // UNU: kotitaloussähkö / hlö / v
+const SSA_VESI_L_HLO = 3.8e9 / 500000; // UNU: 3,8 mrd L = 500 000 hlön vähimmäisvesi
+const SUOMI_TWH = 83;
+const MUHOS_HAIHTUU_L = 20e9 * 0.70;
+
+const $ = id => document.getElementById(id);
+const luku = id => { const v = parseFloat($(id).value); return isFinite(v) && v > 0 ? v : 0; };
+
+function fmt(x, des) {
+  if (!isFinite(x)) return '–';
+  const d = des !== undefined ? des : (x >= 100 ? 0 : x >= 10 ? 1 : x >= 1 ? 1 : x >= 0.1 ? 2 : 3);
+  return x.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: 0 });
+}
+function fmtWh(wh) {
+  if (wh >= 1e9) return fmt(wh / 1e9) + ' GWh';
+  if (wh >= 1e6) return fmt(wh / 1e6) + ' MWh';
+  if (wh >= 1000) return fmt(wh / 1000) + ' kWh';
+  return fmt(wh) + ' Wh';
+}
+function fmtL(l) {
+  if (l >= 1e9) return fmt(l / 1e9) + ' billion litres';
+  if (l >= 1e6) return fmt(l / 1e6) + ' million litres';
+  if (l >= 1) return fmt(l) + ' L';
+  return fmt(l * 1000, l * 1000 >= 10 ? 0 : 1) + ' ml';
+}
+function fmtAika(min) {
+  if (min < 1) return fmt(min * 60, 0) + ' seconds';
+  if (min < 120) return fmt(min, 0) + ' minutes';
+  if (min < 60 * 48) return fmt(min / 60, 1) + ' hours';
+  return fmt(min / 60 / 24, 1) + ' days';
+}
+function fmtIso(n) {
+  if (n >= 1e9) return fmt(n / 1e9, 1) + ' billion';
+  if (n >= 1e6) return fmt(n / 1e6, 1) + ' million';
+  return Math.round(n).toLocaleString('en-GB');
+}
+
+function laske() {
+  const t = TEHTAVAT[$('tehtava').value];
+  const l = LAITTEET[$('laite').value];
+  const kasiH = luku('kasiTunnit'), n = luku('aiMaara'), aiH = luku('aiTunnit');
+  const vesiTapa = document.querySelector('input[name=vesi]:checked').value;
+  const lPerKwh = VESI[vesiTapa];
+
+  const kasi = [0,1,2].map(i => kasiH * l.w[i]);
+  const aiDc = [0,1,2].map(i => n * t.wh[i]);
+  const ai   = [0,1,2].map(i => aiDc[i] + aiH * l.w[i]);
+  const vesi = aiDc.map(wh => wh / 1000 * lPerKwh); // litraa
+
+  $('tehtavaArvo').textContent = `One ${t.yksikko}: ${fmt(t.wh[0])} – ${fmt(t.wh[2])} Wh (typical ${fmt(t.wh[1])} Wh). ${t.lahde}.`;
+  $('laiteArvo').textContent = `${fmt(l.w[0])} – ${fmt(l.w[2])} W (typical ${fmt(l.w[1])} W). Our rough estimate.`;
+
+  // Palkit
+  const maksimi = Math.max(kasi[2], ai[2], 1e-9);
+  const palkki = (luokka, nimi, a) => `
+    <div class="${luokka}">
+      <div class="palkki-nimi"><span>${nimi}: about ${fmtWh(a[1])}</span><span>range ${fmtWh(a[0])} – ${fmtWh(a[2])}</span></div>
+      <div class="rata" role="img" aria-label="${nimi}: ${fmtWh(a[0])} to ${fmtWh(a[2])}, typical ${fmtWh(a[1])}">
+        <div class="vali" style="left:${a[0]/maksimi*100}%;width:${Math.max((a[2]-a[0])/maksimi*100, .6)}%"></div>
+        <div class="tyyp" style="left:0;width:${Math.max(a[1]/maksimi*100, .6)}%"></div>
+      </div>
+    </div>`;
+  $('palkit').innerHTML = palkki('kasi', '🛠 Doing it yourself', kasi) + palkki('ai', '🤖 With AI', ai);
+
+  // Päätös
+  let teksti;
+  if (kasi[1] === 0 && ai[1] === 0) {
+    teksti = 'Enter some hours or results above.';
+  } else if (kasi[1] === 0) {
+    teksti = `Only the AI part uses energy here: about <em>${fmtWh(ai[1])}</em>.`;
+  } else if (ai[1] === 0) {
+    teksti = `Only doing it yourself uses energy here: about <em>${fmtWh(kasi[1])}</em>.`;
+  } else {
+    const paallekkain = kasi[2] >= ai[0] && ai[2] >= kasi[0];
+    const suurempi = ai[1] > kasi[1] ? 'AI' : 'Doing it yourself';
+    const kerroin = Math.max(ai[1], kasi[1]) / Math.min(ai[1], kasi[1]);
+    const kerroinTxt = kerroin < 1.15 ? 'about the same as' : `about <em>${fmt(kerroin, kerroin < 10 ? 1 : 0)}×</em> more than`;
+    if (kerroin < 1.15) {
+      teksti = `Typical estimate: both use <em>about the same</em>.`;
+    } else {
+      teksti = `Typical estimate: ${suurempi === 'AI' ? 'AI uses' : 'doing it yourself uses'} ${kerroinTxt} ${suurempi === 'AI' ? 'doing it yourself' : 'AI'}.`;
     }
-  </script>
-  <p><span style='font-size: 1rem; color: #aaa;'>Updated: 15.11.2025: </span></p>
-  <p><span style='font-size: 1rem; color: #aaa;'>Made visible these: Creating an image (~1.5 Wh per image) (Hugging Face, Stable Diffusion 3 Medium). Making a video (~940 Wh per 5 sec video) (MIT Technology Review, Luccioni / CogVideoX-measurements). Writing or generating text (~0.3 Wh per request) (Epoch AI, MIT Technology Review).</span></p>
-  <p><span style='font-size: 1rem; color: #aaa;'>Added text to beginning: This tool compares the energy use of one person’s device — not full production pipelines.</span></p>
-  <p><span style='font-size: 1rem; color: #aaa;'>Sivusto käyttää evästeetöntä Counter.dev-kävijätilastointia, jonka avulla seurataan sivun käyttöä anonyymisti. Tietoja ei käytetä markkinointiin eikä yksittäisiä kävijöitä voi tunnistaa.</span></p>
+    teksti += paallekkain
+      ? `<small>But the ranges overlap. With other, equally reasonable numbers the answer could turn the other way. Honest answer: it depends.</small>`
+      : `<small>The ranges do not overlap, so the direction holds even with the lowest and highest estimates. The size of the difference is still uncertain.</small>`;
+  }
+  $('paatos').innerHTML = teksti;
+
+  $('vesiRivi').innerHTML = n > 0
+    ? `💧 Water for the AI part: about <b>${fmtL(vesi[1])}</b> (range ${fmtL(vesi[0])} – ${fmtL(vesi[2])}), ${vesiTapa === 'paikan' ? 'counting only the data centre\'s own cooling' : 'counting also the water used to make the electricity'}.`
+    : '';
+
+  // Arvotaulukko
+  $('arvotaulu').innerHTML = `
+    <tr><th></th><th>Low</th><th>Typical</th><th>High</th></tr>
+    <tr><td>Energy per ${t.yksikko} (Wh)</td><td>${fmt(t.wh[0])}</td><td>${fmt(t.wh[1])}</td><td>${fmt(t.wh[2])}</td></tr>
+    <tr><td>Device (W)</td><td>${fmt(l.w[0])}</td><td>${fmt(l.w[1])}</td><td>${fmt(l.w[2])}</td></tr>
+    <tr><td>Yourself (Wh)</td><td>${fmt(kasi[0])}</td><td>${fmt(kasi[1])}</td><td>${fmt(kasi[2])}</td></tr>
+    <tr><td>AI, data centre (Wh)</td><td>${fmt(aiDc[0])}</td><td>${fmt(aiDc[1])}</td><td>${fmt(aiDc[2])}</td></tr>
+    <tr><td>AI, your device (Wh)</td><td>${fmt(aiH*l.w[0])}</td><td>${fmt(aiH*l.w[1])}</td><td>${fmt(aiH*l.w[2])}</td></tr>
+    <tr><td>AI total (Wh)</td><td>${fmt(ai[0])}</td><td>${fmt(ai[1])}</td><td>${fmt(ai[2])}</td></tr>
+    <tr><td>Water factor (L per kWh)</td><td colspan="3">${fmt(lPerKwh, 1)} — ${vesiTapa === 'paikan' ? 'Google 2025: 0.26 ml ÷ 0.24 Wh' : 'UNU-INWEH 2026: 28.6 ml ÷ 2.9 Wh'}</td></tr>
+    <tr><td>AI water</td><td>${fmtL(vesi[0])}</td><td>${fmtL(vesi[1])}</td><td>${fmtL(vesi[2])}</td></tr>`;
+
+  // 2 · Arki
+  const whT = aiDc[1], lT = vesi[1];
+  $('arkiRinnat').innerHTML = n > 0 ? `
+    <div class="rinta"><div class="iso">${fmtAika(whT / LED_W * 60)}</div><p>of a 10-watt LED bulb</p><span class="lahde"><i class="merkki m-rap">Report</i> comparison used by UNU-INWEH 2026</span></div>
+    <div class="rinta"><div class="iso">${fmtAika(whT / MIKRO_W * 60)}</div><p>of a 1000-watt microwave oven</p><span class="lahde"><i class="merkki m-arv">Estimate</i> typical microwave power</span></div>
+    <div class="rinta"><div class="iso">${lT * 1000 < RUOKALUSIKKA_ML * 20 ? fmt(lT * 1000 / RUOKALUSIKKA_ML, 1) + (fmt(lT * 1000 / RUOKALUSIKKA_ML, 1) === '1' ? ' tablespoon' : ' tablespoons') : fmt(lT / JUOMAVESI_L, 1) + ' days'}</div><p>${lT * 1000 < RUOKALUSIKKA_ML * 20 ? 'of water (one tablespoon ≈ 15 ml)' : 'of drinking water for one person (about 2 litres a day)'}</p><span class="lahde"><i class="merkki m-rap">Report</i> comparison used by UNU-INWEH 2026</span></div>`
+    : '<p class="pikku">Enter at least one AI result above.</p>';
+
+  // 3 · Miljoonat
+  const ihm = luku('ihmiset');
+  const vuosiWh = whT * ihm * 365, vuosiL = lT * ihm * 365;
+  $('miljoonaRinnat').innerHTML = (n > 0 && ihm > 0) ? `
+    <div class="rinta"><div class="iso">${fmtWh(vuosiWh)}</div><p>a year. That is the home electricity of about ${fmtIso(vuosiWh / 1000 / SSA_KWH_HLO)} people in sub-Saharan Africa, or ${(() => { const p = vuosiWh / 1e12 / SUOMI_TWH * 100; return p >= 1 ? fmt(p, 1) : Number(p.toPrecision(2)).toLocaleString('en-GB', { maximumSignificantDigits: 2 }); })()} % of all electricity used in Finland.</p><span class="lahde"><i class="merkki m-rap">Report</i> 130 kWh per person and Finland 83 TWh from UNU-INWEH 2026</span></div>
+    <div class="rinta"><div class="iso">${fmtL(vuosiL)}</div><p>of water a year. That is the minimum home water of about ${fmtIso(vuosiL / SSA_VESI_L_HLO)} people in sub-Saharan Africa.</p><span class="lahde"><i class="merkki m-rap">Report</i> derived from UNU-INWEH 2026 (3.8 billion L ≈ 500,000 people)</span></div>
+    <div class="rinta"><div class="iso">${fmt(ihm * n * 365 / 1e9, 1)} billion</div><p>AI results a year. ChatGPT alone answers about 2.5 billion prompts a day, over 900 billion a year.</p><span class="lahde"><i class="merkki m-rap">Report</i> UNU-INWEH 2026</span></div>`
+    : '<p class="pikku" style="color:#c5cbe0">Enter at least one AI result and a number of people.</p>';
+
+  // 4 · Muhos
+  const omaVuosiL = lT * 365;
+  if (omaVuosiL > 0) {
+    const kertaa = MUHOS_HAIHTUU_L / omaVuosiL;
+    $('muhosVertaus').textContent = fmtIso(kertaa) + '×';
+    $('muhosTeksti').textContent = `The steam from one year in Muhos (about 14 billion litres) is that many times the water of your AI use above, if you did it every day for a year (${fmtL(omaVuosiL)}).`;
+  } else {
+    $('muhosVertaus').textContent = '–';
+    $('muhosTeksti').textContent = 'Enter at least one AI result above to compare.';
+  }
+}
+
+['tehtava','laite','kasiTunnit','aiMaara','aiTunnit','ihmiset'].forEach(id => $(id).addEventListener('input', laske));
+document.querySelectorAll('input[name=vesi]').forEach(r => r.addEventListener('change', laske));
+laske();
+</script>
 </body>
 </html>
